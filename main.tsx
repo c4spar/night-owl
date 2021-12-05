@@ -7,7 +7,27 @@
 import { h, serve } from "./deps.ts";
 import { ssr } from "./ssr.tsx";
 
-const modules = JSON.parse(await Deno.readTextFile("./bench.json"));
+interface BenchResult {
+  totalMs: number;
+  runsCount: number;
+  measuredRunsAvgMs: number;
+  rev: string;
+  timestamp: number;
+  version: typeof Deno.version;
+}
+
+interface TestData {
+  name: string;
+  history: Array<BenchResult>;
+}
+
+interface ModuleData {
+  name: string;
+  tests: Array<TestData>;
+}
+type BenchData = Array<ModuleData>;
+
+const modules: BenchData = JSON.parse(await Deno.readTextFile("./bench.json"));
 
 function App() {
   const rows = [];
@@ -23,7 +43,7 @@ function App() {
   );
 }
 
-function LineChart(module: any) {
+function LineChart(module: ModuleData) {
   const attrs = { id: "chart-" + module.name };
   const script = generateScript(attrs.id, module);
   return (
@@ -35,14 +55,14 @@ function LineChart(module: any) {
   );
 }
 
-function generateScript(id: string, module: any) {
+function generateScript(id: string, module: ModuleData) {
   const config = {
     type: "line",
     data: {
-      labels: module.tests[0].history.map((item: any) => item.commit),
-      datasets: module.tests.map((test: any) => ({
+      labels: module.tests[0].history.map((item: BenchResult) => item.rev),
+      datasets: module.tests.map((test: TestData) => ({
         label: test.name,
-        data: test.history.map((item: any) => item.measuredRunsAvgMs),
+        data: test.history.map((item: BenchResult) => item.measuredRunsAvgMs),
         backgroundColor: stringToColor(test.name),
         borderColor: stringToColor(test.name),
         tension: 0.3,
@@ -63,7 +83,7 @@ function stringToColor(str: string) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
   let colour = "#";
-  for (var i = 0; i < 3; i++) {
+  for (let i = 0; i < 3; i++) {
     const value = (hash >> (i * 8)) & 0xFF;
     colour += ("00" + value.toString(16)).substr(-2);
   }
