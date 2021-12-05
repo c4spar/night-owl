@@ -71,10 +71,11 @@ function generateScript(id: string, module: ModuleData) {
   };
 
   return `
+  {
     const element = document.getElementById("${id}");
     const config = ${JSON.stringify(config)};
     const myChart = new Chart(element, {...config});
-  `;
+  }`;
 }
 
 function stringToColor(str: string) {
