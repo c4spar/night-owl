@@ -16,7 +16,7 @@ function App() {
   }
   return (
     <div>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js@v3.6.1"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@v3.6.1" />
       <h1>Cliffy benchmarks</h1>
       {rows}
     </div>
@@ -29,7 +29,7 @@ function LineChart(module: any) {
   return (
     <div>
       <h2>{module.name}</h2>
-      <canvas {...attrs} height="50"></canvas>
+      <canvas {...attrs} height="50" />
       <script>{script}</script>
     </div>
   );
