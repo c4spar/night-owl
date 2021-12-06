@@ -25,11 +25,10 @@ interface ModuleData {
   name: string;
   tests: Array<TestData>;
 }
+
 type BenchData = Array<ModuleData>;
 
-const modules: BenchData = JSON.parse(await Deno.readTextFile("./bench.json"));
-
-function App() {
+function App(modules: BenchData) {
   const rows = [];
   for (const module of modules) {
     rows.push(LineChart(module));
@@ -37,8 +36,12 @@ function App() {
   return (
     <div>
       <script src="https://cdn.jsdelivr.net/npm/chart.js@v3.6.1" />
-      <h1>Cliffy benchmarks</h1>
-      {rows}
+      <section class="container mx-auto p-5">
+        <h2 class="text-2xl font-bold leading-7 text-gray-300 sm:text-3xl">
+          Benchmarks
+        </h2>
+        {rows}
+      </section>
     </div>
   );
 }
@@ -47,15 +50,17 @@ function LineChart(module: ModuleData) {
   const attrs = { id: "chart-" + module.name };
   const script = generateScript(attrs.id, module);
   return (
-    <div>
-      <h2>{module.name}</h2>
+    <div class="bg-gray-100 border-2 rounded-lg border-gray-200 border-opacity-50 p-8 mt-8">
+      <h2 class="text-gray-900 text-lg title-font font-medium mb-3">
+        {capitalize(module.name)}
+      </h2>
       <canvas {...attrs} height="50" />
       <script>{script}</script>
     </div>
   );
 }
 
-function generateScript(id: string, module: ModuleData) {
+function generateScript(id: string, module: ModuleData): string {
   const config = {
     type: "line",
     data: {
@@ -78,7 +83,7 @@ function generateScript(id: string, module: ModuleData) {
   }`;
 }
 
-function stringToColor(str: string) {
+function stringToColor(str: string): string {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -91,5 +96,14 @@ function stringToColor(str: string) {
   return colour;
 }
 
+function capitalize(str: string): string {
+  return str[0].toUpperCase() + str.slice(1);
+}
+
 console.log("Listening on http://localhost:8000");
-serve(() => ssr(() => <App />));
+await serve(async () => {
+  const modules: BenchData = JSON.parse(
+    await Deno.readTextFile("./bench.json"),
+  );
+  return ssr(() => App(modules));
+});
