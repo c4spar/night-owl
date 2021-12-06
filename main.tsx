@@ -6,6 +6,7 @@
 
 import { h, Fragment, Helmet, serve } from "./deps.ts";
 import { ssr } from "./ssr.tsx";
+import { capitalize, stringToColor } from "./utils.ts";
 
 interface BenchResult {
   totalMs: number;
@@ -88,23 +89,6 @@ function generateScript(id: string, module: ModuleData): string {
     const config = ${JSON.stringify(config)};
     const myChart = new Chart(element, {...config});
   }`;
-}
-
-function stringToColor(str: string): string {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  let colour = "#";
-  for (let i = 0; i < 3; i++) {
-    const value = (hash >> (i * 8)) & 0xFF;
-    colour += ("00" + value.toString(16)).substr(-2);
-  }
-  return colour;
-}
-
-function capitalize(str: string): string {
-  return str[0].toUpperCase() + str.slice(1);
 }
 
 console.log("Listening on http://localhost:8000");
