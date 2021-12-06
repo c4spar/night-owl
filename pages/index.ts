@@ -1,18 +1,10 @@
-/** @jsx h */
-/// <reference no-default-lib="true"/>
-/// <reference lib="dom" />
-/// <reference lib="dom.asynciterable" />
-/// <reference lib="deno.ns" />
-
-import { Helmet, renderSSR } from "./deps.ts";
-
-interface AppOptions {
+interface IndexOptions {
   body: string;
   head: Array<string>;
   footer: Array<string>;
 }
 
-function Html({ body, head, footer }: AppOptions) {
+export function Index({ body, head, footer }: IndexOptions) {
   return (`
     <!DOCTYPE html>
     <html>
@@ -41,14 +33,4 @@ function Html({ body, head, footer }: AppOptions) {
       </body>
     </html>
   `);
-}
-
-export function ssr(app: CallableFunction) {
-  const html = renderSSR(app);
-  const { body, head, footer } = Helmet.SSR(html);
-
-  return new Response(
-    Html({ body, head, footer }),
-    { headers: { "content-type": "text/html" } },
-  );
 }
