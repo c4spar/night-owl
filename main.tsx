@@ -4,7 +4,7 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { h, serve } from "./deps.ts";
+import { h, Helmet, serve } from "./deps.ts";
 import { ssr } from "./ssr.tsx";
 
 interface BenchResult {
@@ -35,7 +35,12 @@ function App(modules: BenchData) {
   }
   return (
     <div>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js@v3.6.1" />
+      <Helmet>
+        <title>Cliffy - Benchmarks</title>
+      </Helmet>
+      <Helmet footer>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@v3.6.1" />
+      </Helmet>
       <section class="container mx-auto p-5">
         <h2 class="text-2xl font-bold leading-7 text-gray-300 sm:text-3xl">
           Benchmarks
@@ -54,8 +59,10 @@ function LineChart(module: ModuleData) {
       <h2 class="text-gray-900 text-lg title-font font-medium mb-3">
         {capitalize(module.name)}
       </h2>
-      <canvas {...attrs} height="50" />
-      <script>{script}</script>
+      <canvas {...attrs} height="50" width="120" />
+      <Helmet footer>
+        <script>{script}</script>
+      </Helmet>
     </div>
   );
 }
