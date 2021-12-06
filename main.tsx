@@ -16,7 +16,7 @@ function App({ benchmarks }: { benchmarks: Array<ModuleData> }) {
 }
 
 const benchmarks: Array<ModuleData> = JSON.parse(
-  await Deno.readTextFile("./bench.json"),
+  await Deno.readTextFile("./data/benchmarks.json"),
 );
 
 console.log("Listening on http://localhost:8000");
