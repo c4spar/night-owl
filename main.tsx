@@ -68,8 +68,8 @@ function generateScript(id: string, module: ModuleData): string {
       datasets: module.tests.map((test: TestData) => ({
         label: test.name,
         data: test.history.map((item: BenchResult) => item.measuredRunsAvgMs),
-        backgroundColor: stringToColor(test.name),
-        borderColor: stringToColor(test.name),
+        backgroundColor: stringToColor(test.name.repeat(2)),
+        borderColor: stringToColor(test.name.repeat(2)),
         tension: 0.3,
       })),
     },
