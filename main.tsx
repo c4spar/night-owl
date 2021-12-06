@@ -4,7 +4,7 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { h, Helmet, serve } from "./deps.ts";
+import { h, Fragment, Helmet, serve } from "./deps.ts";
 import { ssr } from "./ssr.tsx";
 
 interface BenchResult {
@@ -34,7 +34,7 @@ function App(modules: BenchData) {
     rows.push(LineChart(module));
   }
   return (
-    <div>
+    <Fragment>
       <Helmet>
         <title>Cliffy - Benchmarks</title>
       </Helmet>
@@ -47,7 +47,7 @@ function App(modules: BenchData) {
         </h2>
         {rows}
       </section>
-    </div>
+    </Fragment>
   );
 }
 
