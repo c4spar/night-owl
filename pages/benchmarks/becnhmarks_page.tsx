@@ -5,7 +5,7 @@
 /// <reference lib="deno.ns" />
 
 import { Component, Fragment, h, Helmet } from "../../deps.ts";
-import { capitalize, stringToColor } from "../../utils.ts";
+import { capitalize, stringToColor } from "../../lib/utils.ts";
 
 export interface BenchResult {
   totalMs: number;
