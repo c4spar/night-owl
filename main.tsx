@@ -4,24 +4,53 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { h, Helmet, renderSSR, serve } from "./deps.ts";
+import { Navigation } from "./components/navigation.tsx";
+import { Router } from "./components/router.tsx";
+import { Route } from "./components/route.tsx";
+import { blue, Fragment, h, Helmet, renderSSR, serve } from "./deps.ts";
 import {
   BenchmarksPage,
   ModuleData,
 } from "./pages/benchmarks/becnhmarks_page.tsx";
 import { Index } from "./pages/index.ts";
 
-function App({ benchmarks }: { benchmarks: Array<ModuleData> }) {
-  return <BenchmarksPage benchmarks={benchmarks} />;
+interface AppOptions {
+  route: string;
+  benchmarks: Array<ModuleData>;
+}
+
+function App({ benchmarks, route }: AppOptions) {
+  return (
+    <Fragment>
+      <header>
+        <Navigation />
+      </header>
+      <section class="container mx-auto p-5">
+        <Router route={route}>
+          <Route path="/">
+            <span>Home: Work in progress...</span>
+          </Route>
+          <Route path="/manual">
+            <span>Manual: Work in progress...</span>
+          </Route>
+          <Route path="/benchmarks">
+            <BenchmarksPage benchmarks={benchmarks} />
+          </Route>
+        </Router>
+      </section>
+    </Fragment>
+  );
 }
 
 const benchmarks: Array<ModuleData> = JSON.parse(
   await Deno.readTextFile("./data/benchmarks.json"),
 );
 
-console.log("Listening on http://localhost:8000");
-await serve(() => {
-  const html = renderSSR(<App benchmarks={benchmarks} />);
+console.log(`Listening on ${blue("http://localhost:8000")}`);
+
+await serve((request) => {
+  const route = new URL(request.url).pathname;
+  const html = renderSSR(<App benchmarks={benchmarks} route={route} />);
   const { body, head, footer } = Helmet.SSR(html);
 
   return new Response(

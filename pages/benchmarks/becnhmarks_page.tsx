@@ -44,12 +44,12 @@ export class BenchmarksPage
 
   renderCharts() {
     return (
-      <section class="container mx-auto p-5">
-        <h2 class="text-2xl font-bold leading-7 text-gray-300 sm:text-3xl">
+      <Fragment>
+        <h2 class="text-2xl font-bold leading-7 sm:text-3xl">
           Benchmarks
         </h2>
         {this.props.benchmarks.map((module) => this.renderLineChart(module))}
-      </section>
+      </Fragment>
     );
   }
 
