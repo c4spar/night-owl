@@ -4,8 +4,8 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { Component, Fragment, h, Helmet } from "../../deps.ts";
-import { capitalize, stringToColor } from "../../lib/utils.ts";
+import { Component, Fragment, h, Helmet } from "../deps.ts";
+import { capitalize, stringToColor } from "../lib/utils.ts";
 
 export interface BenchResult {
   totalMs: number;

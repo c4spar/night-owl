@@ -8,10 +8,7 @@ import { Navigation } from "./components/navigation.tsx";
 import { Router } from "./components/router.tsx";
 import { Route } from "./components/route.tsx";
 import { blue, Fragment, h, Helmet, renderSSR, serve } from "./deps.ts";
-import {
-  BenchmarksPage,
-  ModuleData,
-} from "./pages/benchmarks/becnhmarks_page.tsx";
+import { BenchmarksPage, ModuleData } from "./pages/becnhmarks.tsx";
 import { Index } from "./pages/index.ts";
 
 interface AppOptions {
