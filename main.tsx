@@ -4,7 +4,7 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { Navigation } from "./components/navigation.tsx";
+import { Header } from "./components/header.tsx";
 import { Router } from "./components/router.tsx";
 import { Route } from "./components/route.tsx";
 import { blue, getStyleTag, h, Helmet, renderSSR, serve, tw } from "./deps.ts";
@@ -23,9 +23,7 @@ interface AppOptions {
 function App({ data, route, examples }: AppOptions) {
   return (
     <div class={tw`min-h-full`}>
-      <header>
-        <Navigation />
-      </header>
+      <Header />
       <main class={tw`container mx-auto p-4`}>
         <Router route={route}>
           <Route path="/">

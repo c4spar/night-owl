@@ -7,10 +7,10 @@ interface LinkOptions {
   href?: string;
 }
 
-export class Navigation extends Component {
+export class Header extends Component {
   render() {
     return (
-      <div
+      <header
         class={tw`flex flex-wrap p-5 flex-col md:flex-row items-center`}
       >
         <a
@@ -31,7 +31,7 @@ export class Navigation extends Component {
           <Link label="Benchmarks" href="/benchmarks" />
           <Link label="Github" href="https://github.com/c4spar/deno-cliffy" />
         </nav>
-      </div>
+      </header>
     );
   }
 }
