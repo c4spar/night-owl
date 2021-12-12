@@ -41,7 +41,7 @@ export class BenchmarksPage extends Component<BenchmarksPageOptions> {
         <Helmet footer>
           <script src="https://cdn.jsdelivr.net/npm/chart.js@v3.6.1" />
         </Helmet>
-        <div class={tw`space-y-16`}>
+        <div class={tw`container mx-auto space-y-16`}>
           {this.props.data.map((data) => this.renderCharts(data))}
         </div>
       </Fragment>

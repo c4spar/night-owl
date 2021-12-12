@@ -6,11 +6,13 @@ html {
 body {
     flex: 1;
     width: 100%;
+    /* text-gray-50 (coolGray) */
+    background-color: #f9fafb;
 }
 
 html.dark body {
-    background-color: rgb(31, 41, 55);
-    color: rgba(209,213,219);
+    /* text-gray-800 (coolGray) */
+    background-color: #1f2937;
 }
 
 .hljs-keyword {

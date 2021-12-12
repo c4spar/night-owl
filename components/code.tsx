@@ -22,7 +22,7 @@ export class Code extends Component<CodeOptions> {
         <pre>
           <code
             class={`${this.props.lang ? `language-${this.props.lang}` : ""} ${tw
-              `font-mono py-3 text-sm overflow-visible`}`}
+              `!font-mono !py-3 !text-sm overflow-visible`}`}
           >
             {this.props.code.trim()}
           </code>

@@ -9,9 +9,10 @@ export interface ButtonOptions {
   href?: string;
   children: CompDef;
   class?: string;
+  style?: string;
 }
 
-function Button({ class: className, href, children }: ButtonOptions) {
+function Button({ class: className, href, children, style }: ButtonOptions) {
   const css = tw`text-white font-bold
    text-sm px-4 py-3 rounded shadow hover:shadow-md outline-none
    focus:outline-none mr-1 mb-1 ease-linear transition duration-150
@@ -26,6 +27,7 @@ function Button({ class: className, href, children }: ButtonOptions) {
       type="button"
       onclick={`location.href='${href}';`}
       class={`${css} ${className}`}
+      style={style}
     >
       {content}
     </button>

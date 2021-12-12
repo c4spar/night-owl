@@ -14,7 +14,7 @@ export class Header extends Component {
         class={tw`flex flex-wrap p-5 flex-col md:flex-row items-center`}
       >
         <a
-          class={tw`flex font-medium items-center text-gray-300 mb-4 md:mb-0`}
+          class={tw`flex font-medium items-center mb-4 md:mb-0`}
           href="/"
         >
           <span class={tw`ml-3 text-xl`}>Cliffy</span>
@@ -43,8 +43,9 @@ function Link({ href, label }: LinkOptions) {
 
   return (
     <a
-      class={tw
-        `mr-5 hover:text-gray-200 border-b-2 pb-1 border-transparent hover:border-indigo-500`}
+      class={tw`mr-5 pb-1
+        hover:text-gray-500 dark:hover:text-gray-200
+        border-b-2 border-transparent hover:border-indigo-500`}
       href={href}
       target={target}
     >
