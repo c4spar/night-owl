@@ -7,51 +7,72 @@
 import { Navigation } from "./components/navigation.tsx";
 import { Router } from "./components/router.tsx";
 import { Route } from "./components/route.tsx";
-import { blue, Fragment, h, Helmet, renderSSR, serve } from "./deps.ts";
-import { BenchmarksPage, ModuleData } from "./pages/becnhmarks.tsx";
+import { blue, getStyleTag, h, Helmet, renderSSR, serve, tw } from "./deps.ts";
+import { sheet } from "./lib/sheet.ts";
+import { Example, FileOptions, getExamples, readDir } from "./lib/utils.ts";
+import { BenchmarksPage } from "./pages/becnhmarks.tsx";
+import { HomePage } from "./pages/home.tsx";
 import { Index } from "./pages/index.ts";
 
 interface AppOptions {
   route: string;
-  benchmarks: Array<ModuleData>;
+  data: Array<FileOptions>;
+  examples: Array<Example>;
 }
 
-function App({ benchmarks, route }: AppOptions) {
+function App({ data, route, examples }: AppOptions) {
   return (
-    <Fragment>
+    <div class={tw`min-h-full`}>
       <header>
         <Navigation />
       </header>
-      <section class="container mx-auto p-5">
+      <main class={tw`container mx-auto p-4`}>
         <Router route={route}>
           <Route path="/">
-            <span>Home: Work in progress...</span>
+            <HomePage examples={examples} />
           </Route>
-          <Route path="/manual">
-            <span>Manual: Work in progress...</span>
+          <Route path="/docs">
+            <span>Documentation: Work in progress...</span>
           </Route>
           <Route path="/benchmarks">
-            <BenchmarksPage benchmarks={benchmarks} />
+            <BenchmarksPage data={data} />
           </Route>
         </Router>
-      </section>
-    </Fragment>
+      </main>
+    </div>
   );
 }
 
-const benchmarks: Array<ModuleData> = JSON.parse(
-  await Deno.readTextFile("./data/benchmarks.json"),
-);
+const examples: Array<Example> = await getExamples();
+const data: Array<FileOptions> = await readDir("data");
 
 console.log(`Listening on ${blue("http://localhost:8000")}`);
 
-await serve((request) => {
-  const route = new URL(request.url).pathname;
-  const html = renderSSR(<App benchmarks={benchmarks} route={route} />);
-  const { body, head, footer } = Helmet.SSR(html);
+await serve(async (req) => {
+  sheet.reset();
 
-  return new Response(
-    Index({ body, head, footer }),
-    { headers: { "content-type": "text/html" } },
-  );
+  const route = new URL(req.url).pathname;
+  console.log(blue(`[${req.method}]`), req.url);
+
+  switch (route) {
+    case "/styles.css":
+      return new Response(
+        await Deno.readTextFile("styles.css"),
+        { headers: { "content-type": "text/css" } },
+      );
+
+    default: {
+      const app = renderSSR(
+        <App route={route} examples={examples} data={data} />,
+      );
+      const { body, head, footer } = Helmet.SSR(app);
+      const styles = getStyleTag(sheet);
+      const html = Index({ body, head, footer, styles });
+
+      return new Response(
+        html,
+        { headers: { "content-type": "text/html" } },
+      );
+    }
+  }
 });

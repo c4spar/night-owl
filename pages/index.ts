@@ -2,19 +2,21 @@ interface IndexOptions {
   body: string;
   head: Array<string>;
   footer: Array<string>;
+  styles: string;
 }
 
-export function Index({ body, head, footer }: IndexOptions) {
+export function Index({ body, head, footer, styles }: IndexOptions) {
   return (`
     <!DOCTYPE html>
-    <html>
+    <html lang="en" class="dark">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+        <link rel="stylesheet" href="styles.css" />
+        ${styles}
         ${head.join("\n")}
       </head>
-      <body class="bg-gray-800 text-gray-300">
+      <body>
         ${body}
         ${footer.join("\n")}
       </body>

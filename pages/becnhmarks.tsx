@@ -1,11 +1,12 @@
 /** @jsx h */
-/// <reference no-default-lib="true"/>
-/// <reference lib="dom" />
-/// <reference lib="dom.asynciterable" />
-/// <reference lib="deno.ns" />
 
-import { Component, Fragment, h, Helmet } from "../deps.ts";
-import { capitalize, stringToColor } from "../lib/utils.ts";
+import { Component, Fragment, h, Helmet, tw } from "../deps.ts";
+import {
+  capitalize,
+  FileOptions,
+  sortByKey,
+  stringToColor,
+} from "../lib/utils.ts";
 
 export interface BenchResult {
   totalMs: number;
@@ -26,8 +27,11 @@ export interface ModuleData {
   tests: Array<TestData>;
 }
 
-export class BenchmarksPage
-  extends Component<{ benchmarks: Array<ModuleData> }> {
+interface BenchmarksPageOptions {
+  data: Array<FileOptions>;
+}
+
+export class BenchmarksPage extends Component<BenchmarksPageOptions> {
   render() {
     return (
       <Fragment>
@@ -37,28 +41,43 @@ export class BenchmarksPage
         <Helmet footer>
           <script src="https://cdn.jsdelivr.net/npm/chart.js@v3.6.1" />
         </Helmet>
-        {this.renderCharts()}
+        <div class={tw`space-y-16`}>
+          {this.props.data.map((data) => this.renderCharts(data))}
+        </div>
       </Fragment>
     );
   }
 
-  renderCharts() {
+  renderCharts({ name, content }: FileOptions) {
+    const benchmarks: Array<ModuleData> = JSON.parse(content).sort(
+      sortByKey("name"),
+    );
+    name = capitalize(name)
+      .replace(/_/g, " ")
+      .replace(/\.json$/, "");
     return (
-      <Fragment>
-        <h2 class="text-2xl font-bold leading-7 sm:text-3xl">
-          Benchmarks
+      <div>
+        <h2 class={tw`text-2xl font-bold leading-7 sm:text-3xl`}>
+          {name}
         </h2>
-        {this.props.benchmarks.map((module) => this.renderLineChart(module))}
-      </Fragment>
+        {benchmarks.map((module) => this.renderLineChart(name, module))}
+      </div>
     );
   }
 
-  renderLineChart(module: ModuleData) {
-    const attrs = { id: "chart-" + module.name };
+  renderLineChart(benchmarkName: string, module: ModuleData) {
+    console.log("benchmarkName:", benchmarkName);
+    const id = "chart-" + benchmarkName.replace(/ /g, "-")
+      .toLowerCase() +
+      module.name;
+    const attrs = { id };
     const script = this.generateScript(attrs.id, module);
     return (
-      <div class="bg-gray-100 border-2 rounded-lg border-gray-200 border-opacity-50 p-8 mt-8">
-        <h2 class="text-gray-900 text-lg title-font font-medium mb-3">
+      <div
+        class={tw
+          `bg-gray-100 border-2 rounded-lg border-gray-200 border-opacity-50 p-8 mt-8`}
+      >
+        <h2 class={tw`text-gray-900 text-lg font-medium mb-3`}>
           {capitalize(module.name)}
         </h2>
         <canvas {...attrs} height="50" width="120" />
