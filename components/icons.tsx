@@ -4,13 +4,16 @@ import { h, tw } from "../deps.ts";
 
 export interface ArrowForwardOptions {
   size?: string;
+  class?: string;
 }
 
-export function ArrowForward({ size = "1.5rem" }: ArrowForwardOptions) {
+export function ArrowForward(
+  { size = "1.5rem", class: className = "" }: ArrowForwardOptions,
+) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      class={tw`ml-2`}
+      class={`${className} ${tw`ml-2`}`}
       height={size}
       viewBox="0 0 24 24"
       width={size}

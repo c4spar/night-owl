@@ -78,6 +78,8 @@ setup({
       "top-bottom": "top-bottom .2s forwards",
       "slide-in": "slide-in .3s forwards",
       "fade-in": "fade-in .3s ease-out",
+      "bounce-right":
+        "bounce-right 1s alternate cubic-bezier(.5,0,1,.5) infinite",
     },
     keyframes: {
       "left-right-heading": leftRight("18rem"),
@@ -100,6 +102,14 @@ setup({
         },
         "100%": {
           opacity: 1,
+        },
+      },
+      "bounce-right": {
+        from: {
+          transform: "translate3d(0, 0, 0)",
+        },
+        to: {
+          transform: "translate3d(.4rem, 0, 0)",
         },
       },
     },

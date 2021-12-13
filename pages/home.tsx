@@ -89,7 +89,7 @@ export class HomePage extends Component<HomePageOptions> {
                    opacity-0 transform-gpu animate-slide-in`}
               >
                 Get Started
-                <ArrowForward />
+                <ArrowForward class={tw`transform-gpu animate-bounce-right`} />
               </PrimaryButton>
               <SecondaryButton
                 href="/docs"
