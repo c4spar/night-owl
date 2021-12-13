@@ -5,7 +5,7 @@ interface IndexOptions {
   styles: string;
 }
 
-export function Index({ body, head, footer, styles }: IndexOptions) {
+export function Document({ body, head, footer, styles }: IndexOptions) {
   return (`
     <!DOCTYPE html>
     <html lang="en" class="dark">

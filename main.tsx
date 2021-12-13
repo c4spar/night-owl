@@ -4,57 +4,11 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { Header } from "./components/header.tsx";
-import { Router } from "./components/router.tsx";
-import { Route } from "./components/route.tsx";
 import { blue, getStyleTag, h, Helmet, renderSSR, serve, tw } from "./deps.ts";
 import { sheet } from "./lib/sheet.ts";
 import { Example, FileOptions, getExamples, readDir } from "./lib/utils.ts";
-import { BenchmarksPage } from "./pages/becnhmarks.tsx";
-import { HomePage } from "./pages/home.tsx";
-import { Index } from "./pages/index.ts";
-
-interface AppOptions {
-  route: string;
-  data: Array<FileOptions>;
-  examples: Array<Example>;
-}
-
-function App({ data, route, examples }: AppOptions) {
-  return (
-    <div
-      class={tw`min-h-full overflow-hidden
-        text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800`}
-    >
-      <div
-        class={tw`fixed w-[200%] h-[200%]
-          bg-black bg-opacity-5 dark:bg-opacity-10
-          rotate-[19deg] -translate-y-[94%]`}
-      />
-      <div
-        class={tw`fixed w-[200%] h-[200%]
-          bg-black bg-opacity-5 dark:bg-opacity-10
-          rotate-[19deg] -translate-x-[200%] md:-translate-x-[94%] -translate-y-[50%]`}
-      />
-      <div class={tw`relative`}>
-        <Header />
-        <main>
-          <Router route={route}>
-            <Route path="/">
-              <HomePage examples={examples} />
-            </Route>
-            <Route path="/docs">
-              <span>Documentation: Work in progress...</span>
-            </Route>
-            <Route path="/benchmarks">
-              <BenchmarksPage data={data} />
-            </Route>
-          </Router>
-        </main>
-      </div>
-    </div>
-  );
-}
+import { App } from "./layout/app.tsx";
+import { Document } from "./layout/document.ts";
 
 const examples: Array<Example> = await getExamples();
 const data: Array<FileOptions> = await readDir("data");
@@ -80,7 +34,7 @@ await serve(async (req) => {
       );
       const { body, head, footer } = Helmet.SSR(app);
       const styles = getStyleTag(sheet);
-      const html = Index({ body, head, footer, styles });
+      const html = Document({ body, head, footer, styles });
 
       return new Response(
         html,
