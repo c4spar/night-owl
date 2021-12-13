@@ -1,6 +1,7 @@
 /** @jsx h */
 
-import { Component, Fragment, h, render } from "../deps.ts";
+import { Component, h, render, tw } from "../deps.ts";
+import { AnimatedText } from "./animated_text.tsx";
 
 interface RouterOptions {
   route: string;
@@ -20,6 +21,13 @@ export class Router extends Component<RouterOptions> {
         return render(child);
       }
     }
-    return <div>404 Not Found!</div>;
+    return (
+      <AnimatedText
+        speed={6}
+        class={tw`container mx-auto font-nerd text-xl text-center`}
+      >
+        Oops, you have requested a site that does not exist!
+      </AnimatedText>
+    );
   }
 }
