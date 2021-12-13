@@ -18,6 +18,7 @@ export function Document({ body, head, footer, styles }: IndexOptions) {
       </head>
       <body>
         ${body}
+        <script type="application/javascript" src="main.js"></script>
         ${footer.join("\n")}
       </body>
     </html>

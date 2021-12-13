@@ -18,7 +18,7 @@ export function App({ data, route, examples }: AppOptions) {
   return (
     <div
       class={tw`min-h-full overflow-hidden
-        text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800`}
+        text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 transform-gpu duration-500 ease-out`}
     >
       <div
         class={tw`fixed w-[200%] h-[200%]

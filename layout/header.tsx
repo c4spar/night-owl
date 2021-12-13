@@ -1,5 +1,6 @@
 /** @jsx h */
 
+import { DarkModeSwitch } from "../components/dark_mode_switch.tsx";
 import { Component, h, tw } from "../deps.ts";
 
 interface LinkOptions {
@@ -30,6 +31,7 @@ export class Header extends Component {
           <Link label="Documentation" href="/docs" />
           <Link label="Benchmarks" href="/benchmarks" />
           <Link label="Github" href="https://github.com/c4spar/deno-cliffy" />
+          <DarkModeSwitch />
         </nav>
       </header>
     );
