@@ -41,7 +41,7 @@ await serve((req) => {
         req,
       );
 
-    case "/fonts-fonts.css":
+    case "/google/fonts.css":
       return fromRemoteCache(
         "https://fonts.googleapis.com/css2?family=Fredoka+One&family=Titan+One&family=Varela+Round&display=swap",
         "text/css",

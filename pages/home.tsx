@@ -25,7 +25,7 @@ export class HomePage extends Component<HomePageOptions> {
       <Fragment>
         <Helmet>
           <title>Cliffy</title>
-          <link rel="stylesheet" href="fonts-fonts.css" />
+          <link rel="stylesheet" href="google/fonts.css" />
           <link rel="stylesheet" href="firacode-nerd-font.css" />
         </Helmet>
         <h1>
