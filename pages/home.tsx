@@ -25,16 +25,8 @@ export class HomePage extends Component<HomePageOptions> {
       <Fragment>
         <Helmet>
           <title>Cliffy</title>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Titan+One&family=Varela+Round&display=swap"
-            rel="stylesheet"
-          />
-          <link
-            rel="stylesheet"
-            href="https://mshaugh.github.io/nerdfont-webfonts/build/firacode-nerd-font.css"
-          />
+          <link rel="stylesheet" href="fonts-fonts.css" />
+          <link rel="stylesheet" href="firacode-nerd-font.css" />
         </Helmet>
         <h1>
           <AnimatedText

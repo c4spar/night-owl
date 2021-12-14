@@ -21,12 +21,8 @@ export class Editor extends Component<EditorOptions> {
     return (
       <Fragment>
         <Helmet>
-          {/*<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/night-owl.min.css" />*/}
-          <link
-            rel="stylesheet"
-            href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/an-old-hope.min.css"
-          />
-          <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js" />
+          <link rel="stylesheet" href="an-old-hope.min.css" />
+          <script type="application/javascript" src="highlight.min.js" />
           <script>hljs.highlightAll();</script>
         </Helmet>
         <div

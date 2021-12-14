@@ -6,4 +6,4 @@ lint:
 fmt:
 	deno fmt --ignore=data
 run:
-	deno run --watch --allow-net=:8000 --allow-read=data,examples,client main.tsx
+	deno run --watch --allow-net=:8000,code.iconify.design,cdnjs.cloudflare.com,fonts.googleapis.com,mshaugh.github.io --allow-read=data,examples,client main.tsx

@@ -20,7 +20,7 @@ export function DarkModeSwitch() {
         </style>
       </Helmet>
       <Helmet footer>
-        <script src="https://code.iconify.design/2/2.1.0/iconify.min.js" />
+        <script src="iconify.min.js" />
         <script type="application/javascript">
           {`
           function toggleDarkMode() {
