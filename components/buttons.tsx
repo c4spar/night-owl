@@ -1,13 +1,11 @@
 /** @jsx h */
 
 import { h, render, tw } from "../deps.ts";
-
-type Comp = { component: unknown; props: unknown };
-type CompDef = string | Comp | Array<Comp | string>;
+import { Children } from "../lib/types.ts";
 
 export interface ButtonOptions {
   href?: string;
-  children: CompDef;
+  children: Children;
   class?: string;
   style?: string;
 }

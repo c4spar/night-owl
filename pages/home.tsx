@@ -4,14 +4,15 @@ import { PrimaryButton, SecondaryButton } from "../components/buttons.tsx";
 import { Editor } from "../components/editor.tsx";
 import { ArrowForward } from "../components/icons.tsx";
 import { AnimatedText } from "../components/animated_text.tsx";
-import { Component, Fragment, h, Helmet, render, tw } from "../deps.ts";
+import { Page } from "../components/page.tsx";
+import { Fragment, h, Helmet, tw } from "../deps.ts";
 import { Example } from "../lib/utils.ts";
 
 interface HomePageOptions {
   examples: Array<Example>;
 }
 
-export class HomePage extends Component<HomePageOptions> {
+export class HomePage extends Page<HomePageOptions> {
   label(label: string, size: number) {
     return (
       <span class={tw`text-xl leading-6 sm:text-2xl`}>
