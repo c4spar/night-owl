@@ -4,6 +4,10 @@ import { sheet } from "./sheet.ts";
 
 const cache: Record<string, string> = {};
 
+function isCacheEnabled(): boolean {
+  return Deno.env.get("NO_CACHE")?.toLowerCase() !== "true";
+}
+
 export async function fromLocalCache(
   path: string,
   contentType: string,
@@ -35,7 +39,7 @@ export function fromSsrCache(
 }
 
 async function getLocalFile(path: string): Promise<string> {
-  if (!cache[path]) {
+  if (!isCacheEnabled() || !cache[path]) {
     cache[path] = await Deno.readTextFile(path);
   }
   return cache[path];
@@ -45,7 +49,7 @@ async function getRemoteFile(
   url: string,
   req: Request,
 ): Promise<string> {
-  if (!cache[url]) {
+  if (!isCacheEnabled() || !cache[url]) {
     cache[url] = await fetch(url, {
       headers: req.headers,
       method: req.method,
@@ -56,7 +60,7 @@ async function getRemoteFile(
 }
 
 function getSsr(app: unknown, req: Request): string {
-  if (!cache[req.url]) {
+  if (!isCacheEnabled() || !cache[req.url]) {
     sheet.reset();
     const html = renderSSR(app);
     const { body, head, footer } = Helmet.SSR(html);
