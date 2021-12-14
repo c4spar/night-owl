@@ -6,11 +6,25 @@
 
 import { blue, h, serve } from "./deps.ts";
 import { fromLocalCache, fromRemoteCache, fromSsrCache } from "./lib/cache.ts";
-import { Example, FileOptions, getExamples, readDir } from "./lib/utils.ts";
+import { Example, FileOptions, getExample } from "./lib/utils.ts";
 import { App } from "./layout/app.tsx";
 
-const examples: Array<Example> = await getExamples();
-const data: Array<FileOptions> = await readDir("data");
+// const examples: Array<Example> = await getExamples();
+const examples: Array<Example> = await Promise.all([
+  getExample("examples/ansi.ts"),
+  getExample("examples/command.ts"),
+  getExample("examples/flags.ts"),
+  getExample("examples/keycode.ts"),
+  getExample("examples/keypress.ts"),
+  getExample("examples/prompt.ts"),
+  getExample("examples/table.ts"),
+]);
+
+// const data: Array<FileOptions> = await readDir("data");
+const data: Array<FileOptions> = await Promise.all([
+  getExample("data/benchmarks.json"),
+  getExample("data/benchmarks_dev.json"),
+]);
 
 console.log(`Listening on ${blue("http://localhost:8000")}`);
 
@@ -62,7 +76,7 @@ await serve((req) => {
 
     default:
       return fromSsrCache(
-        "/",
+        req.url,
         <App route={route} examples={examples} data={data} />,
       );
   }

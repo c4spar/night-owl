@@ -1,3 +1,5 @@
+import { basename } from "../deps.ts";
+
 export function stringToColor(str: string): string {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -42,20 +44,36 @@ export async function readDir<T extends FileOptions>(
   const examples: Array<T> = [];
   for await (const file of Deno.readDir(path)) {
     if (file.isFile) {
-      const opts: FileOptions = {
-        fileName: file.name,
-        name: file.name.replace(/\.ts$/, ""),
-        content: await Deno.readTextFile(`${path}/${file.name}`),
-      };
-      examples.push(fn?.(opts) ?? opts as T);
+      examples.push(await readFile(`${path}/${file.name}`, fn));
     }
   }
 
   return examples.sort(sortByKey("name"));
 }
 
+export async function readFile<T extends FileOptions>(
+  path: string,
+  fn?: ReadDirCallback<T>,
+): Promise<T> {
+  const opts: FileOptions = {
+    fileName: basename(path),
+    name: basename(path).replace(/\.ts$/, ""),
+    content: await Deno.readTextFile(path),
+  };
+
+  return fn?.(opts) ?? opts as T;
+}
+
 export interface Example extends FileOptions {
   shebang: string;
+}
+
+export function getExample(path: string): Promise<Example> {
+  return readFile<Example>(path, (file) => ({
+    ...file,
+    content: file.content.replace(/#!.+\n+/, ""),
+    shebang: file.content.split("\n")[0],
+  }));
 }
 
 export function getExamples(): Promise<Array<Example>> {

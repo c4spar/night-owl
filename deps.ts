@@ -1,6 +1,7 @@
 /** std */
 export { serve } from "https://deno.land/std@0.117.0/http/server.ts";
 export { blue } from "https://deno.land/std@0.117.0/fmt/colors.ts";
+export { basename } from "https://deno.land/std@0.117.0/path/mod.ts";
 
 /** nano_jsx */
 export { Helmet } from "https://deno.land/x/nano_jsx@v0.0.26/components/helmet.ts";
