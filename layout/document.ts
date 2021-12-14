@@ -12,13 +12,13 @@ export function Document({ body, head, footer, styles }: IndexOptions) {
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="styles.css" />
+        <link rel="stylesheet" href="/styles.css" />
         ${styles}
         ${head.join("\n")}
       </head>
       <body>
         ${body}
-        <script type="application/javascript" src="main.js"></script>
+        <script type="application/javascript" src="/main.js"></script>
         ${footer.join("\n")}
       </body>
     </html>
