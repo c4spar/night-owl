@@ -23,10 +23,14 @@ export async function fromRemoteCache(
   });
 }
 
-export function fromSsrCache(route: string, app: unknown): Response {
+export function fromSsrCache(
+  app: unknown,
+  contentType: string,
+  req: Request,
+): Response {
   return new Response(
-    getSsr(route, app),
-    { headers: { "content-type": "text/html" } },
+    getSsr(app, req),
+    { headers: { "content-type": contentType } },
   );
 }
 
@@ -51,13 +55,13 @@ async function getRemoteFile(
   return cache[url];
 }
 
-function getSsr(route: string, app: unknown): string {
-  if (!cache[route]) {
+function getSsr(app: unknown, req: Request): string {
+  if (!cache[req.url]) {
     sheet.reset();
     const html = renderSSR(app);
     const { body, head, footer } = Helmet.SSR(html);
     const styles = getStyleTag(sheet);
-    cache[route] = Document({ body, head, footer, styles });
+    cache[req.url] = Document({ body, head, footer, styles });
   }
-  return cache[route];
+  return cache[req.url];
 }

@@ -76,8 +76,9 @@ await serve((req) => {
 
     default:
       return fromSsrCache(
-        req.url,
         <App route={route} examples={examples} data={data} />,
+        "text/html",
+        req,
       );
   }
 });
