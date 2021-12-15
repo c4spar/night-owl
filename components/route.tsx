@@ -7,8 +7,9 @@ import { Page, PageOptions } from "./page.tsx";
 type PageComponent = { component: typeof Page; props: PageOptions };
 
 export interface RouteOptions {
-  path: string;
+  path: string | RegExp;
   _route?: string;
+  _path?: string;
   partialMatch?: boolean;
   children: Array<ChildComponent & PageComponent>;
 }
@@ -17,7 +18,7 @@ export class Route extends Component<RouteOptions> {
   render() {
     for (const page of this.props.children) {
       if (isPageChild(page)) {
-        page.props._prefix = this.props.path;
+        page.props._prefix = this.props._path;
         page.props._route = this.props._route;
       }
     }

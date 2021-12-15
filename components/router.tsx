@@ -13,14 +13,25 @@ export class Router extends Component<RouterOptions> {
   render() {
     this.props.route = this.props.route.replace(/\/+$/, "") || "/";
     for (const route of this.props.children) {
-      const matched = route.props.partialMatch
-        ? this.props.route.startsWith(route.props.path)
-        : this.props.route === route.props.path;
+      let path: string | undefined;
 
-      if (matched) {
-        route.props._route = this.props.route.substr(
-          route.props.path.length,
-        );
+      if (route.props.path instanceof RegExp) {
+        const matched = this.props.route.match(route.props.path);
+        if (matched) {
+          path = matched[0];
+        }
+      } else {
+        const matched = route.props.partialMatch
+          ? this.props.route.startsWith(route.props.path)
+          : this.props.route === route.props.path;
+        if (matched) {
+          path = route.props.path;
+        }
+      }
+
+      if (path) {
+        route.props._route = this.props.route.substr(path.length);
+        route.props._path = path;
 
         return render(route);
       }
