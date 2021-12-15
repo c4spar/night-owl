@@ -1,14 +1,15 @@
 /** @jsx h */
 
 import { Component, h, red, render, tw } from "../deps.ts";
+import { joinUrl } from "../lib/utils.ts";
 import { AnimatedText } from "./animated_text.tsx";
 import { Route, RouteOptions } from "./route.tsx";
 
 type RouterChild = { component: typeof Route; props: RouteOptions };
 
 interface RouterOptions {
-  throw?: boolean;
-  route: string;
+  url: string;
+  prefix?: string;
   children: Array<RouterChild>;
 }
 
@@ -19,8 +20,22 @@ class RouteNotFoundError extends Error {
 }
 
 export class Router extends Component<RouterOptions> {
+  #url: URL;
+  #path: string;
+
+  constructor(props: RouterOptions) {
+    super(props);
+
+    this.#url = new URL(this.props.url);
+    this.#path = (
+      this.props.prefix && this.props.prefix !== "/"
+        ? this.#url.pathname.replace(new RegExp(`^${this.props.prefix}`), "")
+        : this.#url.pathname
+    ) || "/";
+  }
+
   render() {
-    this.props.route = this.props.route.replace(/\/+$/, "") || "/";
+    this.props.url = this.props.url.replace(/\/+$/, "") || "/";
 
     const route = this.#matchRoute();
 
@@ -44,15 +59,15 @@ export class Router extends Component<RouterOptions> {
       let path: string | undefined;
 
       if (route.props.path instanceof RegExp) {
-        const matched = this.props.route.match(route.props.path);
+        const matched = this.#path.match(route.props.path);
 
         if (matched) {
           path = matched[0];
         }
       } else {
         const matched = route.props.partialMatch
-          ? this.props.route.startsWith(route.props.path)
-          : this.props.route === route.props.path;
+          ? this.#path.startsWith(route.props.path)
+          : this.#path === route.props.path;
 
         if (matched) {
           path = route.props.path;
@@ -60,8 +75,9 @@ export class Router extends Component<RouterOptions> {
       }
 
       if (path) {
-        route.props._route = this.props.route.substr(path.length);
-        route.props._path = path;
+        route.props._path = this.#path.substr(path.length) || "/";
+        route.props._prefix = joinUrl(this.props.prefix ?? "/", path);
+        route.props._url = this.props.url;
         matchedRoute = route;
 
         break;
@@ -69,14 +85,14 @@ export class Router extends Component<RouterOptions> {
     }
 
     if (!matchedRoute) {
-      console.error(red(`[GET]`), "Route not found:", this.props.route);
+      console.error(red(`[GET]`), "Route not found:", this.#path);
     }
 
     return matchedRoute;
   }
 
   #notFound() {
-    if (this.props.throw) {
+    if (this.props.prefix) {
       throw new RouteNotFoundError();
     }
 

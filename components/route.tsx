@@ -8,8 +8,9 @@ type PageComponent = { component: typeof Page; props: PageOptions };
 
 export interface RouteOptions {
   path: string | RegExp;
-  _route?: string;
+  _prefix?: string;
   _path?: string;
+  _url?: string;
   partialMatch?: boolean;
   children: Array<ChildComponent & PageComponent>;
 }
@@ -18,8 +19,9 @@ export class Route extends Component<RouteOptions> {
   render() {
     for (const page of this.props.children) {
       if (isPageChild(page)) {
-        page.props._prefix = this.props._path;
-        page.props._route = this.props._route;
+        page.props._prefix = this.props._prefix || "/";
+        page.props._path = this.props._path || "/";
+        page.props._url = this.props._url || "/";
       }
     }
 
@@ -27,8 +29,7 @@ export class Route extends Component<RouteOptions> {
   }
 }
 
-function isPageChild(
-  child: ChildComponent & PageComponent,
-): child is PageComponent {
-  return child.component.constructor === Page.constructor;
+function isPageChild(child: unknown): child is PageComponent {
+  // deno-lint-ignore no-explicit-any
+  return (child as any)?.component?.constructor === Page.constructor;
 }

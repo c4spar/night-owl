@@ -83,3 +83,15 @@ export function getExamples(): Promise<Array<Example>> {
     shebang: file.content.split("\n")[0],
   }));
 }
+
+export function joinUrl(...path: Array<string>) {
+  let url = "";
+  for (const part of path) {
+    if (part) {
+      url = url.replace(/\/$/, "") +
+        "/" +
+        part.replace(/^\//, "");
+    }
+  }
+  return url.replace(/\/$/, "") || "/";
+}

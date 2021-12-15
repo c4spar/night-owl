@@ -9,12 +9,12 @@ import { BenchmarksPage } from "../pages/becnhmarks.tsx";
 import { HomePage } from "../pages/home.tsx";
 
 interface AppOptions {
-  route: string;
+  url: string;
   data: Array<FileOptions>;
   examples: Array<Example>;
 }
 
-export function App({ data, route, examples }: AppOptions) {
+export function App({ data, url, examples }: AppOptions) {
   return (
     <div
       class={tw`min-h-full overflow-hidden
@@ -33,7 +33,7 @@ export function App({ data, route, examples }: AppOptions) {
       <div class={tw`relative`}>
         <Header />
         <main>
-          <Router route={route}>
+          <Router url={url}>
             <Route path="/">
               <HomePage examples={examples} />
             </Route>
