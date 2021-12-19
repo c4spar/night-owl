@@ -4,7 +4,6 @@ import { Component, Fragment, h, Helmet, tw } from "../deps.ts";
 import { Code } from "./code.tsx";
 
 export interface TabOptions {
-  name: string;
   fileName: string;
   content: string;
   shebang: string;
