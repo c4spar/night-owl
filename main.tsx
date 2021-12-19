@@ -5,7 +5,7 @@
 /// <reference lib="deno.ns" />
 
 import { blue, h, serve } from "./deps.ts";
-import { fromLocalCache, fromRemoteCache, fromSsrCache } from "./lib/cache.ts";
+import { fromLocalCache, fromRemoteCache, fromSsrCache } from "./lib/request.ts";
 import { getVersions } from "./lib/git.ts";
 import {
   Example,
