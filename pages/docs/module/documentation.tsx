@@ -3,6 +3,7 @@
 import { Markdown } from "../../../components/markdown.tsx";
 import { RouteNotFoundError } from "../../../components/router.tsx";
 import { Sidebar } from "../../../components/sidebar.tsx.tsx";
+import { VersionSelection } from "../../../components/version_selection.tsx";
 import { Fragment, h, Helmet, tw } from "../../../deps.ts";
 import { Page } from "../../../components/page.tsx";
 import { FileOptions } from "../../../lib/resource.ts";
@@ -74,6 +75,11 @@ export class ModuleDocumentationPage extends Page<ModuleDocumentationPageOptions
               position="right"
               class={tw`${transformGpu} hidden xl:block`}
             >
+              <VersionSelection
+                class={tw`mb-3`}
+                versions={this.props.versions}
+                selectedVersion={this.props.selectedVersion}
+              />
               <SecondaryDocumentationNavigation file={file} />
             </Sidebar>
           </div>
