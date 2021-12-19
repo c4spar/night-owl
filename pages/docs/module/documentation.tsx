@@ -20,7 +20,8 @@ export interface ModuleDocumentationPageOptions {
   docs: Array<FileOptions>;
 }
 
-export class ModuleDocumentationPage extends Page<ModuleDocumentationPageOptions> {
+export class ModuleDocumentationPage
+  extends Page<ModuleDocumentationPageOptions> {
   render() {
     const prefix = this.prefix.replace("/" + this.props.selectedVersion, "");
     const route = prefix + (this.path === "/" ? "/getting-started" : this.path);
