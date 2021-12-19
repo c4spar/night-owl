@@ -1,6 +1,7 @@
 /** @jsx h */
 
 import { Component, h, tw } from "../deps.ts";
+import { syntaxHighlighting } from "../lib/styles.ts";
 
 export interface CodeOptions {
   id?: string;
@@ -19,10 +20,10 @@ export class Code extends Component<CodeOptions> {
           this.props.rounded ? "rounded-xl shadow-xl overflow-y-auto" : ""
         }`} ${this.props.class}`}
       >
-        <pre>
+        <pre class={tw`${syntaxHighlighting}`}>
           <code
             class={`${this.props.lang ? `language-${this.props.lang}` : ""} ${tw
-              `!font-mono !py-3 !text-sm overflow-visible`}`}
+              `!py-3 !text-sm overflow-visible`}`}
           >
             {this.props.code.trim()}
           </code>

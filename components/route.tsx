@@ -7,7 +7,7 @@ import { Page, PageOptions } from "./page.tsx";
 type PageComponent = { component: typeof Page; props: PageOptions };
 
 export interface RouteOptions {
-  path: string | RegExp;
+  path: string | RegExp | Array<string | RegExp>;
   _prefix?: string;
   _path?: string;
   _url?: string;

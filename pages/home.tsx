@@ -5,53 +5,43 @@ import { Editor } from "../components/editor.tsx";
 import { ArrowForward } from "../components/icons.tsx";
 import { AnimatedText } from "../components/animated_text.tsx";
 import { Page } from "../components/page.tsx";
-import { Fragment, h, Helmet, tw } from "../deps.ts";
-import { Example } from "../lib/utils.ts";
+import { h, Helmet, tw } from "../deps.ts";
+import { Example } from "../lib/resource.ts";
+import { transformGpu } from "../lib/styles.ts";
 
 interface HomePageOptions {
   examples: Array<Example>;
 }
 
 export class HomePage extends Page<HomePageOptions> {
-  label(label: string, size: number) {
-    return (
-      <span class={tw`text-xl leading-6 sm:text-2xl`}>
-        {label}
-      </span>
-    );
-  }
-
   render() {
     return (
-      <Fragment>
+      <div css={tw`${transformGpu}`}>
         <Helmet>
-          <title>Cliffy</title>
-          <link rel="stylesheet" href="/google/fonts.css" />
-          <link rel="stylesheet" href="/firacode-nerd-font.css" />
+          <title>Cliffy - Home</title>
         </Helmet>
-        <h1>
-          <AnimatedText
-            speed={30}
-            delay={200}
-            animation="animate-left-right"
-            // bg-black bg-opacity-5
-            // dark:bg-white dark:bg-opacity-5
-            class={tw`font-display font-bold text-center
-                 py-8 xl:mb-8
-                 text-[5rem] leading-[4rem]
-                 sm:text-[10rem] sm:leading-[8rem]
-                 lg:text-[14rem] lg:leading-[10rem]
-                 xl:text-[18rem] xl:leading-[14rem]`}
-          >
-            CLIFFY
-          </AnimatedText>
-        </h1>
+
+        <AnimatedText
+          speed={30}
+          delay={200}
+          animation="animate-left-right"
+          class={tw`font-display font-bold text-center
+            my-12 lg:mb-8 lg:mt-12 xl:my-12
+            text-[5rem] leading-[4rem]
+            sm:text-[10rem] sm:leading-[8rem]
+            lg:text-[14rem] lg:leading-[10rem]
+            xl:text-[18rem] xl:leading-[14rem]`}
+        >
+          CLIFFY
+        </AnimatedText>
 
         <div
-          class={tw
-            `container mx-auto p-4 xl:flex xl:items-center xl:space-x-16`}
+          class={tw`container mx-auto xl:flex xl:items-center xl:space-x-16`}
         >
-          <div class={tw`flex-1 space-y-16 lg:pt-10 xl:pt-0 pb-12 xl:pb-20`}>
+          <div
+            class={tw
+              `flex-1 space-y-12 xl:space-y-16 lg:pt-10 xl:pt-0 pb-12 xl:pb-20`}
+          >
             <AnimatedText
               delay={700}
               speed={2}
@@ -99,7 +89,7 @@ export class HomePage extends Page<HomePageOptions> {
             <Editor tabs={this.props.examples} />
           </div>
         </div>
-      </Fragment>
+      </div>
     );
   }
 }

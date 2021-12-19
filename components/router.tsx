@@ -1,6 +1,6 @@
 /** @jsx h */
 
-import { Component, h, red, render, tw } from "../deps.ts";
+import { Component, Fragment, h, red, render, tw } from "../deps.ts";
 import { joinUrl } from "../lib/utils.ts";
 import { AnimatedText } from "./animated_text.tsx";
 import { Route, RouteOptions } from "./route.tsx";
@@ -13,7 +13,7 @@ interface RouterOptions {
   children: Array<RouterChild>;
 }
 
-class RouteNotFoundError extends Error {
+export class RouteNotFoundError extends Error {
   constructor() {
     super("Route not found.");
   }
@@ -25,8 +25,7 @@ export class Router extends Component<RouterOptions> {
 
   constructor(props: RouterOptions) {
     super(props);
-
-    this.#url = new URL(this.props.url);
+    this.#url = new URL(this.props.url.replace(/\/+$/, ""));
     this.#path = (
       this.props.prefix && this.props.prefix !== "/"
         ? this.#url.pathname.replace(new RegExp(`^${this.props.prefix}`), "")
@@ -35,9 +34,7 @@ export class Router extends Component<RouterOptions> {
   }
 
   render() {
-    this.props.url = this.props.url.replace(/\/+$/, "") || "/";
-
-    const route = this.#matchRoute();
+    const route = this.#match();
 
     if (route) {
       try {
@@ -52,40 +49,53 @@ export class Router extends Component<RouterOptions> {
     return this.#notFound();
   }
 
-  #matchRoute(): RouterChild | undefined {
-    let matchedRoute: RouterChild | undefined;
+  #match(): RouterChild | undefined {
+    const matched: RouterChild | undefined = this.props.children.find(
+      (route) => {
+        const routes = Array.isArray(route.props.path)
+          ? route.props.path
+          : [route.props.path];
 
-    for (const route of this.props.children) {
-      let path: string | undefined;
+        return routes.find((path) => this.#matchRoute(route, path));
+      },
+    );
 
-      if (route.props.path instanceof RegExp) {
-        const matched = this.#path.match(route.props.path);
+    if (!matched) {
+      console.error(red(`[GET]`), "Route not found:", this.#path);
+    }
 
-        if (matched) {
-          path = matched[0];
-        }
-      } else {
-        const matched = route.props.partialMatch
-          ? this.#path.startsWith(route.props.path)
-          : this.#path === route.props.path;
+    return matched;
+  }
 
-        if (matched) {
-          path = route.props.path;
-        }
+  #matchRoute(
+    route: RouterChild,
+    routePath: string | RegExp,
+  ): RouterChild | undefined {
+    let matchedRoute: RouterChild | undefined = undefined;
+    let path: string | undefined;
+
+    if (routePath instanceof RegExp) {
+      const matched = this.#path.match(routePath);
+
+      if (matched) {
+        path = matched[0];
       }
+    } else {
+      const matched = route.props.partialMatch
+        ? this.#path.startsWith(routePath)
+        : this.#path === routePath;
 
-      if (path) {
-        route.props._path = this.#path.substr(path.length) || "/";
-        route.props._prefix = joinUrl(this.props.prefix ?? "/", path);
-        route.props._url = this.props.url;
-        matchedRoute = route;
-
-        break;
+      if (matched) {
+        path = routePath;
       }
     }
 
-    if (!matchedRoute) {
-      console.error(red(`[GET]`), "Route not found:", this.#path);
+    if (path) {
+      path = path.replace(/\/$/, "") || "/";
+      route.props._path = this.#path.substr(path.length) || "/";
+      route.props._prefix = joinUrl(this.props.prefix ?? "/", path);
+      route.props._url = this.props.url;
+      matchedRoute = route;
     }
 
     return matchedRoute;
@@ -97,12 +107,15 @@ export class Router extends Component<RouterOptions> {
     }
 
     return (
-      <AnimatedText
-        speed={6}
-        class={tw`container mx-auto font-nerd text-xl text-center`}
-      >
-        Oops, you have requested a site that does not exist!
-      </AnimatedText>
+      <Fragment>
+        <AnimatedText
+          speed={6}
+          class={tw
+            `container mx-auto p-5 mt-[10%] font-nerd text-xl text-center`}
+        >
+          Oops, you have requested a site that does not exist!
+        </AnimatedText>
+      </Fragment>
     );
   }
 }

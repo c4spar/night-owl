@@ -1,7 +1,7 @@
 /** std */
 export { serve } from "https://deno.land/std@0.117.0/http/server.ts";
 export { blue, red } from "https://deno.land/std@0.117.0/fmt/colors.ts";
-export { basename } from "https://deno.land/std@0.117.0/path/mod.ts";
+export { basename, dirname } from "https://deno.land/std@0.117.0/path/mod.ts";
 
 /** nano_jsx */
 export { Helmet } from "https://deno.land/x/nano_jsx@v0.0.26/components/helmet.ts";
@@ -20,6 +20,7 @@ export {
 export {
   apply,
   setup,
+  strict,
   tw,
 } from "https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=imports/optimized/twind.js";
 
@@ -42,3 +43,8 @@ export {
 
 // @deno-types=https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=types/colors/colors.d.ts
 export * as twColors from "https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=imports/optimized/twind/colors.js";
+
+import * as comrak from "https://deno.land/x/comrak@0.1.1/mod.ts";
+
+await comrak.init();
+export { comrak };

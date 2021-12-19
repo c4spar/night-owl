@@ -1,6 +1,7 @@
 /** @jsx h */
 
 import { Component, h } from "../deps.ts";
+import { joinUrl } from "../lib/utils.ts";
 
 export interface PageOptions {
   _prefix?: string;
@@ -19,11 +20,6 @@ export class Page<T = unknown, S = unknown>
     this.#prefix = props._prefix || "/";
     this.#path = props._path || "/";
     this.#url = props._url || "/";
-    console.log("Render page:", this.constructor.name, {
-      prefix: this.prefix,
-      path: this.path,
-      url: this.url,
-    });
   }
 
   get prefix(): string {
@@ -32,6 +28,10 @@ export class Page<T = unknown, S = unknown>
 
   get path(): string {
     return this.#path;
+  }
+
+  get route(): string {
+    return joinUrl(this.#prefix, this.#path);
   }
 
   get url(): string {

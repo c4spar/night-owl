@@ -15,13 +15,12 @@ export interface EditorOptions {
 }
 
 export class Editor extends Component<EditorOptions> {
-  #selectedExample = "command";
+  #selectedExample = "command.ts";
 
   render() {
     return (
       <Fragment>
         <Helmet>
-          <link rel="stylesheet" href="/an-old-hope.min.css" />
           <script type="application/javascript" src="/highlight.min.js" />
           <script>hljs.highlightAll();</script>
         </Helmet>
@@ -36,31 +35,35 @@ export class Editor extends Component<EditorOptions> {
             {this.props.tabs.map((tab) =>
               this.#renderTabButton(
                 tab,
-                tab.name === this.#selectedExample,
+                tab.fileName === this.#selectedExample,
               )
             )}
           </div>
           {this.props.tabs.map((tab) =>
             this.#renderTabContent(
               tab,
-              tab.name === this.#selectedExample,
+              tab.fileName === this.#selectedExample,
             )
           )}
         </div>
         {this.props.tabs.map((tab) =>
           this.#renderTabExample(
             tab,
-            tab.name === this.#selectedExample,
+            tab.fileName === this.#selectedExample,
           )
         )}
       </Fragment>
     );
   }
 
+  #getId(tab: TabOptions, prefix: string) {
+    return `${prefix}-${tab.fileName}`;
+  }
+
   #renderTabButton(tab: TabOptions, selected?: boolean) {
     return (
       <button
-        id={`tab-button-${tab.name}`}
+        id={this.#getId(tab, "tab-button")}
         class={`tab-button ${tw`py-4 px-6 text-gray-200 font-light border-b-2 ${
           selected ? "border-indigo-500" : "border-gray-900"
         } focus:outline-none`}`}
@@ -72,9 +75,11 @@ export class Editor extends Component<EditorOptions> {
 
   #renderTabContent(tab: TabOptions, selected?: boolean) {
     const script = `{
-      document.getElementById("tab-button-${tab.name}").addEventListener("click", function () {
+      document.getElementById("${
+      this.#getId(tab, "tab-button")
+    }").addEventListener("click", function () {
         document.querySelectorAll(".tab-button").forEach(function (element) {
-          if (element.id === "tab-button-${tab.name}") {
+          if (element.id === "${this.#getId(tab, "tab-button")}") {
             element.classList.add("border-indigo-500");
             element.classList.remove("border-gray-900");
           } else {
@@ -83,9 +88,13 @@ export class Editor extends Component<EditorOptions> {
           }
         });
         document.querySelectorAll(".tab-content").forEach(element => element.classList.add("hidden"));
-        document.getElementById("tab-content-${tab.name}").classList.remove("hidden");
+        document.getElementById("${
+      this.#getId(tab, "tab-content")
+    }").classList.remove("hidden");
         document.querySelectorAll(".tab-example").forEach(element => element.classList.add("hidden"));
-        document.getElementById("tab-example-${tab.name}").classList.remove("hidden");
+        document.getElementById("${
+      this.#getId(tab, "tab-example")
+    }").classList.remove("hidden");
       });
     }`;
     return (
@@ -94,7 +103,7 @@ export class Editor extends Component<EditorOptions> {
           <script>{script}</script>
         </Helmet>
         <div
-          id={`tab-content-${tab.name}`}
+          id={this.#getId(tab, "tab-content")}
           class={`tab-content ${tw`flex overflow-auto h-[42rem] ${
             selected ? "" : "hidden"
           }`}`}
@@ -117,7 +126,7 @@ export class Editor extends Component<EditorOptions> {
     const code = tab.shebang.replace(/^#!\/usr\/bin\/env -S/, "$") + " " + url;
     return (
       <Code
-        id={`tab-example-${tab.name}`}
+        id={this.#getId(tab, "tab-example")}
         class={`tab-example ${tw`${selected ? "" : "hidden"}`}`}
         code={code}
         lang="shell"

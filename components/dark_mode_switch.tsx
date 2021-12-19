@@ -1,7 +1,8 @@
 /** @jsx h */
 import { Fragment, h, Helmet, tw } from "../deps.ts";
+import { transformGpu } from "../lib/styles.ts";
 
-export function DarkModeSwitch() {
+export function DarkModeSwitch({ class: className }: { class?: string }) {
   return (
     <Fragment>
       <Helmet>
@@ -35,9 +36,11 @@ export function DarkModeSwitch() {
         `}
         </script>
       </Helmet>
-      <label onclick="toggleDarkMode()" class={tw`relative -top-1`}>
+      <label class={className} onclick="toggleDarkMode()">
         <div
-          class={`toggle-slot ${tw`cursor-pointer relative duration-500
+          class={`toggle-slot ${tw`
+            ${transformGpu}
+            cursor-pointer relative
             w-20 h-10 bg-gray-50 dark:bg-gray-700
             border-2 border-gray-300 dark:border-gray-600
             shadow-lg shadow-inner rounded-full`}`}

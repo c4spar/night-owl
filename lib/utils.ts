@@ -1,5 +1,3 @@
-import { basename } from "../deps.ts";
-
 export function stringToColor(str: string): string {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -29,69 +27,29 @@ export function sortByKey<K extends string>(name: K) {
   };
 }
 
-export interface FileOptions {
-  fileName: string;
-  name: string;
-  content: string;
-}
-
-export type ReadDirCallback<T extends FileOptions> = (file: FileOptions) => T;
-
-export async function readDir<T extends FileOptions>(
-  path: string,
-  fn?: ReadDirCallback<T>,
-): Promise<Array<T>> {
-  const examples: Array<T> = [];
-  for await (const file of Deno.readDir(path)) {
-    if (file.isFile) {
-      examples.push(await readFile(`${path}/${file.name}`, fn));
-    }
-  }
-
-  return examples.sort(sortByKey("name"));
-}
-
-export async function readFile<T extends FileOptions>(
-  path: string,
-  fn?: ReadDirCallback<T>,
-): Promise<T> {
-  const opts: FileOptions = {
-    fileName: basename(path),
-    name: basename(path).replace(/\.ts$/, ""),
-    content: await Deno.readTextFile(path),
-  };
-
-  return fn?.(opts) ?? opts as T;
-}
-
-export interface Example extends FileOptions {
-  shebang: string;
-}
-
-export function getExample(path: string): Promise<Example> {
-  return readFile<Example>(path, (file) => ({
-    ...file,
-    content: file.content.replace(/#!.+\n+/, ""),
-    shebang: file.content.split("\n")[0],
-  }));
-}
-
-export function getExamples(): Promise<Array<Example>> {
-  return readDir("examples", (file) => ({
-    ...file,
-    content: file.content.replace(/#!.+\n+/, ""),
-    shebang: file.content.split("\n")[0],
-  }));
-}
-
-export function joinUrl(...path: Array<string>) {
+export function joinUrl(...path: Array<string | undefined>) {
   let url = "";
   for (const part of path) {
     if (part) {
-      url = url.replace(/\/$/, "") +
-        "/" +
-        part.replace(/^\//, "");
+      url += "/" + part;
     }
   }
-  return url.replace(/\/$/, "") || "/";
+  return url
+    // replace double slash's with single slash
+    .replace(/(\.?\/)+/g, "/")
+    // replace trailing slash
+    .replace(/\/$/, "") || "/";
+}
+
+export function pathToUrl(path: string): string {
+  return "/" + path
+    // remove trailing slash
+    .replace(/^\.?\//, "")
+    // remove ordering prefix
+    .replace(/^[0-9]+_/, "")
+    .replace(/\/[0-9]+_/g, "/")
+    // replace special chars with hyphens
+    .replace(/_/g, "-")
+    // remove file extension
+    .replace(/\.[a-zA-Z0-9]+/, "");
 }

@@ -1,12 +1,9 @@
 /** @jsx h */
 
 import { Component, Fragment, h, Helmet, tw } from "../deps.ts";
-import {
-  capitalize,
-  FileOptions,
-  sortByKey,
-  stringToColor,
-} from "../lib/utils.ts";
+import { FileOptions } from "../lib/resource.ts";
+import { transformGpu } from "../lib/styles.ts";
+import { capitalize, sortByKey, stringToColor } from "../lib/utils.ts";
 
 export interface BenchResult {
   totalMs: number;
@@ -41,18 +38,18 @@ export class BenchmarksPage extends Component<BenchmarksPageOptions> {
         <Helmet footer>
           <script src="https://cdn.jsdelivr.net/npm/chart.js@v3.6.1" />
         </Helmet>
-        <div class={tw`container mx-auto space-y-16`}>
-          {this.props.data.map((data) => this.renderCharts(data))}
+        <div class={tw`${transformGpu} container mx-auto space-y-16`}>
+          {this.props.data.map((file) => this.renderCharts(file))}
         </div>
       </Fragment>
     );
   }
 
-  renderCharts({ name, content }: FileOptions) {
+  renderCharts({ fileName, content }: FileOptions) {
     const benchmarks: Array<ModuleData> = JSON.parse(content).sort(
       sortByKey("name"),
     );
-    name = capitalize(name)
+    const name = capitalize(fileName)
       .replace(/_/g, " ")
       .replace(/\.json$/, "");
     return (
@@ -66,7 +63,6 @@ export class BenchmarksPage extends Component<BenchmarksPageOptions> {
   }
 
   renderLineChart(benchmarkName: string, module: ModuleData) {
-    console.log("benchmarkName:", benchmarkName);
     const id = "chart-" + benchmarkName.replace(/ /g, "-")
       .toLowerCase() +
       module.name;
