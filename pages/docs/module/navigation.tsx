@@ -16,7 +16,7 @@ export class DocumentationNavigation
     return (
       <Navigation>
         {this.props.docs.map((file) => {
-          const marginLeft = "ml-" + (file.path.match(/\//g)?.length ?? 0 - 2) * 4;
+          const marginLeft = "ml-" + ((file.path.match(/\//g)?.length ?? 0) - 2) * 4;
           return (
             <a
               class={`${tw`p-3 w-full ${marginLeft}`}`}
