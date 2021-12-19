@@ -1,12 +1,9 @@
 import { getStyleTag, Helmet, renderSSR } from "../deps.ts";
 import { Document } from "../layout/document.ts";
+import { Cache } from "./cache.ts";
 import { sheet } from "./sheet.ts";
 
-const cache: Record<string, string> = {};
-
-function isCacheEnabled(): boolean {
-  return Deno.env.get("NO_CACHE")?.toLowerCase() !== "true";
-}
+const cache: Cache<string> = new Cache();
 
 export async function fromLocalCache(
   path: string,
@@ -39,33 +36,40 @@ export function fromSsrCache(
 }
 
 async function getLocalFile(path: string): Promise<string> {
-  if (!isCacheEnabled() || !cache[path]) {
-    cache[path] = await Deno.readTextFile(path);
+  let content = cache.get(path);
+  if (!content) {
+    content = await Deno.readTextFile(path);
+    cache.set(path, content);
   }
-  return cache[path];
+  return content;
 }
 
 async function getRemoteFile(
   url: string,
   req: Request,
 ): Promise<string> {
-  if (!isCacheEnabled() || !cache[url]) {
-    cache[url] = await fetch(url, {
+  let content = cache.get(req.url);
+  if (!content) {
+    const response = await fetch(url, {
       headers: req.headers,
       method: req.method,
       body: req.body,
-    }).then((resp) => resp.text());
+    });
+    content = await response.text();
+    cache.set(url, content);
   }
-  return cache[url];
+  return content;
 }
 
 function getSsr(app: unknown, req: Request): string {
-  if (!isCacheEnabled() || !cache[req.url]) {
+  let content = cache.get(req.url);
+  if (!content) {
     sheet.reset();
     const html = renderSSR(app);
     const { body, head, footer } = Helmet.SSR(html);
     const styles = getStyleTag(sheet);
-    cache[req.url] = Document({ body, head, footer, styles });
+    content = Document({ body, head, footer, styles });
+    cache.set(req.url, content);
   }
-  return cache[req.url];
+  return content;
 }
