@@ -1,5 +1,6 @@
 /** @jsx h */
 
+import { EditPageOnGithub } from "../../../components/edit_page_on_github.tsx";
 import { Markdown } from "../../../components/markdown.tsx";
 import { ModuleSelection } from "../../../components/module_selection.tsx";
 import { RouteNotFoundError } from "../../../components/router.tsx";
@@ -75,6 +76,7 @@ export class ModuleDocumentationPage extends Page<ModuleDocumentationPageOptions
             {/* content */}
             <main class={tw`${transformGpu} relative`}>
               <Markdown content={file.content} prefix={this.prefix} />
+              <EditPageOnGithub path={file.path} />
             </main>
 
             {/* sidebar right */}

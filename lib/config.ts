@@ -1,4 +1,5 @@
 export const config = {
+  repository: "c4spar/deno-cliffy",
   modules: [{
     label: "Ansi",
     name: "ansi",
