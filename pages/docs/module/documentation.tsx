@@ -1,11 +1,13 @@
 /** @jsx h */
 
 import { Markdown } from "../../../components/markdown.tsx";
+import { ModuleSelection } from "../../../components/module_selection.tsx";
 import { RouteNotFoundError } from "../../../components/router.tsx";
 import { Sidebar } from "../../../components/sidebar.tsx.tsx";
 import { VersionSelection } from "../../../components/version_selection.tsx";
 import { Fragment, h, Helmet, tw } from "../../../deps.ts";
 import { Page } from "../../../components/page.tsx";
+import { config } from "../../../lib/config.ts";
 import { FileOptions } from "../../../lib/resource.ts";
 import { transformGpu } from "../../../lib/styles.ts";
 import { DocumentationNavigation } from "./navigation.tsx";
@@ -56,6 +58,11 @@ export class ModuleDocumentationPage extends Page<ModuleDocumentationPageOptions
       <Fragment>
         {/* sidebar left */}
         <Sidebar position="left" class={tw`${transformGpu} hidden lg:block`}>
+          <ModuleSelection
+            class={tw`mb-3`}
+            modules={config.modules.map((m) => m.name)}
+            selectedModule={selectedModule}
+          />
           <DocumentationNavigation docs={docs} prefix={this.prefix} />
         </Sidebar>
 
