@@ -6,6 +6,7 @@
 
 import { blue, h, serve } from "./deps.ts";
 import { fromLocalCache, fromRemoteCache, fromSsrCache } from "./lib/cache.ts";
+import { getVersions } from "./lib/git.ts";
 import {
   Example,
   FileOptions,
@@ -15,7 +16,7 @@ import {
 } from "./lib/resource.ts";
 import { App } from "./layout/app.tsx";
 
-const versions = ["v0.20.1", "v0.20.0"];
+const versions = await getVersions();
 
 const [examples, benchmarks, docs]: [
   Array<Example>,
