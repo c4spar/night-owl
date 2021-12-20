@@ -1,3 +1,3 @@
-# Cliffy Benchmarks
+# cliffy.io
 
-[Benchmark data](https://cliffy.deno.dev/) for cliffy.
+[Website](https://cliffy.deno.dev/) for cliffy.
