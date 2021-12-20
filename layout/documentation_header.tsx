@@ -2,11 +2,12 @@
 
 import { Link } from "../components/link.tsx";
 import { Component, h, render, tw } from "../deps.ts";
-import { Config } from "../lib/config.ts";
+import { Module } from "../lib/resource.ts";
 import { joinUrl } from "../lib/utils.ts";
 
 export interface DocumentationHeaderOptions {
   prefix: string;
+  modules: Array<Module>;
 }
 
 export class DocumentationHeader extends Component<DocumentationHeaderOptions> {
@@ -17,7 +18,7 @@ export class DocumentationHeader extends Component<DocumentationHeaderOptions> {
           class={tw`flex flex-grow flex-col md:flex-row items-center md:ml-auto
               text-base justify-center space-x-3`}
         >
-          {Config.modules.map((module) =>
+          {this.props.modules.map((module) =>
             render(
               <Link href={joinUrl(this.props.prefix, module.name)}>
                 {module.label}

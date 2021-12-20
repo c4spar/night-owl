@@ -8,8 +8,7 @@ import { Sidebar } from "../../../components/sidebar.tsx.tsx";
 import { VersionSelection } from "../../../components/version_selection.tsx";
 import { Fragment, h, Helmet, tw } from "../../../deps.ts";
 import { Page } from "../../../components/page.tsx";
-import { Config } from "../../../lib/config.ts";
-import { FileOptions } from "../../../lib/resource.ts";
+import { FileOptions, Module } from "../../../lib/resource.ts";
 import { transformGpu } from "../../../lib/styles.ts";
 import { DocumentationNavigation } from "./navigation.tsx";
 import { SecondaryDocumentationNavigation } from "./secondary_navigation.tsx";
@@ -18,6 +17,8 @@ export interface ModuleDocumentationPageOptions {
   versions: Array<string>;
   selectedVersion: string;
   docs: Array<FileOptions>;
+  modules: Array<Module>;
+  repository: string;
 }
 
 export class ModuleDocumentationPage
@@ -62,7 +63,7 @@ export class ModuleDocumentationPage
         <Sidebar position="left" class={tw`${transformGpu} hidden lg:block`}>
           <ModuleSelection
             class={tw`mb-3`}
-            modules={Config.modules}
+            modules={this.props.modules}
             selectedModule={selectedModule}
           />
           <DocumentationNavigation docs={docs} prefix={this.prefix} />
@@ -77,7 +78,10 @@ export class ModuleDocumentationPage
             {/* content */}
             <main class={tw`${transformGpu} relative`}>
               <Markdown content={file.content} prefix={this.prefix} />
-              <EditPageOnGithub path={file.path} />
+              <EditPageOnGithub
+                path={file.path}
+                repository={this.props.repository}
+              />
             </main>
 
             {/* sidebar right */}

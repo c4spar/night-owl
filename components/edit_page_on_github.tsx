@@ -3,11 +3,11 @@
 import { tw } from "https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=imports/optimized/twind.js";
 import { h } from "https://deno.land/x/nano_jsx@v0.0.26/core.ts";
 import { Component } from "../deps.ts";
-import { Config } from "../lib/config.ts";
 import { transformGpu } from "../lib/styles.ts";
 
 export interface EditPageOnGithubOptions {
   path: string;
+  repository: string;
 }
 
 export class EditPageOnGithub extends Component<EditPageOnGithubOptions> {
@@ -21,7 +21,7 @@ export class EditPageOnGithub extends Component<EditPageOnGithubOptions> {
       >
         <a
           class={tw`mt-10 text-sm`}
-          href={`https://github.com/${Config.repository}/edit/master/${this.props.path}`}
+          href={`https://github.com/${this.props.repository}/edit/master/${this.props.path}`}
           target="_blank"
         >
           Edit this page on GitHub

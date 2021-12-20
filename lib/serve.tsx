@@ -6,24 +6,12 @@
 /// <reference lib="deno.ns" />
 
 import { blue, h, serve as serveHttp } from "../deps.ts";
-import { Config, ConfigOptions, initConfig } from "./config.ts";
+import { AppOptions, createConfig } from "./config.ts";
 import { fromLocalCache, fromRemoteCache, fromSsrCache } from "./request.ts";
-import { getResources, Resources } from "./resource.ts";
 import { App } from "../layout/app.tsx";
 
-export async function serve(options: ConfigOptions) {
-  initConfig(options);
-  const {
-    versions,
-    examples,
-    benchmarks,
-    docs,
-    modules,
-  }: Resources = await getResources();
-
-  if (!Config.modules.length) {
-    initConfig({ modules });
-  }
+export async function serve(options: AppOptions) {
+  const config = await createConfig(options);
 
   console.log(`Listening on ${blue("http://localhost:8000")}`);
 
@@ -78,13 +66,7 @@ export async function serve(options: ConfigOptions) {
 
       default:
         return fromSsrCache(
-          <App
-            url={req.url}
-            examples={examples}
-            benchmarks={benchmarks}
-            versions={versions}
-            docs={docs}
-          />,
+          <App url={req.url} config={config} />,
           "text/html",
           req,
         );

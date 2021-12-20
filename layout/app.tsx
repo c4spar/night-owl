@@ -1,7 +1,7 @@
 /** @jsx h */
 
 import { PageBackground } from "../components/page_background.tsx";
-import { Example, FileOptions } from "../lib/resource.ts";
+import { AppConfig } from "../lib/config.ts";
 import { mainStyles } from "../lib/styles.ts";
 import { DocsPage } from "../pages/docs.tsx";
 import { Header } from "./header.tsx";
@@ -13,10 +13,7 @@ import { HomePage } from "../pages/home.tsx";
 
 interface AppOptions {
   url: string;
-  benchmarks: Array<FileOptions>;
-  examples: Array<Example>;
-  versions: Array<string>;
-  docs: Array<FileOptions>;
+  config: AppConfig;
 }
 
 export class App extends Component<AppOptions> {
@@ -40,13 +37,18 @@ export class App extends Component<AppOptions> {
           {/* main router */}
           <Router url={this.props.url}>
             <Route path="/">
-              <HomePage examples={this.props.examples} />
+              <HomePage examples={this.props.config.examples} />
             </Route>
             <Route path={/^\/docs\/?(v[0-9][^\/]*)?/}>
-              <DocsPage versions={this.props.versions} docs={this.props.docs} />
+              <DocsPage
+                versions={this.props.config.versions}
+                docs={this.props.config.docs}
+                modules={this.props.config.modules}
+                repository={this.props.config.repository}
+              />
             </Route>
             <Route path="/benchmarks">
-              <BenchmarksPage data={this.props.benchmarks} />
+              <BenchmarksPage data={this.props.config.benchmarks} />
             </Route>
           </Router>
         </div>

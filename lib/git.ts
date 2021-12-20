@@ -1,5 +1,3 @@
-import { Config } from "./config.ts";
-
 const apiUrl = "https://api.github.com";
 
 interface GithubResponse {
@@ -8,16 +6,19 @@ interface GithubResponse {
   documentation_url: string;
 }
 
-export async function getVersions(): Promise<Array<string>> {
-  const tags = await gitFetch<Array<{ ref: string }>>("git/refs/tags");
+export async function getVersions(repository: string): Promise<Array<string>> {
+  const tags = await gitFetch<Array<{ ref: string }>>(
+    repository,
+    "git/refs/tags",
+  );
 
   return tags
     .map((tag) => tag.ref.replace(/^refs\/tags\//, ""))
     .reverse();
 }
 
-async function gitFetch<T>(endpoint: string): Promise<T> {
-  const url = new URL(`repos/${Config.repository}/${endpoint}`, apiUrl).href;
+async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
+  const url = new URL(`repos/${repository}/${endpoint}`, apiUrl).href;
 
   const headers = new Headers({ "Content-Type": "application/json" });
 

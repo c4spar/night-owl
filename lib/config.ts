@@ -1,26 +1,20 @@
-import { Module } from "./resource.ts";
+import { getResources, ResourceOptions, Resources } from "./resource.ts";
 
-export const Config = {
-  repository: "c4spar/deno-cliffy",
-  directories: {
-    benchmarks: "data",
-    docs: "docs",
-    examples: "examples",
-  },
-  modules: [] as Array<Module>,
-} as const;
+export type AppOptions = ResourceOptions;
 
-export type Config = typeof Config;
+export type AppConfig = AppOptions & Resources;
 
-export type ConfigOptions = Partial<Omit<Config, "directories">> & {
-  directories?: Partial<Config["directories"]>;
-};
+export async function createConfig(options: AppOptions) {
+  const { versions, examples, benchmarks, docs, modules } = await getResources(
+    options,
+  );
 
-export function initConfig(config: ConfigOptions) {
-  Object.assign(Config, config, {
-    directories: {
-      ...Config.directories,
-      ...config.directories,
-    },
-  });
+  return {
+    modules,
+    ...options,
+    versions,
+    examples,
+    benchmarks,
+    docs,
+  };
 }

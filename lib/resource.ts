@@ -1,5 +1,4 @@
 import { basename, dirname } from "../deps.ts";
-import { Config } from "./config.ts";
 import { getVersions } from "./git.ts";
 import { capitalize, pathToUrl, sortByKey } from "./utils.ts";
 import { Cache } from "./cache.ts";
@@ -71,7 +70,7 @@ async function readFile(path: string): Promise<FileOptions> {
   };
 }
 
-async function readFiles(
+export async function readFiles(
   path: string,
   recursive?: boolean,
   dirs?: boolean,
@@ -87,7 +86,7 @@ async function readFiles(
   return files.sort(sortByKey("path"));
 }
 
-async function getDirNames(path: string): Promise<Array<string>> {
+export async function getDirNames(path: string): Promise<Array<string>> {
   const dirNames: Array<string> = [];
   for await (const file of Deno.readDir(path)) {
     if (file.isDirectory) {
@@ -112,14 +111,27 @@ export interface Resources {
 
 let resources: Resources | undefined;
 
-export async function getResources(): Promise<Resources> {
+export interface ResourceDirectories {
+  benchmarks: string;
+  docs: string;
+  examples: string;
+}
+
+export interface ResourceOptions {
+  repository: string;
+  directories: ResourceDirectories;
+}
+
+export async function getResources(
+  options: ResourceOptions,
+): Promise<Resources> {
   if (!Cache.isEnabled() || !resources) {
     const [versions, examples, benchmarks, docs, modules] = await Promise.all([
-      getVersions(),
-      readFiles(Config.directories.examples),
-      readFiles(Config.directories.benchmarks),
-      readFiles(Config.directories.docs, true, true),
-      getDirNames(Config.directories.docs),
+      getVersions(options.repository),
+      readFiles(options.directories.examples),
+      readFiles(options.directories.benchmarks),
+      readFiles(options.directories.docs, true, true),
+      getDirNames(options.directories.docs),
     ]);
 
     resources = {
