@@ -25,7 +25,7 @@ export interface ModuleData {
 }
 
 interface BenchmarksPageOptions {
-  data: Array<FileOptions>;
+  benchmarks: Array<FileOptions>;
 }
 
 export class BenchmarksPage extends Component<BenchmarksPageOptions> {
@@ -39,7 +39,7 @@ export class BenchmarksPage extends Component<BenchmarksPageOptions> {
           <script src="https://cdn.jsdelivr.net/npm/chart.js@v3.6.1" />
         </Helmet>
         <div class={tw`${transformGpu} container mx-auto space-y-16`}>
-          {this.props.data.map((file) => this.renderCharts(file))}
+          {this.props.benchmarks.map((file) => this.renderCharts(file))}
         </div>
       </Fragment>
     );

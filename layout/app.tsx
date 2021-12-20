@@ -71,7 +71,7 @@ export class App extends Component<AppOptions> {
               />
             </Route>
             <Route path="/benchmarks">
-              <BenchmarksPage data={this.props.config.benchmarks} />
+              <BenchmarksPage benchmarks={this.props.config.benchmarks} />
             </Route>
           </Router>
         </div>
