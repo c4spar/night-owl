@@ -3,7 +3,7 @@
 import { h, tw } from "../../deps.ts";
 import { Page } from "../../components/page.tsx";
 import { DocumentationHeader } from "../../layout/documentation_header.tsx";
-import { Module } from "../../lib/resource.ts";
+import { Module } from "../../lib/config.ts";
 import { transformGpu } from "../../lib/styles.ts";
 
 export interface GetStartedPageOptions {

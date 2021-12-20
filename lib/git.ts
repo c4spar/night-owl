@@ -1,4 +1,8 @@
+import { Cache } from "./cache.ts";
+
 const apiUrl = "https://api.github.com";
+
+const gitCache = new Cache<GithubResponse>();
 
 interface GithubResponse {
   message: string;
@@ -18,6 +22,14 @@ export async function getVersions(repository: string): Promise<Array<string>> {
 }
 
 async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
+  const cacheKey = `${repository}/${endpoint}`;
+
+  let data = gitCache.get<GithubResponse & T>(cacheKey);
+
+  if (data) {
+    return data;
+  }
+
   const url = new URL(`repos/${repository}/${endpoint}`, apiUrl).href;
 
   const headers = new Headers({ "Content-Type": "application/json" });
@@ -38,11 +50,15 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
     throw new Error("Failed to fetch versions.");
   }
 
-  const data: GithubResponse & T = await response.json();
+  data = await response.json();
 
-  if ("message" in data && "documentation_url" in data) {
+  if (!data) {
+    throw new Error("Github request failed: " + url.toString());
+  } else if ("message" in data && "documentation_url" in data) {
     throw new Error(data.message + " " + data.documentation_url);
   }
+
+  gitCache.set(cacheKey, data);
 
   return data;
 }

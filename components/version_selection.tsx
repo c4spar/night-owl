@@ -17,12 +17,10 @@ export class VersionSelection extends Component<VersionSelectionOptions> {
           <script type="application/javascript">
             {`
             function switchVersion(version) {
-              console.log(window.location.href);
               window.location.href = window.location.href.replace(
                 /\\/docs\\/?(v[0-9]+[^/]*\\/?)?/,
                 "/docs/" + version + "/",
               );
-              console.log(window.location.href);
             }
           `}
           </script>

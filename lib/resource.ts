@@ -1,7 +1,6 @@
 import { basename, dirname } from "../deps.ts";
-import { getVersions } from "./git.ts";
-import { capitalize, pathToUrl, sortByKey } from "./utils.ts";
 import { Cache } from "./cache.ts";
+import { pathToUrl, sortByKey } from "./utils.ts";
 
 export interface FileOptions {
   path: string;
@@ -20,6 +19,57 @@ export interface Example extends FileOptions {
 
 interface DirEntry extends Deno.DirEntry {
   path: string;
+}
+
+const getFilesCache = new Cache<Array<FileOptions>>();
+const getDirNamesCache = new Cache<Array<string>>();
+
+export async function getFiles(
+  path: string,
+  recursive?: boolean,
+  dirs?: boolean,
+): Promise<Array<FileOptions>> {
+  const cacheKey = `${path}/${recursive}/${dirs}`;
+
+  let files: Array<FileOptions> | undefined = getFilesCache.get(cacheKey);
+  if (files) {
+    return files;
+  }
+  const entries = await readDir(path, recursive, dirs);
+
+  files = await Promise.all(
+    entries.map((entry) =>
+      entry.isDirectory
+        ? createFile(entry.path, "", entry.isDirectory)
+        : readFile(entry.path)
+    ),
+  );
+
+  files.sort(sortByKey("path"));
+  getFilesCache.set(cacheKey, files);
+
+  return files;
+}
+
+export async function getDirNames(path: string): Promise<Array<string>> {
+  const cacheKey = path;
+
+  let dirNames: Array<string> | undefined = getDirNamesCache.get(cacheKey);
+  if (dirNames) {
+    return dirNames;
+  }
+  dirNames = [];
+
+  for await (const file of Deno.readDir(path)) {
+    if (file.isDirectory) {
+      dirNames.push(file.name);
+    }
+  }
+
+  dirNames.sort();
+  getDirNamesCache.set(cacheKey, dirNames);
+
+  return dirNames;
 }
 
 async function readDir(
@@ -43,7 +93,15 @@ async function readDir(
   return files.sort();
 }
 
-function createFile(path: string, isDirectory = false): FileOptions {
+async function readFile(path: string): Promise<FileOptions> {
+  return createFile(path, await Deno.readTextFile(path));
+}
+
+function createFile(
+  path: string,
+  content = "",
+  isDirectory = false,
+): FileOptions {
   const fileName = basename(path);
   const dirName = dirname(path);
 
@@ -59,93 +117,6 @@ function createFile(path: string, isDirectory = false): FileOptions {
     routePrefix,
     routeName,
     isDirectory,
-    content: "",
+    content,
   };
-}
-
-async function readFile(path: string): Promise<FileOptions> {
-  return {
-    ...createFile(path),
-    content: await Deno.readTextFile(path),
-  };
-}
-
-export async function readFiles(
-  path: string,
-  recursive?: boolean,
-  dirs?: boolean,
-): Promise<Array<FileOptions>> {
-  const entries = await readDir(path, recursive, dirs);
-  const files = await Promise.all(
-    entries.map((entry) =>
-      entry.isDirectory
-        ? createFile(entry.path, entry.isDirectory)
-        : readFile(entry.path)
-    ),
-  );
-  return files.sort(sortByKey("path"));
-}
-
-export async function getDirNames(path: string): Promise<Array<string>> {
-  const dirNames: Array<string> = [];
-  for await (const file of Deno.readDir(path)) {
-    if (file.isDirectory) {
-      dirNames.push(file.name);
-    }
-  }
-  return dirNames.sort();
-}
-
-export interface Module {
-  label: string;
-  name: string;
-}
-
-export interface Resources {
-  benchmarks: Array<FileOptions>;
-  docs: Array<FileOptions>;
-  examples: Array<Example>;
-  versions: Array<string>;
-  modules: Array<Module>;
-}
-
-let resources: Resources | undefined;
-
-export interface ResourceDirectories {
-  benchmarks: string;
-  docs: string;
-  examples: string;
-}
-
-export interface ResourceOptions {
-  repository: string;
-  directories: ResourceDirectories;
-}
-
-export async function getResources(
-  options: ResourceOptions,
-): Promise<Resources> {
-  if (!Cache.isEnabled() || !resources) {
-    const [versions, examples, benchmarks, docs, modules] = await Promise.all([
-      getVersions(options.repository),
-      readFiles(options.directories.examples),
-      readFiles(options.directories.benchmarks),
-      readFiles(options.directories.docs, true, true),
-      getDirNames(options.directories.docs),
-    ]);
-
-    resources = {
-      benchmarks,
-      docs,
-      examples: examples.map((file) => ({
-        ...file,
-        content: file.content.replace(/#!.+\n+/, ""),
-        shebang: file.content.split("\n")[0],
-      })),
-      modules: modules.map((name) => ({ name, label: capitalize(name) })),
-      versions,
-    };
-  }
-
-  return resources;
 }

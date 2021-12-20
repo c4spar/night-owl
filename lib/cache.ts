@@ -1,15 +1,14 @@
 export class Cache<T> {
+  static readonly #isEnabled: boolean =
+    Deno.env.get("NO_CACHE")?.toLowerCase() !== "true";
+
   #cache = new Map<string, T>();
 
-  get(key: string): T | undefined {
-    return Cache.isEnabled() ? this.#cache.get(key) : undefined;
+  get<V extends T = T>(key: string): V | undefined {
+    return Cache.#isEnabled ? this.#cache.get(key) as V | undefined : undefined;
   }
 
-  set(key: string, value: T): void {
+  set<V extends T = T>(key: string, value: V): void {
     this.#cache.set(key, value);
-  }
-
-  static isEnabled(): boolean {
-    return Deno.env.get("NO_CACHE")?.toLowerCase() !== "true";
   }
 }

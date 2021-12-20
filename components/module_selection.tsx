@@ -17,12 +17,10 @@ export class ModuleSelection extends Component<ModuleSelectionOptions> {
           <script type="application/javascript">
             {`
               function switchModule(module) {
-                console.log(window.location.href);
                 window.location.href = window.location.href.replace(
                   /(\\/docs(\\/v[0-9]+[^\\/]*)?)\\/([^\\/]+).*/,
                   "$1/" + module,
                 );
-                console.log(window.location.href);
               }
           `}
           </script>

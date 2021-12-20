@@ -6,16 +6,18 @@
 /// <reference lib="deno.ns" />
 
 import { blue, h, serve as serveHttp } from "../deps.ts";
+import { Cache } from "./cache.ts";
 import { AppOptions, createConfig } from "./config.ts";
-import { fromLocalCache, fromRemoteCache, fromSsrCache } from "./request.ts";
+import { fromLocalCache, fromRemoteCache } from "./request.ts";
 import { App } from "../layout/app.tsx";
+import { ssr } from "./ssr.ts";
 
 export async function serve(options: AppOptions) {
-  const config = await createConfig(options);
-
   console.log(`Listening on ${blue("http://localhost:8000")}`);
 
-  await serveHttp((req) => {
+  const cache = new Cache<string>();
+
+  await serveHttp(async (req) => {
     console.log(blue(`[${req.method}]`), req.url);
 
     if (req.method !== "GET") {
@@ -64,12 +66,15 @@ export async function serve(options: AppOptions) {
           req,
         );
 
-      default:
-        return fromSsrCache(
-          <App url={req.url} config={config} />,
-          "text/html",
-          req,
-        );
+      default: {
+        let html: string | undefined = cache.get(req.url);
+        if (!html) {
+          const config = await createConfig(options);
+          html = ssr(<App url={req.url} config={config} />);
+        }
+
+        return new Response(html, { headers: { "content-type": "text/html" } });
+      }
     }
   });
 }

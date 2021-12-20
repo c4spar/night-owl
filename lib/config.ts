@@ -1,20 +1,50 @@
-import { getResources, ResourceOptions, Resources } from "./resource.ts";
+import { getVersions } from "./git.ts";
+import { Example, FileOptions, getDirNames, getFiles } from "./resource.ts";
+import { capitalize } from "./utils.ts";
 
-export type AppOptions = ResourceOptions;
+export interface Module {
+  label: string;
+  name: string;
+}
 
-export type AppConfig = AppOptions & Resources;
+export interface AppDirectories {
+  benchmarks: string;
+  docs: string;
+  examples: string;
+}
 
-export async function createConfig(options: AppOptions) {
-  const { versions, examples, benchmarks, docs, modules } = await getResources(
-    options,
-  );
+export interface AppOptions {
+  repository: string;
+  directories: AppDirectories;
+}
+
+export interface AppConfig extends AppOptions {
+  benchmarks: Array<FileOptions>;
+  docs: Array<FileOptions>;
+  examples: Array<Example>;
+  versions: Array<string>;
+  modules: Array<Module>;
+}
+
+export async function createConfig(options: AppOptions): Promise<AppConfig> {
+  const [versions, examples, benchmarks, docs, modules] = await Promise.all([
+    getVersions(options.repository),
+    getFiles(options.directories.examples),
+    getFiles(options.directories.benchmarks),
+    getFiles(options.directories.docs, true, true),
+    getDirNames(options.directories.docs),
+  ]);
 
   return {
-    modules,
     ...options,
-    versions,
-    examples,
     benchmarks,
     docs,
+    examples: examples.map((file) => ({
+      ...file,
+      content: file.content.replace(/#!.+\n+/, ""),
+      shebang: file.content.split("\n")[0],
+    })),
+    modules: modules.map((name) => ({ name, label: capitalize(name) })),
+    versions,
   };
 }

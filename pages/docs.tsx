@@ -4,7 +4,8 @@ import { Page } from "../components/page.tsx";
 import { Route } from "../components/route.tsx";
 import { Router } from "../components/router.tsx";
 import { Fragment, h, Helmet, tw } from "../deps.ts";
-import { FileOptions, Module } from "../lib/resource.ts";
+import { Module } from "../lib/config.ts";
+import { FileOptions } from "../lib/resource.ts";
 import { ModuleDocumentationPage } from "./docs/module/documentation.tsx";
 import { GetStartedPage } from "./docs/get_started.tsx";
 
