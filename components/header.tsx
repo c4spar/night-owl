@@ -1,7 +1,7 @@
 /** @jsx h */
 
-import { DarkModeSwitch } from "../components/dark_mode_switch.tsx";
-import { Link } from "../components/link.tsx";
+import { DarkModeSwitch } from "./dark_mode_switch.tsx";
+import { Link } from "./link.tsx";
 import { Component, h, tw } from "../deps.ts";
 import { bgMain, transformGpu } from "../lib/styles.ts";
 

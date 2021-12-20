@@ -1,15 +1,15 @@
 /** @jsx h */
 
-import { PageBackground } from "../components/page_background.tsx";
-import { AppConfig } from "../lib/config.ts";
-import { mainStyles } from "../lib/styles.ts";
-import { DocsRouter } from "../pages/docs/docs_router.tsx";
-import { Header } from "./header.tsx";
-import { Router } from "../components/router.tsx";
-import { Route } from "../components/route.tsx";
-import { Component, h, Helmet, tw } from "../deps.ts";
-import { BenchmarksPage } from "../pages/becnhmarks_page.tsx";
-import { HomePage } from "../pages/home_page.tsx";
+import { PageBackground } from "./components/page_background.tsx";
+import { AppConfig } from "./lib/config.ts";
+import { mainStyles } from "./lib/styles.ts";
+import { DocsRouter } from "./pages/docs/docs_router.tsx";
+import { Header } from "./components/header.tsx";
+import { Router } from "./components/router.tsx";
+import { Route } from "./components/route.tsx";
+import { Component, h, Helmet, tw } from "./deps.ts";
+import { BenchmarksPage } from "./pages/becnhmarks_page.tsx";
+import { HomePage } from "./pages/home_page.tsx";
 
 interface AppOptions {
   url: string;
