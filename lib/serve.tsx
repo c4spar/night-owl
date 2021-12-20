@@ -49,9 +49,6 @@ export async function serve(options: AppOptions) {
       // case "/styles.css":
       //   return fromLocalCache("client/styles.css", "text/css");
 
-      case "/main.js":
-        return fromLocalCache("client/main.js", "application/javascript");
-
       case "/iconify.min.js":
         return fromRemoteCache(
           "https://code.iconify.design/2/2.1.0/iconify.min.js",

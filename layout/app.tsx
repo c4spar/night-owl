@@ -19,7 +19,7 @@ interface AppOptions {
 export class App extends Component<AppOptions> {
   render() {
     const versions = this.props.config.versions.versions
-      .map(version => version.replace(/\./g, "\."))
+      .map((version) => version.replace(/\./g, "\."))
       .join("|");
 
     const docsPathRegex = new RegExp(`^/docs/?(${versions})?`);
@@ -27,7 +27,24 @@ export class App extends Component<AppOptions> {
     return (
       <div class={tw`${mainStyles} mb-7`}>
         <Helmet footer>
-          <script type="application/javascript" src="/main.js" />
+          <script type="application/javascript">{`
+            main();
+
+            function main() {
+              if (isDarkModeEnabled()) {
+                document.documentElement.classList.add("dark");
+              } else {
+                document.documentElement.classList.remove("dark");
+              }
+            }
+
+            function isDarkModeEnabled() {
+              return localStorage.theme === "dark" || (
+                !localStorage.theme &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches
+              );
+            }
+          `}</script>
         </Helmet>
 
         {/* background */}
