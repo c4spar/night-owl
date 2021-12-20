@@ -28,6 +28,7 @@ export async function getFiles(
   path: string,
   recursive?: boolean,
   dirs?: boolean,
+  map?: (file: FileOptions) => FileOptions,
 ): Promise<Array<FileOptions>> {
   const cacheKey = `${path}/${recursive}/${dirs}`;
 
@@ -46,6 +47,11 @@ export async function getFiles(
   );
 
   files.sort(sortByKey("path"));
+
+  if (map) {
+    files = files.map(map);
+  }
+
   getFilesCache.set(cacheKey, files);
 
   return files;

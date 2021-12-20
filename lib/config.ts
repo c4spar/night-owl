@@ -42,7 +42,12 @@ export async function createConfig(options: AppOptions): Promise<AppConfig> {
     getVersions(opts.repository),
     getFiles(opts.directories.examples),
     getFiles(opts.directories.benchmarks),
-    getFiles(opts.directories.docs, true, true),
+    getFiles(opts.directories.docs, true, true, (file) => {
+      const regex = new RegExp(`^\/${opts.directories.docs}`);
+      file.route = file.route.replace(regex, "/docs");
+      file.routePrefix = file.routePrefix.replace(regex, "/docs");
+      return file;
+    }),
     getDirNames(opts.directories.docs),
   ]);
 
