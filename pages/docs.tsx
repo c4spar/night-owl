@@ -20,10 +20,12 @@ export interface DocsPageOptions {
 export class DocsPage extends Page<DocsPageOptions> {
   render() {
     const versions = this.props.versions.versions
-      .map(version => version.replace(/\./g, "\."))
+      .map((version) => version.replace(/\./g, "\."))
       .join("|");
 
-    const versionPattern = `/(foo|${versions})$`;
+    const versionPattern = versions.length > 1
+      ? `/(${versions})$`
+      : `/${versions}$`;
     const versionRegex = new RegExp(versionPattern);
     const selectedVersion = this.prefix.match(versionRegex)?.[1] ??
       this.props.versions.latest;
