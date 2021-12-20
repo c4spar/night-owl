@@ -28,16 +28,17 @@ export class Selection extends Component<SelectionOptions> {
               appearance-none
               ${transformGpu}`}
           >
-            {
-              this.props.options
-                .map(name => typeof name === "string" ? {name: name, label: name} : name)
-                .map(({name, label}) => render(
-                    this.props.selected === name
-                      ? <option value={name} selected>{label}</option>
-                      : <option value={name}>{label}</option>,
-                  ),
+            {this.props.options
+              .map((name) =>
+                typeof name === "string" ? { name: name, label: name } : name
+              )
+              .map(({ name, label }) =>
+                render(
+                  this.props.selected === name
+                    ? <option value={name} selected>{label}</option>
+                    : <option value={name}>{label}</option>,
                 )
-            }
+              )}
           </select>
           <div
             class={tw
