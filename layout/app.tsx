@@ -27,7 +27,8 @@ export class App extends Component<AppOptions> {
     return (
       <div class={tw`${mainStyles} mb-7`}>
         <Helmet footer>
-          <script type="application/javascript">{`
+          <script type="application/javascript">
+            {`
             main();
 
             function main() {
@@ -44,7 +45,8 @@ export class App extends Component<AppOptions> {
                 window.matchMedia("(prefers-color-scheme: dark)").matches
               );
             }
-          `}</script>
+          `}
+          </script>
         </Helmet>
 
         {/* background */}

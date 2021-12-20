@@ -13,7 +13,7 @@ export interface VersionSelectionOptions {
 export class VersionSelection extends Component<VersionSelectionOptions> {
   render() {
     const versions = this.props.versions.versions
-      .map(version => version.replace(/\./g, "\."))
+      .map((version) => version.replace(/\./g, "\."))
       .join("|");
 
     return (
