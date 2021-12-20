@@ -4,7 +4,7 @@ import { Page } from "../components/page.tsx";
 import { Route } from "../components/route.tsx";
 import { Router } from "../components/router.tsx";
 import { Fragment, h, Helmet, tw } from "../deps.ts";
-import { config } from "../lib/config.ts";
+import { Config } from "../lib/config.ts";
 import { FileOptions } from "../lib/resource.ts";
 import { ModuleDocumentationPage } from "./docs/module/documentation.tsx";
 import { GetStartedPage } from "./docs/get_started.tsx";
@@ -16,7 +16,7 @@ export interface DocsPageOptions {
 
 export class DocsPage extends Page<DocsPageOptions> {
   render() {
-    const modulePath = config.modules.map((module) => `/${module.name}`);
+    const modulePath = Config.modules.map((module) => `/${module.name}`);
     const selectedVersion = this.prefix.match(/\/(v[0-9][^\/]*)$/)?.[1] ??
       this.props.versions[0];
 

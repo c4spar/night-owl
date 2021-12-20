@@ -1,4 +1,4 @@
-import { config } from "./config.ts";
+import { Config } from "./config.ts";
 
 const apiUrl = "https://api.github.com";
 
@@ -17,7 +17,7 @@ export async function getVersions(): Promise<Array<string>> {
 }
 
 async function gitFetch<T>(endpoint: string): Promise<T> {
-  const url = new URL(`repos/${config.repository}/${endpoint}`, apiUrl).href;
+  const url = new URL(`repos/${Config.repository}/${endpoint}`, apiUrl).href;
 
   const headers = new Headers({ "Content-Type": "application/json" });
 

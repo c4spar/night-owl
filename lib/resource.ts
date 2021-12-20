@@ -1,5 +1,8 @@
 import { basename, dirname } from "../deps.ts";
-import { pathToUrl, sortByKey } from "./utils.ts";
+import { Config } from "./config.ts";
+import { getVersions } from "./git.ts";
+import { capitalize, pathToUrl, sortByKey } from "./utils.ts";
+import { Cache } from "./cache.ts";
 
 export interface FileOptions {
   path: string;
@@ -9,17 +12,18 @@ export interface FileOptions {
   routePrefix: string;
   routeName: string;
   content: string;
+  isDirectory: boolean;
 }
 
 export interface Example extends FileOptions {
   shebang: string;
 }
 
-export interface DirEntry extends Deno.DirEntry {
+interface DirEntry extends Deno.DirEntry {
   path: string;
 }
 
-export async function readDir(
+async function readDir(
   path: string,
   recursive?: boolean,
   dirs?: boolean,
@@ -30,6 +34,7 @@ export async function readDir(
       files.push({
         ...file,
         path: `${path}/${file.name}`,
+        isDirectory: file.isDirectory,
       });
     }
     if (file.isDirectory && recursive) {
@@ -39,7 +44,7 @@ export async function readDir(
   return files.sort();
 }
 
-export function createFile(path: string): FileOptions {
+function createFile(path: string, isDirectory = false): FileOptions {
   const fileName = basename(path);
   const dirName = dirname(path);
 
@@ -54,43 +59,81 @@ export function createFile(path: string): FileOptions {
     route,
     routePrefix,
     routeName,
+    isDirectory,
     content: "",
   };
 }
 
-export async function readFile(path: string): Promise<FileOptions> {
+async function readFile(path: string): Promise<FileOptions> {
   return {
     ...createFile(path),
     content: await Deno.readTextFile(path),
   };
 }
 
-export async function readFiles(
+async function readFiles(
   path: string,
   recursive?: boolean,
   dirs?: boolean,
 ): Promise<Array<FileOptions>> {
   const entries = await readDir(path, recursive, dirs);
-  return Promise.all(
+  const files = await Promise.all(
     entries.map((entry) =>
-      entry.isDirectory ? createFile(entry.path) : readFile(entry.path)
+      entry.isDirectory
+        ? createFile(entry.path, entry.isDirectory)
+        : readFile(entry.path)
     ),
-  ).then((files) => files.sort(sortByKey("path")));
+  );
+  return files.sort(sortByKey("path"));
 }
 
-export async function getExamples(): Promise<Array<Example>> {
-  const files = await readFiles("examples");
-  return files.map((file) => ({
-    ...file,
-    content: file.content.replace(/#!.+\n+/, ""),
-    shebang: file.content.split("\n")[0],
-  }));
+async function getDirNames(path: string): Promise<Array<string>> {
+  const dirNames: Array<string> = [];
+  for await (const file of Deno.readDir(path)) {
+    if (file.isDirectory) {
+      dirNames.push(file.name);
+    }
+  }
+  return dirNames.sort();
 }
 
-export function getBenchmarks(): Promise<Array<FileOptions>> {
-  return readFiles("data");
+export interface Module {
+  label: string;
+  name: string;
 }
 
-export function getDocs(): Promise<Array<FileOptions>> {
-  return readFiles("docs", true, true);
+export interface Resources {
+  benchmarks: Array<FileOptions>;
+  docs: Array<FileOptions>;
+  examples: Array<Example>;
+  versions: Array<string>;
+  modules: Array<Module>;
+}
+
+let resources: Resources | undefined;
+
+export async function getResources(): Promise<Resources> {
+  if (!Cache.isEnabled() || !resources) {
+    const [versions, examples, benchmarks, docs, modules] = await Promise.all([
+      getVersions(),
+      readFiles(Config.directories.examples),
+      readFiles(Config.directories.benchmarks),
+      readFiles(Config.directories.docs, true, true),
+      getDirNames(Config.directories.docs),
+    ]);
+
+    resources = {
+      benchmarks,
+      docs,
+      examples: examples.map((file) => ({
+        ...file,
+        content: file.content.replace(/#!.+\n+/, ""),
+        shebang: file.content.split("\n")[0],
+      })),
+      modules: modules.map((name) => ({ name, label: capitalize(name) })),
+      versions,
+    };
+  }
+
+  return resources;
 }

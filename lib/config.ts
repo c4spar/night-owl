@@ -1,25 +1,26 @@
-export const config = {
+import { Module } from "./resource.ts";
+
+export const Config = {
   repository: "c4spar/deno-cliffy",
-  modules: [{
-    label: "Ansi",
-    name: "ansi",
-  }, {
-    label: "Command",
-    name: "command",
-  }, {
-    label: "Flags",
-    name: "flags",
-  }, {
-    label: "Keycode",
-    name: "keycode",
-  }, {
-    label: "Keypress",
-    name: "keypress",
-  }, {
-    label: "Prompt",
-    name: "prompt",
-  }, {
-    label: "Table",
-    name: "table",
-  }],
+  directories: {
+    benchmarks: "data",
+    docs: "docs",
+    examples: "examples",
+  },
+  modules: [] as Array<Module>,
+} as const;
+
+export type Config = typeof Config;
+
+export type ConfigOptions = Partial<Omit<Config, "directories">> & {
+  directories?: Partial<Config["directories"]>;
 };
+
+export function initConfig(config: ConfigOptions) {
+  Object.assign(Config, config, {
+    directories: {
+      ...Config.directories,
+      ...config.directories,
+    },
+  });
+}
