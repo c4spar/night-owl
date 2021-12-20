@@ -1,4 +1,4 @@
-import { getVersions } from "./git.ts";
+import { getVersions, GithubVersions } from "./git.ts";
 import { Example, FileOptions, getDirNames, getFiles } from "./resource.ts";
 import { capitalize } from "./utils.ts";
 
@@ -15,28 +15,39 @@ export interface AppDirectories {
 
 export interface AppOptions {
   repository: string;
-  directories: AppDirectories;
+  directories?: Partial<AppDirectories>;
 }
 
 export interface AppConfig extends AppOptions {
+  directories: AppDirectories;
   benchmarks: Array<FileOptions>;
   docs: Array<FileOptions>;
   examples: Array<Example>;
-  versions: Array<string>;
+  versions: GithubVersions;
   modules: Array<Module>;
 }
 
 export async function createConfig(options: AppOptions): Promise<AppConfig> {
+  const opts = {
+    ...options,
+    directories: {
+      docs: "docs",
+      benchmarks: "data",
+      examples: "examples",
+      ...options.directories,
+    },
+  };
+
   const [versions, examples, benchmarks, docs, modules] = await Promise.all([
-    getVersions(options.repository),
-    getFiles(options.directories.examples),
-    getFiles(options.directories.benchmarks),
-    getFiles(options.directories.docs, true, true),
-    getDirNames(options.directories.docs),
+    getVersions(opts.repository),
+    getFiles(opts.directories.examples),
+    getFiles(opts.directories.benchmarks),
+    getFiles(opts.directories.docs, true, true),
+    getDirNames(opts.directories.docs),
   ]);
 
   return {
-    ...options,
+    ...opts,
     benchmarks,
     docs,
     examples: examples.map((file) => ({

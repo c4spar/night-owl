@@ -1,16 +1,21 @@
 /** @jsx h */
 
 import { Component, Fragment, h, Helmet } from "../deps.ts";
+import { GithubVersions } from "../lib/git.ts";
 import { Selection } from "./selection.tsx";
 
 export interface VersionSelectionOptions {
-  versions: Array<string>;
+  versions: GithubVersions;
   selectedVersion: string;
   class?: string;
 }
 
 export class VersionSelection extends Component<VersionSelectionOptions> {
   render() {
+    const versions = this.props.versions.versions
+      .map(version => version.replace(/\./g, "\."))
+      .join("|");
+
     return (
       <Fragment>
         <Helmet footer>
@@ -18,7 +23,7 @@ export class VersionSelection extends Component<VersionSelectionOptions> {
             {`
             function switchVersion(version) {
               window.location.href = window.location.href.replace(
-                /\\/docs\\/?(v[0-9]+[^/]*\\/?)?/,
+                new RegExp("/docs/?((${versions})/?)?"),
                 "/docs/" + version + "/",
               );
             }
@@ -27,7 +32,7 @@ export class VersionSelection extends Component<VersionSelectionOptions> {
         </Helmet>
         <Selection
           class={this.props.class}
-          options={this.props.versions}
+          options={this.props.versions.versions}
           selected={this.props.selectedVersion}
           onchange="switchVersion(this.value)"
         />

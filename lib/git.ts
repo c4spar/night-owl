@@ -10,15 +10,41 @@ interface GithubResponse {
   documentation_url: string;
 }
 
-export async function getVersions(repository: string): Promise<Array<string>> {
-  const tags = await gitFetch<Array<{ ref: string }>>(
-    repository,
-    "git/refs/tags",
-  );
+export interface GithubVersions {
+  latest: string;
+  versions: Array<string>;
+  tags: Array<string>;
+  branches: Array<string>;
+}
 
-  return tags
+export async function getVersions(repository: string): Promise<GithubVersions> {
+  const [tags, branches] = await Promise.all([
+    gitFetch<Array<{ ref: string }>>(repository, "git/refs/tags"),
+    gitFetch<Array<{ name: string; protected: boolean }>>(
+      repository,
+      "branches",
+    ),
+  ]);
+
+  const tagNames = tags
     .map((tag) => tag.ref.replace(/^refs\/tags\//, ""))
     .reverse();
+
+  const branchNames = branches
+    .sort((a, b) => (a.protected === b.protected) ? 0 : (a.protected ? 1 : -1))
+    .filter((tag) => tag.protected)
+    .map((tag) => tag.name)
+    .reverse();
+
+  return {
+    versions: [
+      ...tagNames,
+      ...branchNames,
+    ],
+    latest: tagNames[0],
+    tags: tagNames,
+    branches: branchNames,
+  };
 }
 
 async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {

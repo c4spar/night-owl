@@ -9,13 +9,14 @@ import { VersionSelection } from "../../../components/version_selection.tsx";
 import { Fragment, h, Helmet, tw } from "../../../deps.ts";
 import { Page } from "../../../components/page.tsx";
 import { Module } from "../../../lib/config.ts";
+import { GithubVersions } from "../../../lib/git.ts";
 import { FileOptions } from "../../../lib/resource.ts";
 import { transformGpu } from "../../../lib/styles.ts";
 import { DocumentationNavigation } from "./navigation.tsx";
 import { SecondaryDocumentationNavigation } from "./secondary_navigation.tsx";
 
 export interface ModuleDocumentationPageOptions {
-  versions: Array<string>;
+  versions: GithubVersions;
   selectedVersion: string;
   docs: Array<FileOptions>;
   modules: Array<Module>;

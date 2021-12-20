@@ -18,6 +18,12 @@ interface AppOptions {
 
 export class App extends Component<AppOptions> {
   render() {
+    const versions = this.props.config.versions.versions
+      .map(version => version.replace(/\./g, "\."))
+      .join("|");
+
+    const docsPathRegex = new RegExp(`^/docs/?(${versions})?`);
+
     return (
       <div class={tw`${mainStyles} mb-7`}>
         <Helmet footer>
@@ -39,7 +45,7 @@ export class App extends Component<AppOptions> {
             <Route path="/">
               <HomePage examples={this.props.config.examples} />
             </Route>
-            <Route path={/^\/docs\/?(v[0-9][^\/]*)?/}>
+            <Route path={docsPathRegex}>
               <DocsPage
                 versions={this.props.config.versions}
                 docs={this.props.config.docs}
