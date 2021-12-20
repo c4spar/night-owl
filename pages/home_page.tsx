@@ -4,7 +4,7 @@ import { PrimaryButton, SecondaryButton } from "../components/buttons.tsx";
 import { Editor } from "../components/editor.tsx";
 import { ArrowForward } from "../components/icons.tsx";
 import { AnimatedText } from "../components/animated_text.tsx";
-import { Page } from "../components/page.tsx";
+import { Routable } from "../components/routable.tsx";
 import { h, Helmet, tw } from "../deps.ts";
 import { Example } from "../lib/resource.ts";
 import { transformGpu } from "../lib/styles.ts";
@@ -13,7 +13,7 @@ interface HomePageOptions {
   examples: Array<Example>;
 }
 
-export class HomePage extends Page<HomePageOptions> {
+export class HomePage extends Routable<HomePageOptions> {
   render() {
     return (
       <div css={tw`${transformGpu}`}>

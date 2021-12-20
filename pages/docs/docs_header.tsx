@@ -1,9 +1,9 @@
 /** @jsx h */
 
-import { Link } from "../components/link.tsx";
-import { Component, h, render, tw } from "../deps.ts";
-import { Module } from "../lib/config.ts";
-import { joinUrl } from "../lib/utils.ts";
+import { Link } from "../../components/link.tsx";
+import { Component, h, render, tw } from "../../deps.ts";
+import { Module } from "../../lib/config.ts";
+import { joinUrl } from "../../lib/utils.ts";
 
 export interface DocumentationHeaderOptions {
   prefix: string;

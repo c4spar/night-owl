@@ -3,19 +3,19 @@
 import { Component, h } from "../deps.ts";
 import { joinUrl } from "../lib/utils.ts";
 
-export interface PageOptions {
+export interface RoutableOptions {
   _prefix?: string;
   _path?: string;
   _url?: string;
 }
 
-export class Page<T = unknown, S = unknown>
-  extends Component<T & PageOptions, S> {
+export class Routable<T = unknown, S = unknown>
+  extends Component<T & RoutableOptions, S> {
   readonly #prefix: string;
   readonly #path: string;
   readonly #url: string;
 
-  constructor(props: T & PageOptions) {
+  constructor(props: T & RoutableOptions) {
     super(props);
     this.#prefix = props._prefix || "/";
     this.#path = props._path || "/";

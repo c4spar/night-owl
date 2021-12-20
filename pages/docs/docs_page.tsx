@@ -1,8 +1,8 @@
 /** @jsx h */
 
 import { h, tw } from "../../deps.ts";
-import { Page } from "../../components/page.tsx";
-import { DocumentationHeader } from "../../layout/documentation_header.tsx";
+import { Routable } from "../../components/routable.tsx";
+import { DocumentationHeader } from "./docs_header.tsx";
 import { Module } from "../../lib/config.ts";
 import { transformGpu } from "../../lib/styles.ts";
 
@@ -10,7 +10,7 @@ export interface GetStartedPageOptions {
   modules: Array<Module>;
 }
 
-export class GetStartedPage extends Page<GetStartedPageOptions> {
+export class DocsPage extends Routable<GetStartedPageOptions> {
   render() {
     return (
       <div class={tw`${transformGpu}`}>

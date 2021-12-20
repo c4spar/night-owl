@@ -5,13 +5,12 @@ import { Component, h, tw } from "../../../deps.ts";
 import { FileOptions } from "../../../lib/resource.ts";
 import { capitalize, joinUrl } from "../../../lib/utils.ts";
 
-export interface DocumentationNavigationOptions {
+export interface ModuleNavigationOptions {
   docs: Array<FileOptions>;
   prefix: string;
 }
 
-export class DocumentationNavigation
-  extends Component<DocumentationNavigationOptions> {
+export class ModuleNavigation extends Component<ModuleNavigationOptions> {
   render() {
     return (
       <Navigation>

@@ -7,15 +7,15 @@ import { RouteNotFoundError } from "../../../components/router.tsx";
 import { Sidebar } from "../../../components/sidebar.tsx.tsx";
 import { VersionSelection } from "../../../components/version_selection.tsx";
 import { Fragment, h, tw } from "../../../deps.ts";
-import { Page } from "../../../components/page.tsx";
+import { Routable } from "../../../components/routable.tsx";
 import { Module } from "../../../lib/config.ts";
 import { GithubVersions } from "../../../lib/git.ts";
 import { FileOptions } from "../../../lib/resource.ts";
 import { transformGpu } from "../../../lib/styles.ts";
-import { DocumentationNavigation } from "./navigation.tsx";
-import { SecondaryDocumentationNavigation } from "./secondary_navigation.tsx";
+import { ModuleNavigation } from "./module_navigation.tsx";
+import { SecondaryModuleNavigation } from "./module_secondary_navigation.tsx";
 
-export interface ModuleDocumentationPageOptions {
+export interface ModulePageOptions {
   versions: GithubVersions;
   selectedVersion: string;
   docs: Array<FileOptions>;
@@ -23,8 +23,7 @@ export interface ModuleDocumentationPageOptions {
   repository: string;
 }
 
-export class ModuleDocumentationPage
-  extends Page<ModuleDocumentationPageOptions> {
+export class ModulePage extends Routable<ModulePageOptions> {
   render() {
     const prefix = this.prefix.replace("/" + this.props.selectedVersion, "");
     const route = prefix + (this.path === "/" ? "/getting-started" : this.path);
@@ -68,7 +67,7 @@ export class ModuleDocumentationPage
             modules={this.props.modules}
             selectedModule={selectedModule}
           />
-          <DocumentationNavigation docs={docs} prefix={this.prefix} />
+          <ModuleNavigation docs={docs} prefix={this.prefix} />
         </Sidebar>
 
         {/* main */}
@@ -96,7 +95,7 @@ export class ModuleDocumentationPage
                 versions={this.props.versions}
                 selectedVersion={this.props.selectedVersion}
               />
-              <SecondaryDocumentationNavigation file={file} />
+              <SecondaryModuleNavigation file={file} />
             </Sidebar>
           </div>
         </div>

@@ -2,9 +2,9 @@
 
 import { Component, Fragment, h, render } from "../deps.ts";
 import { ChildComponent } from "../lib/types.ts";
-import { Page, PageOptions } from "./page.tsx";
+import { Routable, RoutableOptions } from "./routable.tsx";
 
-type PageComponent = { component: typeof Page; props: PageOptions };
+type PageComponent = { component: typeof Routable; props: RoutableOptions };
 
 export interface RouteOptions {
   path: string | RegExp | Array<string | RegExp>;
@@ -31,5 +31,5 @@ export class Route extends Component<RouteOptions> {
 
 function isPageChild(child: unknown): child is PageComponent {
   // deno-lint-ignore no-explicit-any
-  return (child as any)?.component?.constructor === Page.constructor;
+  return (child as any)?.component?.constructor === Routable.constructor;
 }

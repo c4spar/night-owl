@@ -4,12 +4,12 @@ import { Navigation } from "../../../components/navigation.tsx";
 import { Component, h, render, tw } from "../../../deps.ts";
 import { FileOptions } from "../../../lib/resource.ts";
 
-export interface SecondaryDocumentationNavigationOptions {
+export interface SecondaryModuleNavigationOptions {
   file: FileOptions;
 }
 
-export class SecondaryDocumentationNavigation
-  extends Component<SecondaryDocumentationNavigationOptions> {
+export class SecondaryModuleNavigation
+  extends Component<SecondaryModuleNavigationOptions> {
   render() {
     const headlines = this.props.file.content.match(/\n?#+\s+([^\n]+)/g)?.map(
       (h) => {
