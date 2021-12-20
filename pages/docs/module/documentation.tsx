@@ -62,7 +62,7 @@ export class ModuleDocumentationPage
         <Sidebar position="left" class={tw`${transformGpu} hidden lg:block`}>
           <ModuleSelection
             class={tw`mb-3`}
-            modules={config.modules.map((m) => m.name)}
+            modules={config.modules}
             selectedModule={selectedModule}
           />
           <DocumentationNavigation docs={docs} prefix={this.prefix} />

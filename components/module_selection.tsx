@@ -1,10 +1,10 @@
 /** @jsx h */
 
 import { Component, Fragment, h, Helmet } from "../deps.ts";
-import { Selection } from "./selection.tsx";
+import { Selection, SelectionOption } from "./selection.tsx";
 
 export interface ModuleSelectionOptions {
-  modules: Array<string>;
+  modules: Array<SelectionOption>;
   selectedModule?: string;
   class?: string;
 }

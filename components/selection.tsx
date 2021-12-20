@@ -3,8 +3,13 @@
 import { Component, Fragment, h, render, tw } from "../deps.ts";
 import { transformGpu } from "../lib/styles.ts";
 
+export interface SelectionOption {
+  name: string;
+  label: string;
+}
+
 export interface SelectionOptions {
-  options: Array<string>;
+  options: Array<string | SelectionOption>;
   selected?: string;
   class?: string;
   onchange?: string;
@@ -23,13 +28,16 @@ export class Selection extends Component<SelectionOptions> {
               appearance-none
               ${transformGpu}`}
           >
-            {this.props.options.map((value) =>
-              render(
-                this.props.selected === value
-                  ? <option value={value} selected>{value}</option>
-                  : <option value={value}>{value}</option>,
-              )
-            )}
+            {
+              this.props.options
+                .map(name => typeof name === "string" ? {name: name, label: name} : name)
+                .map(({name, label}) => render(
+                    this.props.selected === name
+                      ? <option value={name} selected>{label}</option>
+                      : <option value={name}>{label}</option>,
+                  ),
+                )
+            }
           </select>
           <div
             class={tw
