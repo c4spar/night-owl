@@ -6,7 +6,7 @@ import { ModuleSelection } from "../../../components/module_selection.tsx";
 import { RouteNotFoundError } from "../../../components/router.tsx";
 import { Sidebar } from "../../../components/sidebar.tsx.tsx";
 import { VersionSelection } from "../../../components/version_selection.tsx";
-import { Fragment, h, Helmet, tw } from "../../../deps.ts";
+import { Fragment, h, tw } from "../../../deps.ts";
 import { Page } from "../../../components/page.tsx";
 import { Module } from "../../../lib/config.ts";
 import { GithubVersions } from "../../../lib/git.ts";
