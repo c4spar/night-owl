@@ -1,4 +1,6 @@
+import { basename, blue, green } from "../deps.ts";
 import { Cache } from "./cache.ts";
+import { joinUrl } from "./utils.ts";
 
 const apiUrl = "https://api.github.com";
 
@@ -47,8 +49,78 @@ export async function getVersions(repository: string): Promise<GithubVersions> {
   };
 }
 
+interface GithubDirEntry {
+  path: string;
+  mode: string;
+  type: "blob" | "tree";
+  sha: string;
+  size: number;
+  url: string;
+}
+
+export async function gitGetDir(
+  repository: string,
+  rev: string,
+  path?: string,
+): Promise<Array<GithubDirEntry & Deno.DirEntry>> {
+  path = path?.replace(/^\/+/, "")
+    .replace(/\/+$/, "");
+
+  const { tree } = await gitFetch<{ tree: Array<GithubDirEntry> }>(
+    repository,
+    `git/trees/${rev}`,
+  );
+
+  if (path) {
+    const [name, ...parts] = path.split("/");
+    for (const file of tree) {
+      if (file.path === name) {
+        return gitGetDir(repository, file.sha, parts.join("/"));
+      }
+    }
+  }
+
+  return tree.map((file) => ({
+    name: basename(file.path),
+    isDirectory: file.type === "tree",
+    isFile: file.type === "blob",
+    isSymlink: false,
+    ...file,
+  }));
+}
+
+export async function* gitReadDir(
+  repository: string,
+  rev: string,
+  path?: string,
+): AsyncGenerator<GithubDirEntry & Deno.DirEntry> {
+  const files = await gitGetDir(repository, rev, path);
+
+  for (const file of files) {
+    if (file.name !== ".github") {
+      yield file;
+    }
+  }
+}
+
+export async function gitReadFile(
+  repository: string,
+  rev: string,
+  path: string,
+): Promise<string> {
+  path = path.replace(/^\//, "")
+    .replace(/\/$/, "");
+
+  const { content } = await gitFetch<{ content: string }>(
+    repository,
+    `contents/${path}?rev=${rev}`,
+  );
+
+  return atob(content);
+}
+
 async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
-  const cacheKey = `${repository}/${endpoint}`;
+  const cacheKey = joinUrl(repository, endpoint);
 
   let data = gitCache.get<GithubResponse & T>(cacheKey);
 
@@ -56,7 +128,7 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
     return data;
   }
 
-  const url = new URL(`repos/${repository}/${endpoint}`, apiUrl).href;
+  const url = new URL(joinUrl("repos", repository, endpoint), apiUrl).href;
 
   const headers = new Headers({ "Content-Type": "application/json" });
 
@@ -65,6 +137,8 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
   if (GITHUB_TOKEN) {
     headers.set("Authorization", `token ${GITHUB_TOKEN}`);
   }
+
+  console.log("Git fetch:", blue(url));
 
   const response = await fetch(url, {
     method: "GET",
@@ -78,10 +152,14 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
 
   data = await response.json();
 
+  console.log("Git fetch done:", green(url));
+
   if (!data) {
     throw new Error("Github request failed: " + url.toString());
   } else if ("message" in data && "documentation_url" in data) {
-    throw new Error(data.message + " " + data.documentation_url);
+    throw new Error(
+      data.message + " " + url.toString() + " --> " + data.documentation_url,
+    );
   }
 
   gitCache.set(cacheKey, data);

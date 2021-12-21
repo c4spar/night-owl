@@ -1,10 +1,11 @@
 /** @jsx h */
 
 import { Component, Fragment, h, Helmet } from "../deps.ts";
-import { Selection, SelectionOption } from "./selection.tsx";
+import { FileOptions } from "../lib/resource.ts";
+import { Selection } from "./selection.tsx";
 
 export interface ModuleSelectionOptions {
-  modules: Array<SelectionOption>;
+  modules: Array<FileOptions>;
   selectedModule?: string;
   class?: string;
 }
@@ -27,7 +28,10 @@ export class ModuleSelection extends Component<ModuleSelectionOptions> {
         </Helmet>
         <Selection
           class={this.props.class}
-          options={this.props.modules}
+          options={this.props.modules.map((module) => ({
+            value: module.routeName.replace(/^\/+/, ""),
+            label: module.label,
+          }))}
           selected={this.props.selectedModule}
           onchange="switchModule(this.value)"
         />

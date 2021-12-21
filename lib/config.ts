@@ -1,11 +1,5 @@
 import { getVersions, GithubVersions } from "./git.ts";
-import { Example, FileOptions, getDirNames, getFiles } from "./resource.ts";
-import { capitalize } from "./utils.ts";
-
-export interface Module {
-  label: string;
-  name: string;
-}
+import { Example, FileOptions, getFiles } from "./resource.ts";
 
 export interface AppDirectories {
   benchmarks: string;
@@ -24,7 +18,7 @@ export interface AppConfig extends AppOptions {
   docs: Array<FileOptions>;
   examples: Array<Example>;
   versions: GithubVersions;
-  modules: Array<Module>;
+  modules: Array<FileOptions>;
 }
 
 export async function createConfig(options: AppOptions): Promise<AppConfig> {
@@ -40,15 +34,24 @@ export async function createConfig(options: AppOptions): Promise<AppConfig> {
 
   const [versions, examples, benchmarks, docs, modules] = await Promise.all([
     getVersions(opts.repository),
-    getFiles(opts.directories.examples),
-    getFiles(opts.directories.benchmarks),
-    getFiles(opts.directories.docs, true, true, (file) => {
-      const regex = new RegExp(`^\/${opts.directories.docs}`);
-      file.route = file.route.replace(regex, "/docs");
-      file.routePrefix = file.routePrefix.replace(regex, "/docs");
-      return file;
+    getFiles(opts.directories.examples, {
+      pattern: /\.ts$/,
+      read: true,
     }),
-    getDirNames(opts.directories.docs),
+    getFiles(opts.directories.benchmarks, {
+      pattern: /\.json/,
+      read: true,
+    }),
+    getFiles(opts.directories.docs, {
+      recursive: true,
+      includeDirs: true,
+      pattern: /\.md/,
+      read: true,
+    }),
+    getFiles(opts.directories.docs, {
+      includeDirs: true,
+      includeFiles: false,
+    }),
   ]);
 
   return {
@@ -60,7 +63,7 @@ export async function createConfig(options: AppOptions): Promise<AppConfig> {
       content: file.content.replace(/#!.+\n+/, ""),
       shebang: file.content.split("\n")[0],
     })),
-    modules: modules.map((name) => ({ name, label: capitalize(name) })),
+    modules,
     versions,
   };
 }

@@ -2,12 +2,11 @@
 
 import { Link } from "../../components/link.tsx";
 import { Component, h, render, tw } from "../../deps.ts";
-import { Module } from "../../lib/config.ts";
-import { joinUrl } from "../../lib/utils.ts";
+import { FileOptions } from "../../lib/resource.ts";
 
 export interface DocumentationHeaderOptions {
   prefix: string;
-  modules: Array<Module>;
+  modules: Array<FileOptions>;
 }
 
 export class DocumentationHeader extends Component<DocumentationHeaderOptions> {
@@ -20,7 +19,7 @@ export class DocumentationHeader extends Component<DocumentationHeaderOptions> {
         >
           {this.props.modules.map((module) =>
             render(
-              <Link href={joinUrl(this.props.prefix, module.name)}>
+              <Link href={module.route}>
                 {module.label}
               </Link>,
             )

@@ -2,12 +2,12 @@
 
 import { h, tw } from "../../deps.ts";
 import { Routable } from "../../components/routable.tsx";
+import { FileOptions } from "../../lib/resource.ts";
 import { DocumentationHeader } from "./docs_header.tsx";
-import { Module } from "../../lib/config.ts";
 import { transformGpu } from "../../lib/styles.ts";
 
 export interface GetStartedPageOptions {
-  modules: Array<Module>;
+  modules: Array<FileOptions>;
 }
 
 export class DocsPage extends Routable<GetStartedPageOptions> {

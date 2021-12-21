@@ -4,7 +4,6 @@ import { Routable } from "../../components/routable.tsx";
 import { Route } from "../../components/route.tsx";
 import { Router } from "../../components/router.tsx";
 import { Fragment, h, Helmet, tw } from "../../deps.ts";
-import { Module } from "../../lib/config.ts";
 import { GithubVersions } from "../../lib/git.ts";
 import { FileOptions } from "../../lib/resource.ts";
 import { ModulePage } from "./module/module_page.tsx";
@@ -13,7 +12,7 @@ import { DocsPage } from "./docs_page.tsx";
 export interface DocsRouterOptions {
   versions: GithubVersions;
   docs: Array<FileOptions>;
-  modules: Array<Module>;
+  modules: Array<FileOptions>;
   repository: string;
 }
 
@@ -30,7 +29,7 @@ export class DocsRouter extends Routable<DocsRouterOptions> {
     const selectedVersion = this.prefix.match(versionRegex)?.[1] ??
       this.props.versions.latest;
 
-    const modulePath = this.props.modules.map((module) => `/${module.name}`);
+    const modulePath = this.props.modules.map((module) => module.routeName);
 
     return (
       <Fragment>
@@ -40,7 +39,7 @@ export class DocsRouter extends Routable<DocsRouterOptions> {
 
         {/* documentation router */}
         <Router url={this.url} prefix={this.prefix}>
-          <Route path={["/", "/getting-started"]}>
+          <Route path={["/"]}>
             <DocsPage modules={this.props.modules} />
           </Route>
           <Route path={modulePath} partialMatch>

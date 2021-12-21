@@ -1,6 +1,13 @@
 import { basename, dirname } from "../deps.ts";
 import { Cache } from "./cache.ts";
-import { pathToUrl, sortByKey } from "./utils.ts";
+import { gitReadDir, gitReadFile } from "./git.ts";
+import {
+  getLabel,
+  joinUrl,
+  parseRemotePath,
+  pathToUrl,
+  sortByKey,
+} from "./utils.ts";
 
 export interface FileOptions {
   path: string;
@@ -11,45 +18,44 @@ export interface FileOptions {
   routeName: string;
   content: string;
   isDirectory: boolean;
+  label: string;
 }
 
 export interface Example extends FileOptions {
   shebang: string;
 }
 
-interface DirEntry extends Deno.DirEntry {
-  path: string;
+export interface ReadDirOptions {
+  recursive?: boolean;
+  includeDirs?: boolean;
+  includeFiles?: boolean;
+  pattern?: RegExp;
+  read?: boolean;
+  prefix?: string;
+}
+
+export interface GetFilesOptions extends ReadDirOptions {
+  map?: (file: FileOptions) => FileOptions;
 }
 
 const getFilesCache = new Cache<Array<FileOptions>>();
-const getDirNamesCache = new Cache<Array<string>>();
 
 export async function getFiles(
   path: string,
-  recursive?: boolean,
-  dirs?: boolean,
-  map?: (file: FileOptions) => FileOptions,
+  opts: GetFilesOptions = {},
 ): Promise<Array<FileOptions>> {
-  const cacheKey = `${path}/${recursive}/${dirs}`;
+  opts.prefix ??= path;
+  const cacheKey = joinUrl(path, `${opts?.recursive}`, `${opts?.includeDirs}`);
 
   let files: Array<FileOptions> | undefined = getFilesCache.get(cacheKey);
   if (files) {
     return files;
   }
-  const entries = await readDir(path, recursive, dirs);
 
-  files = await Promise.all(
-    entries.map((entry) =>
-      entry.isDirectory
-        ? createFile(entry.path, "", entry.isDirectory)
-        : readFile(entry.path)
-    ),
-  );
+  files = await readDir(path, opts);
 
-  files.sort(sortByKey("path"));
-
-  if (map) {
-    files = files.map(map);
+  if (opts?.map) {
+    files = files.map(opts.map);
   }
 
   getFilesCache.set(cacheKey, files);
@@ -57,63 +63,83 @@ export async function getFiles(
   return files;
 }
 
-export async function getDirNames(path: string): Promise<Array<string>> {
-  const cacheKey = path;
-
-  let dirNames: Array<string> | undefined = getDirNamesCache.get(cacheKey);
-  if (dirNames) {
-    return dirNames;
-  }
-  dirNames = [];
-
-  for await (const file of Deno.readDir(path)) {
-    if (file.isDirectory) {
-      dirNames.push(file.name);
-    }
-  }
-
-  dirNames.sort();
-  getDirNamesCache.set(cacheKey, dirNames);
-
-  return dirNames;
-}
-
 async function readDir(
   path: string,
-  recursive?: boolean,
-  dirs?: boolean,
-): Promise<Array<DirEntry>> {
-  const files: Array<DirEntry> = [];
-  for await (const file of Deno.readDir(path)) {
-    if (!file.isDirectory || dirs) {
-      files.push({
-        ...file,
-        path: `${path}/${file.name}`,
-        isDirectory: file.isDirectory,
-      });
+  opts: ReadDirOptions = {},
+  basePath: string = path,
+): Promise<Array<FileOptions>> {
+  const files: Array<FileOptions | Promise<FileOptions | Array<FileOptions>>> =
+    [];
+  opts.includeFiles ??= true;
+
+  const { repository, rev, path: filePath } = parseRemotePath(path);
+
+  for await (const file of read()) {
+    if (!file.isDirectory && (opts?.pattern && !opts.pattern.test(file.name))) {
+      continue;
     }
-    if (file.isDirectory && recursive) {
-      files.push(...await readDir(`${path}/${file.name}`, recursive, dirs));
+    if (file.isDirectory ? opts?.includeDirs : opts?.includeFiles) {
+      const fullPath = joinUrl(filePath, file.name);
+
+      files.push(
+        createFile(fullPath, {
+          ...opts,
+          isDirectory: file.isDirectory,
+          repository,
+          rev,
+          basePath,
+        }),
+      );
+    }
+
+    if (file.isDirectory && opts?.recursive) {
+      files.push(
+        readDir(joinUrl(path, file.name), opts, basePath),
+      );
     }
   }
-  return files.sort();
+
+  return Promise.all(files).then(
+    (files) => files.flat().sort(sortByKey("path")),
+  );
+
+  function read() {
+    return repository
+      ? gitReadDir(repository, rev, filePath)
+      : Deno.readDir(filePath);
+  }
 }
 
-async function readFile(path: string): Promise<FileOptions> {
-  return createFile(path, await Deno.readTextFile(path));
+interface CreateFileOptions {
+  isDirectory: boolean;
+  repository: string;
+  rev: string;
+  basePath: string;
+  prefix?: string;
+  read?: boolean;
 }
 
-function createFile(
+async function createFile(
   path: string,
-  content = "",
-  isDirectory = false,
-): FileOptions {
+  { rev, repository, isDirectory, prefix, basePath, read }: CreateFileOptions,
+): Promise<FileOptions> {
   const fileName = basename(path);
   const dirName = dirname(path);
 
   const routeName = pathToUrl(fileName);
-  const routePrefix = pathToUrl(dirName);
-  const route = routePrefix + routeName;
+  let routePrefix = pathToUrl(dirName);
+
+  if (prefix && basePath) {
+    const { path } = parseRemotePath(prefix);
+    const regex = new RegExp(`^${pathToUrl(path)}`);
+    routePrefix = joinUrl(
+      "/docs",
+      routePrefix.replace(regex, ""),
+    );
+  }
+
+  const route = joinUrl(routePrefix, routeName);
+  const content = read && !isDirectory ? await readTextFile() : "";
 
   return {
     path,
@@ -124,5 +150,12 @@ function createFile(
     routeName,
     isDirectory,
     content,
+    label: getLabel(routeName),
   };
+
+  function readTextFile() {
+    return repository
+      ? gitReadFile(repository, rev, path)
+      : Deno.readTextFile(path);
+  }
 }

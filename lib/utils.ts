@@ -29,27 +29,50 @@ export function sortByKey<K extends string>(name: K) {
 
 export function joinUrl(...path: Array<string | undefined>) {
   let url = "";
+
   for (const part of path) {
-    if (part) {
-      url += "/" + part;
+    if (part && part !== "/" && part !== "." && part !== "./") {
+      url += part + "/";
     }
   }
+
   return url
     // replace double slash's with single slash
-    .replace(/(\.?\/)+/g, "/")
+    .replace(/\/+/g, "/")
     // replace trailing slash
     .replace(/\/$/, "") || "/";
 }
 
 export function pathToUrl(path: string): string {
   return "/" + path
+    // remove dot
+    .replace(/^\.$/, "")
+    // remove leading slash
+    .replace(/^(\/|\.\/)+/, "")
     // remove trailing slash
-    .replace(/^\.?\//, "")
+    .replace(/\/+$/, "")
     // remove ordering prefix
     .replace(/^[0-9]+_/, "")
     .replace(/\/[0-9]+_/g, "/")
     // replace special chars with hyphens
-    .replace(/_/g, "-")
+    .replace(/[_\s]/g, "-")
     // remove file extension
     .replace(/\.[a-zA-Z0-9]+/, "");
+}
+
+export function getLabel(routeName: string): string {
+  return capitalize(
+    routeName
+      .replace(/^\/+/, "")
+      .replace(/\/+$/, "")
+      .replace(/[_-]/g, " "),
+  );
+}
+
+export function parseRemotePath(path: string) {
+  const [_, __, repository, rev, filePath] = path.match(
+    /^((.*)@(.+):)?(.*)/,
+  ) ?? [];
+
+  return { repository, rev, path: filePath || "/" };
 }

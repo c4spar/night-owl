@@ -3,7 +3,7 @@
 import { Navigation } from "../../../components/navigation.tsx";
 import { Component, h, tw } from "../../../deps.ts";
 import { FileOptions } from "../../../lib/resource.ts";
-import { capitalize, joinUrl } from "../../../lib/utils.ts";
+import { joinUrl } from "../../../lib/utils.ts";
 
 export interface ModuleNavigationOptions {
   docs: Array<FileOptions>;
@@ -22,18 +22,11 @@ export class ModuleNavigation extends Component<ModuleNavigationOptions> {
               class={`${tw`p-3 w-full ${marginLeft}`}`}
               href={joinUrl(this.props.prefix, file.routeName)}
             >
-              {this.#getLabel(file.routeName)}
+              {file.label}
             </a>
           );
         })}
       </Navigation>
-    );
-  }
-
-  #getLabel(routeName: string): string {
-    return capitalize(
-      routeName.replace(/^\//, "")
-        .replace(/-/g, " "),
     );
   }
 }

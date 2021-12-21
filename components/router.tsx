@@ -25,12 +25,18 @@ export class Router extends Component<RouterOptions> {
 
   constructor(props: RouterOptions) {
     super(props);
-    this.#url = new URL(this.props.url.replace(/\/+$/, ""));
+    // @TODO: create normalizeUrl method
+    this.#url = new URL(
+      this.props.url
+        .replace(/\/+/, "/")
+        .replace(/\/$/, ""),
+    );
     this.#path = (
       this.props.prefix && this.props.prefix !== "/"
         ? this.#url.pathname.replace(new RegExp(`^${this.props.prefix}`), "")
         : this.#url.pathname
-    ) || "/";
+    ).replace(/\/+/, "/")
+      .replace(/\/$/, "") || "/";
   }
 
   render() {

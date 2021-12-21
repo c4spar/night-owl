@@ -8,10 +8,10 @@ import { Sidebar } from "../../../components/sidebar.tsx.tsx";
 import { VersionSelection } from "../../../components/version_selection.tsx";
 import { Fragment, h, tw } from "../../../deps.ts";
 import { Routable } from "../../../components/routable.tsx";
-import { Module } from "../../../lib/config.ts";
 import { GithubVersions } from "../../../lib/git.ts";
 import { FileOptions } from "../../../lib/resource.ts";
 import { transformGpu } from "../../../lib/styles.ts";
+import { joinUrl } from "../../../lib/utils.ts";
 import { ModuleNavigation } from "./module_navigation.tsx";
 import { SecondaryModuleNavigation } from "./module_secondary_navigation.tsx";
 
@@ -19,25 +19,33 @@ export interface ModulePageOptions {
   versions: GithubVersions;
   selectedVersion: string;
   docs: Array<FileOptions>;
-  modules: Array<Module>;
+  modules: Array<FileOptions>;
   repository: string;
 }
 
 export class ModulePage extends Routable<ModulePageOptions> {
   render() {
     const prefix = this.prefix.replace("/" + this.props.selectedVersion, "");
-    const route = prefix + (this.path === "/" ? "/getting-started" : this.path);
-    const file = this.props.docs.find((file) => file.route === route);
+
+    // Get docs from current module.
+    const docs = this.props.docs.filter((file: FileOptions) =>
+      file.route.startsWith(prefix) && file.route !== prefix
+    );
+
+    if (!docs.length) {
+      throw new RouteNotFoundError();
+    }
+
+    const route = joinUrl(
+      prefix,
+      this.path === "/" ? docs[0].routeName : this.path,
+    );
+    const file = docs.find((file) => file.route === route);
     const selectedModule = this.prefix.split("/").at(-1);
 
     if (!file) {
       throw new RouteNotFoundError();
     }
-
-    // Add selected version to cliffy module imports.
-    const docs = this.props.docs.filter((file: FileOptions) =>
-      file.route.startsWith(prefix) && file.route !== prefix
-    );
 
     // Add selected version to cliffy module imports.
     file.content = file.content

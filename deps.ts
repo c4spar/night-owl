@@ -1,6 +1,6 @@
 /** std */
 export { serve } from "https://deno.land/std@0.117.0/http/server.ts";
-export { blue, red } from "https://deno.land/std@0.117.0/fmt/colors.ts";
+export { blue, green, red } from "https://deno.land/std@0.117.0/fmt/colors.ts";
 export { basename, dirname } from "https://deno.land/std@0.117.0/path/mod.ts";
 
 /** nano_jsx */
