@@ -11,11 +11,10 @@ export interface TabOptions {
 
 export interface EditorOptions {
   tabs: Array<TabOptions>;
+  selected?: string;
 }
 
 export class Editor extends Component<EditorOptions> {
-  #selectedExample = "command.ts";
-
   render() {
     return (
       <Fragment>
@@ -34,21 +33,21 @@ export class Editor extends Component<EditorOptions> {
             {this.props.tabs.map((tab) =>
               this.#renderTabButton(
                 tab,
-                tab.fileName === this.#selectedExample,
+                tab.fileName === this.props.selected,
               )
             )}
           </div>
           {this.props.tabs.map((tab) =>
             this.#renderTabContent(
               tab,
-              tab.fileName === this.#selectedExample,
+              tab.fileName === this.props.selected,
             )
           )}
         </div>
         {this.props.tabs.map((tab) =>
           this.#renderTabExample(
             tab,
-            tab.fileName === this.#selectedExample,
+            tab.fileName === this.props.selected,
           )
         )}
       </Fragment>

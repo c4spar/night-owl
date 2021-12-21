@@ -9,6 +9,7 @@ export interface AppDirectories {
 
 export interface AppOptions {
   repository: string;
+  selectedExample?: string;
   directories?: Partial<AppDirectories>;
 }
 

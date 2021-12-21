@@ -62,7 +62,10 @@ export class App extends Component<AppOptions> {
           {/* main router */}
           <Router url={this.props.url}>
             <Route path="/">
-              <HomePage examples={this.props.config.examples} />
+              <HomePage
+                examples={this.props.config.examples}
+                selectedExample={this.props.config.selectedExample}
+              />
             </Route>
             <Route path={docsPathRegex}>
               <DocsRouter

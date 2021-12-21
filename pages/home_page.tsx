@@ -11,6 +11,7 @@ import { transformGpu } from "../lib/styles.ts";
 
 interface HomePageOptions {
   examples: Array<Example>;
+  selectedExample?: string;
 }
 
 export class HomePage extends Routable<HomePageOptions> {
@@ -86,7 +87,10 @@ export class HomePage extends Routable<HomePageOptions> {
           </div>
 
           <div class={tw`flex-1 transform-gpu`}>
-            <Editor tabs={this.props.examples} />
+            <Editor
+              tabs={this.props.examples}
+              selected={this.props.selectedExample}
+            />
           </div>
         </div>
       </div>
