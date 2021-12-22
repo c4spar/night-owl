@@ -13,10 +13,11 @@ export interface ModuleSelectionOptions {
 export class ModuleSelection extends Component<ModuleSelectionOptions> {
   render() {
     return (
-      <Fragment>
-        <Helmet footer>
-          <script type="application/javascript">
-            {`
+      this.props.modules.length === 0 ? null : (
+        <Fragment>
+          <Helmet footer>
+            <script type="application/javascript">
+              {`
               function switchModule(module) {
                 window.location.href = window.location.href.replace(
                   /(\\/docs(\\/v[0-9]+[^\\/]*)?)\\/([^\\/]+).*/,
@@ -24,18 +25,19 @@ export class ModuleSelection extends Component<ModuleSelectionOptions> {
                 );
               }
           `}
-          </script>
-        </Helmet>
-        <Selection
-          class={this.props.class}
-          options={this.props.modules.map((module) => ({
-            value: module.routeName.replace(/^\/+/, ""),
-            label: module.label,
-          }))}
-          selected={this.props.selectedModule}
-          onchange="switchModule(this.value)"
-        />
-      </Fragment>
+            </script>
+          </Helmet>
+          <Selection
+            class={this.props.class}
+            options={this.props.modules.map((module) => ({
+              value: module.routeName.replace(/^\/+/, ""),
+              label: module.label,
+            }))}
+            selected={this.props.selectedModule}
+            onchange="switchModule(this.value)"
+          />
+        </Fragment>
+      )
     );
   }
 }

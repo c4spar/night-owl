@@ -29,7 +29,10 @@ export class DocsRouter extends Routable<DocsRouterOptions> {
     const selectedVersion = this.prefix.match(versionRegex)?.[1] ??
       this.props.versions.latest;
 
-    const modulePath = this.props.modules.map((module) => module.routeName);
+    const docsPath = this.props.modules.length > 0 ? ["/"] : [];
+    const modulePath = this.props.modules.length > 0
+      ? this.props.modules.map((module) => module.routeName)
+      : ["/"];
 
     return (
       <Fragment>
@@ -39,7 +42,7 @@ export class DocsRouter extends Routable<DocsRouterOptions> {
 
         {/* documentation router */}
         <Router url={this.url} prefix={this.prefix}>
-          <Route path={["/"]}>
+          <Route path={docsPath}>
             <DocsPage modules={this.props.modules} />
           </Route>
           <Route path={modulePath} partialMatch>
