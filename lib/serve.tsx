@@ -5,7 +5,7 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { blue, h, serve as serveHttp } from "../deps.ts";
+import { blue, h, log, serve as serveHttp } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { AppOptions, createConfig } from "./config.ts";
 import { fromRemoteCache } from "./request.ts";
@@ -18,7 +18,7 @@ export async function serve(options: AppOptions) {
   const cache = new Cache<string>();
 
   await serveHttp(async (req) => {
-    console.log(blue(`[${req.method}]`), req.url);
+    log.info(blue(`[${req.method}]`), req.url);
 
     if (req.method !== "GET") {
       return new Response("Bad Request", { status: 400 });

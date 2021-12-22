@@ -1,4 +1,4 @@
-import { basename, blue, green } from "../deps.ts";
+import { basename, blue, green, log } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { joinUrl } from "./utils.ts";
 
@@ -138,7 +138,7 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
     headers.set("Authorization", `token ${GITHUB_TOKEN}`);
   }
 
-  console.log("Git fetch:", blue(url));
+  log.debug("Git fetch:", blue(url));
 
   const response = await fetch(url, {
     method: "GET",
@@ -152,7 +152,7 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
 
   data = await response.json();
 
-  console.log("Git fetch done:", green(url));
+  log.debug("Git fetch done:", green(url));
 
   if (!data) {
     throw new Error("Github request failed: " + url.toString());
