@@ -68,6 +68,7 @@ export async function createConfig(options: AppOptions): Promise<AppConfig> {
 
   return {
     rev: "main",
+    selectedExample: examples[0]?.fileName.replace(/^\//, ""),
     ...opts,
     benchmarks,
     docs,
