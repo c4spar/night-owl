@@ -21,6 +21,7 @@ export interface ModulePageOptions {
   docs: Array<FileOptions>;
   modules: Array<FileOptions>;
   repository: string;
+  rev: string;
 }
 
 export class ModulePage extends Routable<ModulePageOptions> {
@@ -90,6 +91,7 @@ export class ModulePage extends Routable<ModulePageOptions> {
               <EditPageOnGithub
                 path={file.path}
                 repository={this.props.repository}
+                rev={this.props.rev}
               />
             </main>
 

@@ -10,11 +10,13 @@ export interface AppDirectories {
 
 export interface AppOptions {
   repository: string;
+  rev?: string;
   selectedExample?: string;
   directories?: Partial<AppDirectories>;
 }
 
 export interface AppConfig extends AppOptions {
+  rev: string;
   directories: AppDirectories;
   benchmarks: Array<FileOptions>;
   docs: Array<FileOptions>;
@@ -65,6 +67,7 @@ export async function createConfig(options: AppOptions): Promise<AppConfig> {
   );
 
   return {
+    rev: "main",
     ...opts,
     benchmarks,
     docs,

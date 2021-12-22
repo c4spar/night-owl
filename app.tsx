@@ -73,6 +73,7 @@ export class App extends Component<AppOptions> {
                 docs={this.props.config.docs}
                 modules={this.props.config.modules}
                 repository={this.props.config.repository}
+                rev={this.props.config.rev}
               />
             </Route>
             <Route path="/benchmarks">

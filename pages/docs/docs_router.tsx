@@ -14,6 +14,7 @@ export interface DocsRouterOptions {
   docs: Array<FileOptions>;
   modules: Array<FileOptions>;
   repository: string;
+  rev: string;
 }
 
 export class DocsRouter extends Routable<DocsRouterOptions> {
@@ -52,6 +53,7 @@ export class DocsRouter extends Routable<DocsRouterOptions> {
               docs={this.props.docs}
               modules={this.props.modules}
               repository={this.props.repository}
+              rev={this.props.rev}
             />
           </Route>
         </Router>

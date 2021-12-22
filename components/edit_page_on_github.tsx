@@ -8,6 +8,7 @@ import { transformGpu } from "../lib/styles.ts";
 export interface EditPageOnGithubOptions {
   path: string;
   repository: string;
+  rev: string;
 }
 
 export class EditPageOnGithub extends Component<EditPageOnGithubOptions> {
@@ -21,7 +22,7 @@ export class EditPageOnGithub extends Component<EditPageOnGithubOptions> {
       >
         <a
           class={tw`mt-10 text-sm`}
-          href={`https://github.com/${this.props.repository}/edit/main/${this.props.path}`}
+          href={`https://github.com/${this.props.repository}/edit/${this.props.rev}/${this.props.path}`}
           target="_blank"
         >
           Edit this page on GitHub
