@@ -1,6 +1,4 @@
-import { getStyleTag } from "https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=imports/optimized/twind/sheets.js";
-import { Helmet } from "https://deno.land/x/nano_jsx@v0.0.26/components/helmet.ts";
-import { renderSSR } from "https://deno.land/x/nano_jsx@v0.0.26/ssr.ts";
+import { getStyleTag, Helmet, renderSSR } from "../deps.ts";
 import { sheet } from "./sheet.ts";
 
 interface DocumentOptions {
