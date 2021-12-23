@@ -12,7 +12,9 @@ export function stringToColor(str: string): string {
 }
 
 export function capitalize(str: string): string {
-  return str[0].toUpperCase() + str.slice(1);
+  return str.length > 0
+    ? str[0].toUpperCase() + (str.length > 1 ? str.slice(1) : "")
+    : str;
 }
 
 export function sortByKey<K extends string>(name: K) {
@@ -61,12 +63,12 @@ export function pathToUrl(path: string): string {
 }
 
 export function getLabel(routeName: string): string {
-  return capitalize(
-    routeName
-      .replace(/^\/+/, "")
-      .replace(/\/+$/, "")
-      .replace(/[_-]/g, " "),
-  );
+  const label = routeName
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "")
+    .replace(/[_-]/g, " ");
+
+  return label.length > 0 ? capitalize(label) : label;
 }
 
 export function parseRemotePath(path: string) {
