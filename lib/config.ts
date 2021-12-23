@@ -12,6 +12,7 @@ export interface AppOptions {
   repository: string;
   rev?: string;
   selectedExample?: string;
+  moduleSelection?: boolean;
   directories?: Partial<AppDirectories>;
 }
 
@@ -27,6 +28,7 @@ export interface AppConfig extends AppOptions {
 
 export async function createConfig(options: AppOptions): Promise<AppConfig> {
   const opts = {
+    moduleSelection: true,
     ...options,
     directories: {
       docs: "docs",
@@ -77,7 +79,7 @@ export async function createConfig(options: AppOptions): Promise<AppConfig> {
       content: file.content.replace(/#!.+\n+/, ""),
       shebang: file.content.split("\n")[0],
     })),
-    modules,
+    modules: opts.moduleSelection ? modules : [],
     versions,
   };
 }
