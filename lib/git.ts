@@ -1,4 +1,4 @@
-import { basename, blue, green, log } from "../deps.ts";
+import { basename, blue, decodeBase64, green, log, lookup } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { joinUrl } from "./utils.ts";
 
@@ -104,20 +104,31 @@ export async function* gitReadDir(
   }
 }
 
+const decoder = new TextDecoder("utf8");
+
 export async function gitReadFile(
   repository: string,
   rev: string,
   path: string,
+  base64?: boolean,
 ): Promise<string> {
   path = path.replace(/^\//, "")
     .replace(/\/$/, "");
 
-  const { content } = await gitFetch<{ content: string }>(
+  const file = await gitFetch<{ content: string }>(
     repository,
     `contents/${path}?rev=${rev}`,
   );
 
-  return atob(content);
+  try {
+    return base64
+      ? `data:${lookup(path)};charset=utf-8;base64,${file.content}`
+      : decoder.decode(decodeBase64(file.content));
+  } catch (error: unknown) {
+    throw new Error("Failed to decode base64 string: " + file.content, {
+      cause: error instanceof Error ? error : undefined,
+    });
+  }
 }
 
 async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {

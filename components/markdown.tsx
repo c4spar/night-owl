@@ -1,4 +1,5 @@
 /** @jsx h */
+
 import {
   apply,
   Component,
@@ -9,17 +10,18 @@ import {
   Helmet,
   tw,
 } from "../deps.ts";
+import { FileOptions } from "../lib/resource.ts";
 import { syntaxHighlighting, textMain, transformGpu } from "../lib/styles.ts";
 import { joinUrl, pathToUrl } from "../lib/utils.ts";
 
 export interface MarkdownOptions {
-  content: string;
+  file: FileOptions;
   prefix: string;
 }
 
 export class Markdown extends Component<MarkdownOptions> {
   render() {
-    let html = comrak.markdownToHTML(this.props.content, {
+    let html = comrak.markdownToHTML(this.props.file.content, {
       render: {
         escape: false,
         githubPreLang: false,
@@ -49,6 +51,15 @@ export class Markdown extends Component<MarkdownOptions> {
         /<a href="(.+\.md)">/g,
         (_, path) =>
           `<a href="${joinUrl(this.props.prefix, pathToUrl(path))}">`,
+      )
+      // replace local image urls with data urls
+      .replace(
+        /<img src="([^"]+)"/g,
+        (_, path) => {
+          return `<img src="${this.props.file.assets.find((asset) =>
+            this.props.file.dirName + "/" + path === asset.path
+          )?.content}"`;
+        },
       )
       // add anchor link
       .replace(

@@ -64,8 +64,13 @@ const links = css({
   },
 });
 
+const images = css({
+  "p img": apply`mt-5 mb-5`,
+});
+
 export const mainStyles = css(
   globalStyles,
   headlines,
   links,
+  images,
 );

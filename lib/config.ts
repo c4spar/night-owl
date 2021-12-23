@@ -54,6 +54,7 @@ export async function createConfig(options: AppOptions): Promise<AppConfig> {
     getFiles(opts.directories.docs, {
       recursive: true,
       includeDirs: true,
+      loadAssets: true,
       pattern: /\.md/,
       read: true,
     }),

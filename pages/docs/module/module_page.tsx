@@ -26,6 +26,7 @@ export interface ModulePageOptions {
 
 export class ModulePage extends Routable<ModulePageOptions> {
   render() {
+    // remove version from prefix
     const prefix = this.prefix.replace("/" + this.props.selectedVersion, "");
 
     // Get docs from current module.
@@ -42,7 +43,7 @@ export class ModulePage extends Routable<ModulePageOptions> {
       this.path === "/" ? docs[0].routeName : this.path,
     );
     const file = docs.find((file) => file.route === route);
-    const selectedModule = this.prefix.split("/").at(-1);
+    const selectedModule = prefix.match(/^\/docs(\/([^\/]*))/)?.[2];
 
     if (!file) {
       throw new RouteNotFoundError();
@@ -87,7 +88,7 @@ export class ModulePage extends Routable<ModulePageOptions> {
           >
             {/* content */}
             <main class={tw`${transformGpu} relative`}>
-              <Markdown content={file.content} prefix={this.prefix} />
+              <Markdown file={file} prefix={this.prefix} />
               <EditPageOnGithub
                 path={file.path}
                 repository={this.props.repository}

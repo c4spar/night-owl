@@ -6,10 +6,17 @@ export {
   green,
   red,
 } from "https://deno.land/std@0.117.0/fmt/colors.ts";
-export { basename, dirname } from "https://deno.land/std@0.117.0/path/mod.ts";
-import * as log from "https://deno.land/std@0.117.0/log/mod.ts";
-
-export { log };
+export {
+  basename,
+  dirname,
+  extname,
+} from "https://deno.land/std@0.117.0/path/mod.ts";
+export * as log from "https://deno.land/std@0.117.0/log/mod.ts";
+export { lookup } from "https://deno.land/x/media_types@v2.11.1/mod.ts";
+export {
+  decode as decodeBase64,
+  encode as encodeBase64,
+} from "https://deno.land/std@0.117.0/encoding/base64.ts";
 
 /** nano_jsx */
 export { Helmet } from "https://deno.land/x/nano_jsx@v0.0.26/components/helmet.ts";

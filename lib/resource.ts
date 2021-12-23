@@ -1,4 +1,4 @@
-import { basename, dirname } from "../deps.ts";
+import { basename, dirname, encodeBase64, lookup } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { gitReadDir, gitReadFile } from "./git.ts";
 import {
@@ -10,6 +10,7 @@ import {
 } from "./utils.ts";
 
 export interface FileOptions {
+  basePath: string;
   path: string;
   dirName: string;
   fileName: string;
@@ -19,6 +20,7 @@ export interface FileOptions {
   content: string;
   isDirectory: boolean;
   label: string;
+  assets: Array<FileOptions>;
 }
 
 export interface Example extends FileOptions {
@@ -29,6 +31,7 @@ export interface ReadDirOptions {
   recursive?: boolean;
   includeDirs?: boolean;
   includeFiles?: boolean;
+  loadAssets?: boolean;
   pattern?: RegExp;
   read?: boolean;
   prefix?: string;
@@ -100,7 +103,7 @@ async function readDir(
   }
 
   return Promise.all(files).then(
-    (files) => files.flat().sort(sortByKey("path")),
+    (files) => repository ? files.flat() : files.flat().sort(sortByKey("path")),
   );
 
   function read() {
@@ -117,12 +120,25 @@ interface CreateFileOptions {
   basePath: string;
   prefix?: string;
   read?: boolean;
+  loadAssets?: boolean;
+  base64?: true;
 }
 
 async function createFile(
   path: string,
-  { rev, repository, isDirectory, prefix, basePath, read }: CreateFileOptions,
+  opts: CreateFileOptions,
 ): Promise<FileOptions> {
+  const {
+    rev,
+    repository,
+    isDirectory,
+    prefix,
+    basePath,
+    read,
+    loadAssets,
+    base64,
+  } = opts;
+
   const fileName = basename(path);
   const dirName = dirname(path);
 
@@ -141,6 +157,10 @@ async function createFile(
   const route = joinUrl(routePrefix, routeName);
   const content = read && !isDirectory ? await readTextFile() : "";
 
+  const assets = loadAssets && !isDirectory
+    ? await getAssets(path, content, opts)
+    : [];
+
   return {
     path,
     dirName,
@@ -150,12 +170,61 @@ async function createFile(
     routeName,
     isDirectory,
     content,
+    basePath,
+    assets,
     label: getLabel(routeName),
   };
 
-  function readTextFile() {
-    return repository
-      ? gitReadFile(repository, rev, path)
-      : Deno.readTextFile(path);
+  async function readTextFile() {
+    try {
+      return repository
+        ? await gitReadFile(repository, rev, path, base64)
+        : await denoReadFile(path, base64);
+    } catch (error: unknown) {
+      throw new Error("Failed to read file: " + path, {
+        cause: error instanceof Error ? error : undefined,
+      });
+    }
   }
+}
+
+const decoder = new TextDecoder("utf8");
+
+async function denoReadFile(path: string, base64?: boolean): Promise<string> {
+  const file = await Deno.readFile(path);
+  if (base64) {
+    try {
+      return `data:${lookup(path)};charset=utf-8;base64,${encodeBase64(file)}`;
+    } catch (error: unknown) {
+      throw new Error("Failed to encode base64 string: " + path, {
+        cause: error instanceof Error ? error : undefined,
+      });
+    }
+  }
+
+  return decoder.decode(file);
+}
+
+function getAssets(
+  filePath: string,
+  content: string,
+  opts: CreateFileOptions,
+): Promise<Array<FileOptions>> {
+  const imgRegex1 = /!\[[^\]]*]\(([^)]+)\)/g;
+  const imgRegex2 = /!\[[^\]]*]\(([^)]+)\)/;
+  const matches = content.match(imgRegex1) ?? [];
+  const base = dirname(filePath);
+  return Promise.all(
+    matches
+      .map((match): Promise<FileOptions> | null => {
+        const [_, path] = match.match(imgRegex2) ?? [];
+        return path.startsWith("http://") || path.startsWith("https://")
+          ? null
+          : createFile(joinUrl(base, path), {
+            ...opts,
+            base64: true,
+          });
+      })
+      .filter((file) => file) as Array<Promise<FileOptions>>,
+  );
 }

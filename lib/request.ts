@@ -1,6 +1,7 @@
 import { Cache } from "./cache.ts";
 
-const cache: Cache<string> = new Cache();
+const remoteCache: Cache<ArrayBuffer> = new Cache();
+const localCache: Cache<Uint8Array> = new Cache();
 
 export async function fromLocalCache(
   path: string,
@@ -21,21 +22,21 @@ export async function fromRemoteCache(
   });
 }
 
-async function getLocalFile(path: string): Promise<string> {
-  let content = cache.get(path);
+export async function getLocalFile(path: string): Promise<Uint8Array> {
+  let content = localCache.get(path);
   if (content) {
     return content;
   }
-  content = await Deno.readTextFile(path);
-  cache.set(path, content);
+  content = await Deno.readFile(path);
+  localCache.set(path, content);
   return content;
 }
 
 async function getRemoteFile(
   url: string,
   req: Request,
-): Promise<string> {
-  let content = cache.get(url);
+): Promise<ArrayBuffer> {
+  let content = remoteCache.get(url);
   if (content) {
     return content;
   }
@@ -44,7 +45,7 @@ async function getRemoteFile(
     method: req.method,
     body: req.body,
   });
-  content = await response.text();
-  cache.set(url, content);
+  content = await response.arrayBuffer();
+  remoteCache.set(url, content);
   return content;
 }
