@@ -25,7 +25,8 @@ export class SecondaryModuleNavigation
     return (
       <Navigation>
         {render(headlines?.map((headline) => {
-          const marginLeft = "ml-" + (headline.size - 1) * 4;
+          const rem = headline.size - 1;
+          const marginLeft = `pl-[${rem}rem]`;
           return (
             <a
               class={`${tw`p-3 w-full ${marginLeft}`}`}
