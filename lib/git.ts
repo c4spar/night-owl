@@ -97,7 +97,8 @@ export async function* gitReadDir(
   const files = await gitGetDir(repository, rev, path);
 
   for (const file of files) {
-    if (file.name !== ".github") {
+    // ignore hidden files
+    if (file.name[0] !== ".") {
       yield file;
     }
   }
