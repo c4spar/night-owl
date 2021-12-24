@@ -50,9 +50,10 @@ export async function getFiles(
   path: string,
   opts: GetFilesOptions,
 ): Promise<Array<FileOptions>> {
+  const cacheKey = JSON.stringify({path, opts});
   opts.prefix ??= path;
 
-  let files: Array<FileOptions> | undefined = getFilesCache.get(opts.cacheKey);
+  let files: Array<FileOptions> | undefined = getFilesCache.get(cacheKey);
   if (files) {
     return files;
   }
@@ -63,7 +64,7 @@ export async function getFiles(
     files = files.map(opts.map);
   }
 
-  getFilesCache.set(opts.cacheKey, files);
+  getFilesCache.set(cacheKey, files);
 
   return files;
 }
