@@ -66,7 +66,7 @@ export async function serve(options: AppOptions) {
       default: {
         let html: string | undefined = cache.get(req.url);
         if (!html) {
-          const config = await createConfig(options);
+          const config = await createConfig(options, req);
           html = ssr(<App url={req.url} config={config} />);
         }
 

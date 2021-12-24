@@ -78,3 +78,22 @@ export function parseRemotePath(path: string) {
 
   return { repository, rev, path: filePath || "/" };
 }
+
+export function getVersionsPattern(versions: Array<string>): string {
+  return "(" +
+    versions
+      .map((version) => version.replace(/\./g, "\."))
+      .join("|") +
+    ")";
+}
+
+export function getVersionsRegex(versions: Array<string>): RegExp {
+  return new RegExp(`^/docs(@${getVersionsPattern(versions)})`);
+}
+
+export function matchVersion(
+  url: string,
+  versions: Array<string>,
+): string | undefined {
+  return url.match(getVersionsRegex(versions))?.[2];
+}

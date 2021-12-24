@@ -3,6 +3,7 @@
 import { PageBackground } from "./components/page_background.tsx";
 import { AppConfig } from "./lib/config.ts";
 import { mainStyles } from "./lib/styles.ts";
+import { getVersionsRegex } from "./lib/utils.ts";
 import { DocsRouter } from "./pages/docs/docs_router.tsx";
 import { Header } from "./components/header.tsx";
 import { Router } from "./components/router.tsx";
@@ -18,12 +19,6 @@ interface AppOptions {
 
 export class App extends Component<AppOptions> {
   render() {
-    const versions = this.props.config.versions.versions
-      .map((version) => version.replace(/\./g, "\."))
-      .join("|");
-
-    const docsPathRegex = new RegExp(`^/docs/?(${versions})?`);
-
     return (
       <div class={tw`${mainStyles} mb-7`}>
         <Helmet footer>
@@ -67,13 +62,14 @@ export class App extends Component<AppOptions> {
                 selectedExample={this.props.config.selectedExample}
               />
             </Route>
-            <Route path={docsPathRegex}>
+            <Route path={getVersionsRegex(this.props.config.versions.versions)}>
               <DocsRouter
                 versions={this.props.config.versions}
                 docs={this.props.config.docs}
                 modules={this.props.config.modules}
                 repository={this.props.config.repository}
                 rev={this.props.config.rev}
+                selectedVersion={this.props.config.selectedVersion}
               />
             </Route>
             <Route path="/benchmarks">

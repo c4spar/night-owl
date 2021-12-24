@@ -1,6 +1,7 @@
 import { blue, bold, log } from "../deps.ts";
 import { getVersions, GithubVersions } from "./git.ts";
 import { Example, FileOptions, getFiles } from "./resource.ts";
+import { matchVersion } from "./utils.ts";
 
 export interface AppDirectories {
   benchmarks: string;
@@ -13,10 +14,12 @@ export interface AppOptions {
   rev?: string;
   selectedExample?: string;
   moduleSelection?: boolean;
+  versions?: Array<string>;
   directories?: Partial<AppDirectories>;
+  signal?: AbortSignal;
 }
 
-export interface AppConfig extends AppOptions {
+export interface AppConfig extends Omit<AppOptions, "versions"> {
   rev: string;
   directories: AppDirectories;
   benchmarks: Array<FileOptions>;
@@ -24,11 +27,14 @@ export interface AppConfig extends AppOptions {
   examples: Array<Example>;
   versions: GithubVersions;
   modules: Array<FileOptions>;
+  selectedVersion: string;
 }
 
-export async function createConfig(options: AppOptions): Promise<AppConfig> {
+export async function createConfig(
+  options: AppOptions,
+  req: Request,
+): Promise<AppConfig> {
   const opts = {
-    moduleSelection: true,
     ...options,
     directories: {
       docs: "docs",
@@ -41,15 +47,31 @@ export async function createConfig(options: AppOptions): Promise<AppConfig> {
   const now = Date.now();
   log.info(bold("Fetching resources..."));
 
-  const [versions, examples, benchmarks, docs, modules] = await Promise.all([
-    getVersions(opts.repository),
+  const versions = opts.versions
+    ? {
+      versions: opts.versions,
+      tags: [],
+      branches: [],
+      latest: opts.versions[0],
+    }
+    : await getVersions(opts.repository);
+
+  const selectedVersion = matchVersion(
+    new URL(req.url).pathname,
+    versions.versions,
+  );
+  const rev = selectedVersion ?? versions.latest;
+
+  const [examples, benchmarks, docs, modules] = await Promise.all([
     getFiles(opts.directories.examples, {
       pattern: /\.ts$/,
       read: true,
+      cacheKey: req.url,
     }),
     getFiles(opts.directories.benchmarks, {
       pattern: /\.json/,
       read: true,
+      cacheKey: req.url,
     }),
     getFiles(opts.directories.docs, {
       recursive: true,
@@ -57,10 +79,16 @@ export async function createConfig(options: AppOptions): Promise<AppConfig> {
       loadAssets: true,
       pattern: /\.md/,
       read: true,
+      cacheKey: req.url,
+      rev,
+      selectedVersion,
     }),
     getFiles(opts.directories.docs, {
       includeDirs: true,
       includeFiles: false,
+      cacheKey: req.url,
+      rev,
+      selectedVersion,
     }),
   ]);
 
@@ -71,6 +99,8 @@ export async function createConfig(options: AppOptions): Promise<AppConfig> {
 
   return {
     rev: "main",
+    moduleSelection: true,
+    selectedVersion: rev,
     selectedExample: examples[0]?.fileName.replace(/^\//, ""),
     ...opts,
     benchmarks,

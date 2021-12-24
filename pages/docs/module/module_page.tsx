@@ -26,12 +26,9 @@ export interface ModulePageOptions {
 
 export class ModulePage extends Routable<ModulePageOptions> {
   render() {
-    // remove version from prefix
-    const prefix = this.prefix.replace("/" + this.props.selectedVersion, "");
-
     // Get docs from current module.
     const docs = this.props.docs.filter((file: FileOptions) =>
-      file.route.startsWith(prefix) && file.route !== prefix
+      file.route.startsWith(this.prefix) && file.route !== this.prefix
     );
 
     if (!docs.length) {
@@ -39,11 +36,11 @@ export class ModulePage extends Routable<ModulePageOptions> {
     }
 
     const route = joinUrl(
-      prefix,
+      this.prefix,
       this.path === "/" ? docs[0].routeName : this.path,
     );
     const file = docs.find((file) => file.route === route);
-    const selectedModule = prefix.match(/^\/docs(\/([^\/]*))/)?.[2];
+    const selectedModule = this.prefix.match(/^\/docs(@.+)?(\/([^\/]*))/)?.[3];
 
     if (!file) {
       throw new RouteNotFoundError();

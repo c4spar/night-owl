@@ -2,6 +2,7 @@
 
 import { Component, Fragment, h, Helmet } from "../deps.ts";
 import { GithubVersions } from "../lib/git.ts";
+import { getVersionsPattern } from "../lib/utils.ts";
 import { Selection } from "./selection.tsx";
 
 export interface VersionSelectionOptions {
@@ -12,10 +13,6 @@ export interface VersionSelectionOptions {
 
 export class VersionSelection extends Component<VersionSelectionOptions> {
   render() {
-    const versions = this.props.versions.versions
-      .map((version) => version.replace(/\./g, "\."))
-      .join("|");
-
     return (
       <Fragment>
         <Helmet footer>
@@ -23,8 +20,10 @@ export class VersionSelection extends Component<VersionSelectionOptions> {
             {`
             function switchVersion(version) {
               window.location.href = window.location.href.replace(
-                new RegExp("/docs/?((${versions})/?)?"),
-                "/docs/" + version + "/",
+                new RegExp("/docs(@${
+              getVersionsPattern(this.props.versions.versions)
+            }/?)?"),
+                "/docs@" + version + "/",
               );
             }
           `}

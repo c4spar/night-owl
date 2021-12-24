@@ -35,6 +35,9 @@ export interface ReadDirOptions {
   pattern?: RegExp;
   read?: boolean;
   prefix?: string;
+  rev?: string;
+  selectedVersion?: string;
+  cacheKey: string;
 }
 
 export interface GetFilesOptions extends ReadDirOptions {
@@ -45,12 +48,11 @@ const getFilesCache = new Cache<Array<FileOptions>>();
 
 export async function getFiles(
   path: string,
-  opts: GetFilesOptions = {},
+  opts: GetFilesOptions,
 ): Promise<Array<FileOptions>> {
   opts.prefix ??= path;
-  const cacheKey = joinUrl(path, `${opts?.recursive}`, `${opts?.includeDirs}`);
 
-  let files: Array<FileOptions> | undefined = getFilesCache.get(cacheKey);
+  let files: Array<FileOptions> | undefined = getFilesCache.get(opts.cacheKey);
   if (files) {
     return files;
   }
@@ -61,14 +63,14 @@ export async function getFiles(
     files = files.map(opts.map);
   }
 
-  getFilesCache.set(cacheKey, files);
+  getFilesCache.set(opts.cacheKey, files);
 
   return files;
 }
 
 async function readDir(
   path: string,
-  opts: ReadDirOptions = {},
+  opts: ReadDirOptions,
   basePath: string = path,
 ): Promise<Array<FileOptions>> {
   const files: Array<FileOptions | Promise<FileOptions | Array<FileOptions>>> =
@@ -86,10 +88,10 @@ async function readDir(
 
       files.push(
         createFile(fullPath, {
+          rev,
           ...opts,
           isDirectory: file.isDirectory,
           repository,
-          rev,
           basePath,
         }),
       );
@@ -117,6 +119,7 @@ interface CreateFileOptions {
   isDirectory: boolean;
   repository: string;
   rev: string;
+  selectedVersion?: string;
   basePath: string;
   prefix?: string;
   read?: boolean;
@@ -128,25 +131,14 @@ async function createFile(
   path: string,
   opts: CreateFileOptions,
 ): Promise<FileOptions> {
-  const {
-    rev,
-    repository,
-    isDirectory,
-    prefix,
-    basePath,
-    read,
-    loadAssets,
-    base64,
-  } = opts;
-
   const fileName = basename(path);
   const dirName = dirname(path);
 
   const routeName = pathToUrl(fileName);
   let routePrefix = pathToUrl(dirName);
 
-  if (prefix && basePath) {
-    const { path } = parseRemotePath(prefix);
+  if (opts.prefix && opts.basePath) {
+    const { path } = parseRemotePath(opts.prefix);
     const regex = new RegExp(`^${pathToUrl(path)}`);
     routePrefix = joinUrl(
       "/docs",
@@ -154,10 +146,14 @@ async function createFile(
     );
   }
 
-  const route = joinUrl(routePrefix, routeName);
-  const content = read && !isDirectory ? await readTextFile() : "";
+  if (opts.selectedVersion) {
+    routePrefix = routePrefix.replace(/\/docs/, "/docs@" + opts.rev);
+  }
 
-  const assets = loadAssets && !isDirectory
+  const route = joinUrl(routePrefix, routeName);
+  const content = opts.read && !opts.isDirectory ? await readTextFile() : "";
+
+  const assets = opts.loadAssets && !opts.isDirectory
     ? await getAssets(path, content, opts)
     : [];
 
@@ -168,18 +164,18 @@ async function createFile(
     route,
     routePrefix,
     routeName,
-    isDirectory,
+    isDirectory: opts.isDirectory,
     content,
-    basePath,
+    basePath: opts.basePath,
     assets,
     label: getLabel(routeName),
   };
 
   async function readTextFile() {
     try {
-      return repository
-        ? await gitReadFile(repository, rev, path, base64)
-        : await denoReadFile(path, base64);
+      return opts.repository
+        ? await gitReadFile(opts.repository, opts.rev, path, opts.base64)
+        : await denoReadFile(path, opts.base64);
     } catch (error: unknown) {
       throw new Error("Failed to read file: " + path, {
         cause: error instanceof Error ? error : undefined,

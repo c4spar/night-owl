@@ -15,21 +15,11 @@ export interface DocsRouterOptions {
   modules: Array<FileOptions>;
   repository: string;
   rev: string;
+  selectedVersion: string;
 }
 
 export class DocsRouter extends Routable<DocsRouterOptions> {
   render() {
-    const versions = this.props.versions.versions
-      .map((version) => version.replace(/\./g, "\."))
-      .join("|");
-
-    const versionPattern = versions.length > 1
-      ? `/(${versions})$`
-      : `/${versions}$`;
-    const versionRegex = new RegExp(versionPattern);
-    const selectedVersion = this.prefix.match(versionRegex)?.[1] ??
-      this.props.versions.latest;
-
     const docsPath = this.props.modules.length > 0 ? ["/"] : [];
     const modulePath = this.props.modules.length > 0
       ? this.props.modules.map((module) => module.routeName)
@@ -49,7 +39,7 @@ export class DocsRouter extends Routable<DocsRouterOptions> {
           <Route path={modulePath} partialMatch>
             <ModulePage
               versions={this.props.versions}
-              selectedVersion={selectedVersion}
+              selectedVersion={this.props.selectedVersion}
               docs={this.props.docs}
               modules={this.props.modules}
               repository={this.props.repository}
