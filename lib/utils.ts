@@ -87,8 +87,13 @@ export function getVersionsPattern(versions: Array<string>): string {
     ")";
 }
 
-export function getVersionsRegex(versions: Array<string>): RegExp {
-  return new RegExp(`^/docs(@${getVersionsPattern(versions)})`);
+export function getVersionsRegex(
+  versions: Array<string>,
+  optionalVersion?: boolean,
+): RegExp {
+  return new RegExp(
+    `^/docs(@${getVersionsPattern(versions)})${optionalVersion ? "?" : ""}`,
+  );
 }
 
 export function matchVersion(

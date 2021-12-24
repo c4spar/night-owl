@@ -62,7 +62,9 @@ export class App extends Component<AppOptions> {
                 selectedExample={this.props.config.selectedExample}
               />
             </Route>
-            <Route path={getVersionsRegex(this.props.config.versions.versions)}>
+            <Route
+              path={getVersionsRegex(this.props.config.versions.versions, true)}
+            >
               <DocsRouter
                 versions={this.props.config.versions}
                 docs={this.props.config.docs}
