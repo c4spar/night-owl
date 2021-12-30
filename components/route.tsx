@@ -1,10 +1,13 @@
 /** @jsx h */
 
-import { Component, Fragment, h, render } from "../deps.ts";
+import { assert, Component, Fragment, h, render } from "../deps.ts";
 import { ChildComponent } from "../lib/types.ts";
-import { Routable, RoutableOptions } from "./routable.tsx";
+import { Routable, RoutableOptions, RoutableType } from "../lib/routable.ts";
 
-type PageComponent = { component: typeof Routable; props: RoutableOptions };
+export type RoutableComponent = {
+  component: RoutableType<unknown, unknown>;
+  props: RoutableOptions;
+};
 
 export interface RouteOptions {
   path: string | RegExp | Array<string | RegExp>;
@@ -12,12 +15,22 @@ export interface RouteOptions {
   _path?: string;
   _url?: string;
   partialMatch?: boolean;
-  children: Array<ChildComponent & PageComponent>;
+  children:
+    | ChildComponent & RoutableComponent
+    | Array<ChildComponent & RoutableComponent>;
 }
 
 export class Route extends Component<RouteOptions> {
+  constructor(props: RouteOptions) {
+    super(props);
+
+    assert(this.props.path, "route.path is not defined.");
+  }
   render() {
-    for (const page of this.props.children) {
+    const children = Array.isArray(this.props.children)
+      ? this.props.children
+      : [this.props.children];
+    for (const page of children) {
       if (isPageChild(page)) {
         page.props._prefix = this.props._prefix || "/";
         page.props._path = this.props._path || "/";
@@ -25,11 +38,11 @@ export class Route extends Component<RouteOptions> {
       }
     }
 
-    return <Fragment>{render(this.props.children)}</Fragment>;
+    return <Fragment>{render(children)}</Fragment>;
   }
 }
 
-function isPageChild(child: unknown): child is PageComponent {
+function isPageChild(child: unknown): child is RoutableComponent {
   // deno-lint-ignore no-explicit-any
   return (child as any)?.component?.constructor === Routable.constructor;
 }

@@ -51,7 +51,7 @@ export async function setupLog(): Promise<void> {
 function format(arg: unknown, compact?: boolean): string {
   return Deno.inspect(arg, {
     colors: true,
-    depth: 2,
+    depth: 5,
     compact,
   });
 }

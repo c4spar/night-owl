@@ -1,32 +1,29 @@
-import { blue, bold, log } from "../deps.ts";
+import { NavItemOptions } from "../components/header.tsx";
+import { bold, log } from "../deps.ts";
 import { getVersions, GithubVersions } from "./git.ts";
-import { Example, FileOptions, getFiles } from "./resource.ts";
-import { matchVersion } from "./utils.ts";
+import { FileOptions, getFiles } from "./resource.ts";
+import { parseRoute } from "./utils.ts";
 
-export interface AppDirectories {
-  benchmarks: string;
-  docs: string;
-  examples: string;
+export interface NavOptions {
+  collapse?: boolean;
+  items?: Array<NavItemOptions>;
 }
 
 export interface AppOptions {
   repository: string;
+  src?: string | Array<FileOptions>;
   rev?: string;
-  selectedExample?: string;
-  moduleSelection?: boolean;
+  pagesDropdown?: boolean;
   versions?: Array<string>;
-  directories?: Partial<AppDirectories>;
-  signal?: AbortSignal;
+  pages?: boolean;
+  nav?: NavOptions;
 }
 
 export interface AppConfig extends Omit<AppOptions, "versions"> {
+  src: string | Array<FileOptions>;
   rev: string;
-  directories: AppDirectories;
-  benchmarks: Array<FileOptions>;
-  docs: Array<FileOptions>;
-  examples: Array<Example>;
   versions: GithubVersions;
-  modules: Array<FileOptions>;
+  sourceFiles: Array<FileOptions>;
   selectedVersion: string;
 }
 
@@ -35,82 +32,56 @@ export async function createConfig(
   req: Request,
 ): Promise<AppConfig> {
   const opts = {
+    src: "src/pages",
     ...options,
-    directories: {
-      docs: "docs",
-      benchmarks: "data",
-      examples: "examples",
-      ...options.directories,
-    },
   };
 
   const now = Date.now();
   log.info(bold("Fetching resources..."));
 
-  const versions = opts.versions
+  const versions: GithubVersions = opts.versions
     ? {
-      versions: opts.versions,
+      all: opts.versions,
       tags: [],
       branches: [],
       latest: opts.versions[0],
     }
     : await getVersions(opts.repository);
 
-  const selectedVersion = matchVersion(
+  const { version: selectedVersion } = parseRoute(
     new URL(req.url).pathname,
-    versions.versions,
+    versions.all,
+    opts.pages,
   );
   const rev = selectedVersion ?? versions.latest;
 
-  const [examples, benchmarks, docs, modules] = await Promise.all([
-    getFiles(opts.directories.examples, {
-      pattern: /\.ts$/,
-      read: true,
-      cacheKey: req.url,
-    }),
-    getFiles(opts.directories.benchmarks, {
-      pattern: /\.json/,
-      read: true,
-      cacheKey: req.url,
-    }),
-    getFiles(opts.directories.docs, {
+  const sourceFiles = typeof opts.src === "string"
+    ? await getFiles(opts.src, {
       recursive: true,
       includeDirs: true,
       loadAssets: true,
-      pattern: /\.md/,
+      pattern: /\.(md|js|jsx|ts|tsx)/,
       read: true,
       cacheKey: req.url,
       rev,
       selectedVersion,
-    }),
-    getFiles(opts.directories.docs, {
-      includeDirs: true,
-      includeFiles: false,
-      cacheKey: req.url,
-      rev,
-      selectedVersion,
-    }),
-  ]);
+      req,
+      versions: versions.all,
+      pages: opts.pages,
+    })
+    : opts.src;
 
   log.info(
-    bold("Resources fetched in: %s"),
-    blue((Date.now() - now).toString() + "ms"),
+    bold("%s Resources fetched in: %s"),
+    sourceFiles.length,
+    (Date.now() - now).toString() + "ms",
   );
 
   return {
     rev: "main",
-    moduleSelection: true,
     selectedVersion: rev,
-    selectedExample: examples[0]?.fileName.replace(/^\//, ""),
     ...opts,
-    benchmarks,
-    docs,
-    examples: examples.map((file) => ({
-      ...file,
-      content: file.content.replace(/#!.+\n+/, ""),
-      shebang: file.content.split("\n")[0],
-    })),
-    modules: opts.moduleSelection ? modules : [],
+    sourceFiles,
     versions,
   };
 }

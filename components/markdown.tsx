@@ -16,7 +16,6 @@ import { joinUrl, pathToUrl } from "../lib/utils.ts";
 
 export interface MarkdownOptions {
   file: FileOptions;
-  prefix: string;
 }
 
 export class Markdown extends Component<MarkdownOptions> {
@@ -46,11 +45,10 @@ export class Markdown extends Component<MarkdownOptions> {
 
     html = html
       // rewrite links to markdown files:
-      //   ./01_getting_started.md -> {prefix}/getting-started
+      //   ./01_getting_started.md -> ./getting-started
       .replace(
         /<a href="(.+\.md)">/g,
-        (_, path) =>
-          `<a href="${joinUrl(this.props.prefix, pathToUrl(path))}">`,
+        (_, path) => `<a href="${pathToUrl(path)}">`,
       )
       // replace local image urls with data urls
       .replace(

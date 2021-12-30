@@ -1,20 +1,53 @@
 /** @jsx h */
 
-import { PrimaryButton, SecondaryButton } from "../components/buttons.tsx";
-import { Editor } from "../components/editor.tsx";
-import { ArrowForward } from "../components/icons.tsx";
-import { AnimatedText } from "../components/animated_text.tsx";
-import { Routable } from "../components/routable.tsx";
-import { h, Helmet, tw } from "../deps.ts";
-import { Example } from "../lib/resource.ts";
-import { transformGpu } from "../lib/styles.ts";
+/// <reference no-default-lib="true"/>
+/// <reference lib="dom" />
+/// <reference lib="dom.asynciterable" />
+/// <reference lib="deno.ns" />
+
+import { Page } from "../../lib/page.ts";
+import { Provider } from "../../lib/provider.ts";
+import { FileOptions, getFiles } from "../../lib/resource.ts";
+import { PrimaryButton, SecondaryButton } from "../../components/buttons.tsx";
+import { Editor } from "../../components/editor.tsx";
+import { ArrowForward } from "../../components/icons.tsx";
+import { AnimatedText } from "../../components/animated_text.tsx";
+import { Component, h, Helmet, tw } from "../../deps.ts";
+import { transformGpu } from "../../lib/styles.ts";
+
+interface Example extends FileOptions {
+  shebang: string;
+}
 
 interface HomePageOptions {
   examples: Array<Example>;
   selectedExample?: string;
 }
 
-export class HomePage extends Routable<HomePageOptions> {
+class ExamplesDataProvider implements Provider<HomePageOptions> {
+  async onInit(req: Request): Promise<HomePageOptions> {
+    return {
+      selectedExample: "dotted_options.ts",
+      examples: await getFiles("c4spar/deno-cliffy@main:/examples/flags", {
+        pattern: /\.ts$/,
+        read: true,
+        cacheKey: req.url,
+        req,
+      }).then((examples) =>
+        examples.map((file) => ({
+          ...file,
+          content: file.content.replace(/#!.+\n+/, ""),
+          shebang: file.content.split("\n")[0],
+        }))
+      ),
+    };
+  }
+}
+
+@Page({
+  provider: [ExamplesDataProvider],
+})
+export default class HomePage extends Component<HomePageOptions> {
   render() {
     return (
       <div css={tw`${transformGpu}`}>

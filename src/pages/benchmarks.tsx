@@ -1,9 +1,17 @@
 /** @jsx h */
 
-import { Component, Fragment, h, Helmet, tw } from "../deps.ts";
-import { FileOptions } from "../lib/resource.ts";
-import { transformGpu } from "../lib/styles.ts";
-import { capitalize, sortByKey, stringToColor } from "../lib/utils.ts";
+/// <reference no-default-lib="true"/>
+/// <reference lib="dom" />
+/// <reference lib="dom.asynciterable" />
+/// <reference lib="deno.ns" />
+
+import { Page } from "../../lib/page.ts";
+import { Provider } from "../../lib/provider.ts";
+import { getFiles } from "../../lib/resource.ts";
+import { Component, Fragment, h, Helmet, tw } from "../../deps.ts";
+import { FileOptions } from "../../lib/resource.ts";
+import { transformGpu } from "../../lib/styles.ts";
+import { capitalize, sortByKey, stringToColor } from "../../lib/utils.ts";
 
 export interface BenchResult {
   totalMs: number;
@@ -28,7 +36,25 @@ interface BenchmarksPageOptions {
   benchmarks: Array<FileOptions>;
 }
 
-export class BenchmarksPage extends Component<BenchmarksPageOptions> {
+class BenchmarksPageProvider implements Provider<BenchmarksPageOptions> {
+  async onInit(
+    req: Request,
+  ): Promise<BenchmarksPageOptions> {
+    return {
+      benchmarks: await getFiles("c4spar/cliffy-benchmarks@main:data", {
+        pattern: /\.json/,
+        read: true,
+        cacheKey: req.url,
+        req,
+      }),
+    };
+  }
+}
+
+@Page({
+  provider: [BenchmarksPageProvider],
+})
+export default class BenchmarksPage extends Component<BenchmarksPageOptions> {
   render() {
     return (
       <Fragment>

@@ -3,14 +3,10 @@
 import { PageBackground } from "./components/page_background.tsx";
 import { AppConfig } from "./lib/config.ts";
 import { mainStyles } from "./lib/styles.ts";
-import { getVersionsRegex } from "./lib/utils.ts";
-import { DocsRouter } from "./pages/docs/docs_router.tsx";
 import { Header } from "./components/header.tsx";
-import { Router } from "./components/router.tsx";
-import { Route } from "./components/route.tsx";
+import { RouteNotFoundError } from "./components/router.tsx";
 import { Component, h, Helmet, tw } from "./deps.ts";
-import { BenchmarksPage } from "./pages/becnhmarks_page.tsx";
-import { HomePage } from "./pages/home_page.tsx";
+import { MarkdownPage } from "./pages/markdown_page.tsx";
 
 interface AppOptions {
   url: string;
@@ -21,6 +17,19 @@ export class App extends Component<AppOptions> {
   render() {
     return (
       <div class={tw`${mainStyles} mb-7`}>
+        {/* background */}
+        <PageBackground />
+
+        {/* header */}
+        <div class={tw`sticky top-0 z-10`}>
+          <Header config={this.props.config} />
+        </div>
+
+        {/* content */}
+        <div class={tw`max-w-8xl mx-auto px-4 sm:px-6 md:px-8 relative`}>
+          {this.#renderPage()}
+        </div>
+
         <Helmet footer>
           <script type="application/javascript">
             {`
@@ -43,43 +52,27 @@ export class App extends Component<AppOptions> {
           `}
           </script>
         </Helmet>
-
-        {/* background */}
-        <PageBackground />
-
-        {/* header */}
-        <div class={tw`sticky top-0 z-10`}>
-          <Header />
-        </div>
-
-        {/* content */}
-        <div class={tw`max-w-8xl mx-auto px-4 sm:px-6 md:px-8 relative`}>
-          {/* main router */}
-          <Router url={this.props.url}>
-            <Route path="/">
-              <HomePage
-                examples={this.props.config.examples}
-                selectedExample={this.props.config.selectedExample}
-              />
-            </Route>
-            <Route
-              path={getVersionsRegex(this.props.config.versions.versions, true)}
-            >
-              <DocsRouter
-                versions={this.props.config.versions}
-                docs={this.props.config.docs}
-                modules={this.props.config.modules}
-                repository={this.props.config.repository}
-                rev={this.props.config.rev}
-                selectedVersion={this.props.config.selectedVersion}
-              />
-            </Route>
-            <Route path="/benchmarks">
-              <BenchmarksPage benchmarks={this.props.config.benchmarks} />
-            </Route>
-          </Router>
-        </div>
       </div>
     );
+  }
+
+  #renderPage() {
+    const url = new URL(this.props.url);
+    const pathname = url.pathname.replace(/\/+$/, "") || "/";
+
+    const files = this.props.config.sourceFiles.filter((file) =>
+      file.route === pathname
+    );
+    const file = files.find((file) => !file.isDirectory) ?? files[0];
+
+    if (!file) {
+      throw new RouteNotFoundError(this.props.url);
+    }
+
+    if (file.component) {
+      return file.component;
+    }
+
+    return <MarkdownPage file={file} config={this.props.config} />;
   }
 }

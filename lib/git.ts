@@ -14,39 +14,51 @@ interface GithubResponse {
 
 export interface GithubVersions {
   latest: string;
-  versions: Array<string>;
+  all: Array<string>;
   tags: Array<string>;
   branches: Array<string>;
 }
 
-export async function getVersions(repository: string): Promise<GithubVersions> {
-  const [tags, branches] = await Promise.all([
-    gitFetch<Array<{ ref: string }>>(repository, "git/refs/tags"),
-    gitFetch<Array<{ name: string; protected: boolean }>>(
-      repository,
-      "branches",
-    ),
-  ]);
+const versions: Record<string, Promise<GithubVersions>> = {};
 
-  const tagNames = tags
-    .map((tag) => tag.ref.replace(/^refs\/tags\//, ""))
-    .reverse();
+export function getVersions(repository: string): Promise<GithubVersions> {
+  if (!versions[repository]) {
+    versions[repository] = get();
+  }
 
-  const branchNames = branches
-    .sort((a, b) => (a.protected === b.protected) ? 0 : (a.protected ? 1 : -1))
-    .filter((tag) => tag.protected)
-    .map((tag) => tag.name)
-    .reverse();
+  return versions[repository];
 
-  return {
-    versions: [
-      ...tagNames,
-      ...branchNames,
-    ],
-    latest: tagNames[0],
-    tags: tagNames,
-    branches: branchNames,
-  };
+  async function get() {
+    const [tags, branches] = await Promise.all([
+      gitFetch<Array<{ ref: string }>>(repository, "git/refs/tags"),
+      gitFetch<Array<{ name: string; protected: boolean }>>(
+        repository,
+        "branches",
+      ),
+    ]);
+
+    const tagNames = tags
+      .map((tag) => tag.ref.replace(/^refs\/tags\//, ""))
+      .reverse();
+
+    const branchNames = branches
+      .sort((a, b) =>
+        (a.protected === b.protected) ? 0 : (a.protected ? 1 : -1)
+      )
+      .filter((tag) => tag.protected)
+      .map((tag) => tag.name)
+      .reverse();
+
+    return {
+      all: [
+        ...tagNames,
+        ...branchNames,
+      ],
+      latest: tagNames[0],
+      tags: tagNames,
+      branches: branchNames,
+    };
+  }
 }
 
 interface GithubDirEntry {

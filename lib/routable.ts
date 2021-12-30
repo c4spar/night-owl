@@ -1,7 +1,9 @@
-/** @jsx h */
+import { Component } from "../deps.ts";
+import { joinUrl } from "./utils.ts";
 
-import { Component, h } from "../deps.ts";
-import { joinUrl } from "../lib/utils.ts";
+export interface RoutableType<T, S> {
+  new (props: T & RoutableOptions): Routable<T, S>;
+}
 
 export interface RoutableOptions {
   _prefix?: string;

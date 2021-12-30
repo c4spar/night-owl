@@ -33,7 +33,7 @@ export function joinUrl(...path: Array<string | undefined>) {
   let url = "";
 
   for (const part of path) {
-    if (part && part !== "/" && part !== "." && part !== "./") {
+    if (part && part !== "." && part !== "./") {
       url += part + "/";
     }
   }
@@ -45,25 +45,32 @@ export function joinUrl(...path: Array<string | undefined>) {
     .replace(/\/$/, "") || "/";
 }
 
-export function pathToUrl(path: string): string {
-  return "/" + path
-    // remove dot
-    .replace(/^\.$/, "")
-    // remove leading slash
-    .replace(/^(\/|\.\/)+/, "")
-    // remove trailing slash
-    .replace(/\/+$/, "")
-    // remove ordering prefix
-    .replace(/^[0-9]+_/, "")
-    .replace(/\/[0-9]+_/g, "/")
-    // replace special chars with hyphens
-    .replace(/[_\s]/g, "-")
-    // remove file extension
-    .replace(/\.[a-zA-Z0-9]+/, "");
+export function pathToUrl(...paths: Array<string>): string {
+  return joinUrl(...paths.map((path) => {
+    if (path === "/") {
+      return path;
+    }
+    return path
+      // remove dot
+      .replace(/^\.$/, "")
+      // remove leading slash
+      .replace(/^(\/|\.\/)+/, "")
+      // remove trailing slash
+      .replace(/\/+$/, "")
+      // remove ordering prefix
+      .replace(/^[0-9]+_/, "")
+      .replace(/\/[0-9]+_/g, "/")
+      // replace special chars with hyphens
+      .replace(/[_\s]/g, "-")
+      // remove file extension
+      .replace(/\.[a-zA-Z0-9]+/, "");
+  }));
 }
 
 export function getLabel(routeName: string): string {
   const label = routeName
+    .split("/")
+    .at(-1)!
     .replace(/^\/+/, "")
     .replace(/\/+$/, "")
     .replace(/[_-]/g, " ");
@@ -79,7 +86,7 @@ export function parseRemotePath(path: string) {
   return { repository, rev, path: filePath || "/" };
 }
 
-export function getVersionsPattern(versions: Array<string>): string {
+function getVersionsPattern(versions: Array<string>): string {
   return "(" +
     versions
       .map((version) => version.replace(/\./g, "\."))
@@ -87,18 +94,42 @@ export function getVersionsPattern(versions: Array<string>): string {
     ")";
 }
 
-export function getVersionsRegex(
+export function getRouteRegex(
   versions: Array<string>,
-  optionalVersion?: boolean,
+  pages?: boolean,
 ): RegExp {
   return new RegExp(
-    `^/docs(@${getVersionsPattern(versions)})${optionalVersion ? "?" : ""}`,
+    pages
+      ? `^(((/[^/@]+)(@${getVersionsPattern(versions)})?)(/([^/]+)?)?)(.+)?`
+      : `^(((/${getVersionsPattern(versions)})?)(/([^/]+)?)?)(.+)?`,
   );
 }
 
-export function matchVersion(
-  url: string,
+export function parseRoute(
+  route: string,
   versions: Array<string>,
-): string | undefined {
-  return url.match(getVersionsRegex(versions))?.[2];
+  pages?: boolean,
+) {
+  const match = route.match(getRouteRegex(versions, pages)) ?? [];
+  let [_, path, pagePrefix, version, selectedPage]: Array<string | undefined> =
+    [];
+
+  if (pages) {
+    [_, path, pagePrefix, _, _, version, selectedPage] = match;
+  } else {
+    [_, path, pagePrefix, _, version, _, selectedPage] = match;
+  }
+
+  return {
+    path: path || "/",
+    pagePrefix: pagePrefix || "/",
+    version: version || undefined,
+    selectedPage: selectedPage || "/",
+  };
+}
+
+export type Flat<T> = T extends Array<infer V> ? Flat<V> : T;
+
+export function flat<T>(arr: Array<T>): Array<Flat<T>> {
+  return arr.map((item) => Array.isArray(item) ? flat(item) : item).flat();
 }

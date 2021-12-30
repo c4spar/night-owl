@@ -5,6 +5,7 @@ export {
   bold,
   green,
   red,
+  yellow,
 } from "https://deno.land/std@0.117.0/fmt/colors.ts";
 export {
   basename,
@@ -12,11 +13,17 @@ export {
   extname,
 } from "https://deno.land/std@0.117.0/path/mod.ts";
 export * as log from "https://deno.land/std@0.117.0/log/mod.ts";
-export { lookup } from "https://deno.land/x/media_types@v2.11.1/mod.ts";
 export {
   decode as decodeBase64,
   encode as encodeBase64,
 } from "https://deno.land/std@0.117.0/encoding/base64.ts";
+export { assert } from "https://deno.land/std@0.117.0/testing/asserts.ts";
+
+/** media_types */
+export {
+  contentType,
+  lookup,
+} from "https://deno.land/x/media_types@v2.11.1/mod.ts";
 
 /** nano_jsx */
 export { Helmet } from "https://deno.land/x/nano_jsx@v0.0.26/components/helmet.ts";
@@ -59,6 +66,7 @@ export {
 // @deno-types=https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=types/colors/colors.d.ts
 export * as twColors from "https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=imports/optimized/twind/colors.js";
 
+/** comrak */
 import * as comrak from "https://deno.land/x/comrak@0.1.1/mod.ts";
 
 await comrak.init();

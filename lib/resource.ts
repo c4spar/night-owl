@@ -1,8 +1,14 @@
+import { join } from "https://deno.land/std@0.119.0/path/mod.ts";
+import { RoutableComponent } from "../components/route.tsx";
 import { basename, dirname, encodeBase64, lookup } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { gitReadDir, gitReadFile } from "./git.ts";
+import { getMetaData } from "./page.ts";
+import { ProviderFunction, ProviderType } from "./provider.ts";
 import {
+  flat,
   getLabel,
+  getRouteRegex,
   joinUrl,
   parseRemotePath,
   pathToUrl,
@@ -21,10 +27,7 @@ export interface FileOptions {
   isDirectory: boolean;
   label: string;
   assets: Array<FileOptions>;
-}
-
-export interface Example extends FileOptions {
-  shebang: string;
+  component?: RoutableComponent;
 }
 
 export interface ReadDirOptions {
@@ -38,6 +41,9 @@ export interface ReadDirOptions {
   rev?: string;
   selectedVersion?: string;
   cacheKey: string;
+  req: Request;
+  versions?: Array<string>;
+  pages?: boolean;
 }
 
 export interface GetFilesOptions extends ReadDirOptions {
@@ -85,7 +91,7 @@ async function readDir(
       continue;
     }
     if (file.isDirectory ? opts?.includeDirs : opts?.includeFiles) {
-      const fullPath = joinUrl(filePath, file.name);
+      const fullPath = join(filePath, file.name);
 
       files.push(
         createFile(fullPath, {
@@ -100,13 +106,18 @@ async function readDir(
 
     if (file.isDirectory && opts?.recursive) {
       files.push(
-        readDir(joinUrl(path, file.name), opts, basePath),
+        readDir(join(path, file.name), opts, basePath),
       );
     }
   }
 
   return Promise.all(files).then(
-    (files) => repository ? files.flat() : files.flat().sort(sortByKey("path")),
+    (files) => {
+      if (repository || path !== basePath) {
+        return flat(files);
+      }
+      return flat(files).sort(sortByKey("path"));
+    },
   );
 
   function read() {
@@ -126,6 +137,9 @@ interface CreateFileOptions {
   read?: boolean;
   loadAssets?: boolean;
   base64?: true;
+  req: Request;
+  versions?: Array<string>;
+  pages?: boolean;
 }
 
 async function createFile(
@@ -135,28 +149,56 @@ async function createFile(
   const fileName = basename(path);
   const dirName = dirname(path);
 
-  const routeName = pathToUrl(fileName);
-  let routePrefix = pathToUrl(dirName);
+  let routeName = pathToUrl("/", fileName);
 
+  if (["/index", "/README"].includes(routeName)) {
+    routeName = "/";
+  }
+
+  let routePrefix = pathToUrl("/", dirName);
+
+  // Replace url prefix.
   if (opts.prefix && opts.basePath) {
     const { path } = parseRemotePath(opts.prefix);
-    const regex = new RegExp(`^${pathToUrl(path)}`);
+    const regex = new RegExp(`^${pathToUrl("/", path)}`);
     routePrefix = joinUrl(
-      "/docs",
-      routePrefix.replace(regex, ""),
+      "/",
+      routePrefix.replace(regex, "/"),
     );
   }
 
-  if (opts.selectedVersion) {
-    routePrefix = routePrefix.replace(/\/docs/, "/docs@" + opts.rev);
+  // Add selected version to url.
+  if (opts.selectedVersion && opts.versions) {
+    routePrefix = routePrefix.replace(
+      getRouteRegex(opts.versions, opts.pages),
+      opts.pages ? "$3@" + opts.rev + "$6$8" : "/" + opts.rev + "$5$7",
+    ).replace(/\/+$/, "");
   }
 
   const route = joinUrl(routePrefix, routeName);
   const content = opts.read && !opts.isDirectory ? await readTextFile() : "";
 
-  const assets = opts.loadAssets && !opts.isDirectory
-    ? await getAssets(path, content, opts)
-    : [];
+  const assets =
+    opts.loadAssets && !opts.isDirectory && fileName.endsWith(".md")
+      ? await getAssets(path, content, opts)
+      : [];
+
+  const component = !opts.isDirectory && fileName.endsWith(".tsx")
+    ? await initComponent(path, opts.req)
+    : undefined;
+
+  let label: string;
+  if (route === routePrefix) {
+    if (fileName.startsWith("index.")) {
+      label = "Home";
+    } else if (route === "/") {
+      label = getLabel(pathToUrl(fileName));
+    } else {
+      label = getLabel(route.split("/").at(-1)!.split("@")[0]);
+    }
+  } else {
+    label = getLabel(routeName);
+  }
 
   return {
     path,
@@ -169,7 +211,8 @@ async function createFile(
     content,
     basePath: opts.basePath,
     assets,
-    label: getLabel(routeName),
+    component,
+    label,
   };
 
   async function readTextFile() {
@@ -217,11 +260,32 @@ function getAssets(
         const [_, path] = match.match(imgRegex2) ?? [];
         return path.startsWith("http://") || path.startsWith("https://")
           ? null
-          : createFile(joinUrl(base, path), {
+          : createFile(join(base, path), {
             ...opts,
             base64: true,
           });
       })
       .filter((file) => file) as Array<Promise<FileOptions>>,
   );
+}
+
+function isProviderType<V extends unknown>(
+  p: unknown | ProviderType<V>,
+): p is ProviderType<V> {
+  // deno-lint-ignore no-explicit-any
+  return typeof (p as any).prototype.onInit === "function";
+}
+
+async function initComponent(path: string, req: Request) {
+  const { default: component } = await import(`../${path}`);
+  const { provider } = getMetaData(component) ?? { provider: [] };
+  const props = Object.assign(
+    {},
+    ...await Promise.all(
+      provider.map((p: ProviderType<unknown> | ProviderFunction<unknown>) =>
+        isProviderType(p) ? new p().onInit(req) : p(req)
+      ),
+    ),
+  );
+  return { component, props };
 }

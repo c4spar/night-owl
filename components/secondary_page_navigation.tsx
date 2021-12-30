@@ -1,15 +1,15 @@
 /** @jsx h */
 
-import { Navigation } from "../../../components/navigation.tsx";
-import { Component, h, render, tw } from "../../../deps.ts";
-import { FileOptions } from "../../../lib/resource.ts";
+import { Navigation } from "./navigation.tsx";
+import { Component, h, render, tw } from "../deps.ts";
+import { FileOptions } from "../lib/resource.ts";
 
-export interface SecondaryModuleNavigationOptions {
+export interface SecondaryPageNavigationOptions {
   file: FileOptions;
 }
 
-export class SecondaryModuleNavigation
-  extends Component<SecondaryModuleNavigationOptions> {
+export class SecondaryPageNavigation
+  extends Component<SecondaryPageNavigationOptions> {
   render() {
     const headlines = this.props.file.content.match(/\n?#+\s+([^\n]+)/g)?.map(
       (h) => {

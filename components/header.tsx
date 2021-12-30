@@ -1,11 +1,20 @@
 /** @jsx h */
 
+import { AppConfig } from "../lib/config.ts";
 import { DarkModeSwitch } from "./dark_mode_switch.tsx";
-import { Link } from "./link.tsx";
+import { Link, LinkOptions } from "./link.tsx";
 import { Component, h, tw } from "../deps.ts";
 import { bgMain, transformGpu } from "../lib/styles.ts";
 
-export class Header extends Component {
+export interface NavItemOptions extends Omit<LinkOptions, "children"> {
+  label: string;
+}
+
+export interface HeaderOptions {
+  config: AppConfig;
+}
+
+export class Header extends Component<HeaderOptions> {
   render() {
     return (
       <header
@@ -33,12 +42,24 @@ export class Header extends Component {
           class={tw`flex flex-wrap items-center md:ml-auto
             text-base justify-center space-x-3`}
         >
-          <Link href="https://doc.deno.land/https://deno.land/x/cliffy/mod.ts">
-            API
+          {this.props.config.pages
+            ? this.props.config.sourceFiles
+              .filter((file) => file.routePrefix === "/" && file.route !== "/")
+              .map((file) => <Link href={file.route}>{file.label}</Link>)
+            : null}
+
+          {this.props.config.nav?.items?.map(({ label, href, ...props }) => (
+            <Link
+              {...props}
+              href={href?.replace(/{(version|rev)}/, this.props.config.rev)}
+            >
+              {label}
+            </Link>
+          )) ?? null}
+
+          <Link href={`https://github.com/${this.props.config.repository}`}>
+            Github
           </Link>
-          <Link href="/docs">Documentation</Link>
-          <Link href="/benchmarks">Benchmarks</Link>
-          <Link href="https://github.com/c4spar/deno-cliffy">Github</Link>
         </nav>
 
         <DarkModeSwitch class={tw`flex ml-3`} />

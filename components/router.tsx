@@ -1,6 +1,6 @@
 /** @jsx h */
 
-import { Component, Fragment, h, red, render, tw } from "../deps.ts";
+import { Component, Fragment, h, log, red, render, tw } from "../deps.ts";
 import { joinUrl } from "../lib/utils.ts";
 import { AnimatedText } from "./animated_text.tsx";
 import { Route, RouteOptions } from "./route.tsx";
@@ -14,8 +14,8 @@ interface RouterOptions {
 }
 
 export class RouteNotFoundError extends Error {
-  constructor() {
-    super("Route not found.");
+  constructor(url: string) {
+    super("Route not found: " + url);
   }
 }
 
@@ -56,21 +56,22 @@ export class Router extends Component<RouterOptions> {
   }
 
   #match(): RouterChild | undefined {
-    const matched: RouterChild | undefined = this.props.children.find(
-      (route) => {
-        const routes = Array.isArray(route.props.path)
-          ? route.props.path
-          : [route.props.path];
+    for (const route of this.props.children.flat()) {
+      if (!route) {
+        continue;
+      }
 
-        return routes.find((path) => this.#matchRoute(route, path));
-      },
-    );
+      const paths = Array.isArray(route.props.path)
+        ? route.props.path
+        : [route.props.path];
 
-    if (!matched) {
-      console.error(red(`[GET]`), "Route not found:", this.#path);
+      const matched = paths.find((path) => this.#matchRoute(route, path));
+      if (matched) {
+        return route;
+      }
     }
 
-    return matched;
+    log.error(red(`[GET]`), "Route not found:", this.#path);
   }
 
   #matchRoute(
@@ -99,7 +100,7 @@ export class Router extends Component<RouterOptions> {
     if (path) {
       path = path.replace(/\/$/, "") || "/";
       route.props._path = this.#path.substr(path.length) || "/";
-      route.props._prefix = joinUrl(this.props.prefix ?? "/", path);
+      route.props._prefix = joinUrl("/", this.props.prefix, path);
       route.props._url = this.props.url;
       matchedRoute = route;
     }
@@ -109,7 +110,7 @@ export class Router extends Component<RouterOptions> {
 
   #notFound() {
     if (this.props.prefix) {
-      throw new RouteNotFoundError();
+      throw new RouteNotFoundError(this.props.url);
     }
 
     return (
