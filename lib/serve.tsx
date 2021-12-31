@@ -7,12 +7,12 @@
 
 import { blue, h, log, serve as serveHttp } from "../deps.ts";
 import { Cache } from "./cache.ts";
-import { AppOptions, createConfig } from "./config.ts";
+import { CreateConfigOptions, createConfig } from "./config.ts";
 import { fromRemoteCache } from "./request.ts";
 import { App } from "../app.tsx";
 import { ssr } from "./ssr.ts";
 
-export async function serve(options: AppOptions) {
+export async function serve(options: CreateConfigOptions) {
   console.log(`Listening on ${blue("http://localhost:8000")}`);
 
   const cache = new Cache<string>();

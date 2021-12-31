@@ -9,7 +9,7 @@ export interface NavOptions {
   items?: Array<NavItemOptions>;
 }
 
-export interface AppOptions {
+export interface CreateConfigOptions {
   repository: string;
   src?: string | Array<FileOptions>;
   rev?: string;
@@ -19,7 +19,7 @@ export interface AppOptions {
   nav?: NavOptions;
 }
 
-export interface AppConfig extends Omit<AppOptions, "versions"> {
+export interface AppConfig extends Omit<CreateConfigOptions, "versions"> {
   src: string | Array<FileOptions>;
   rev: string;
   versions: GithubVersions;
@@ -28,7 +28,7 @@ export interface AppConfig extends Omit<AppOptions, "versions"> {
 }
 
 export async function createConfig(
-  options: AppOptions,
+  options: CreateConfigOptions,
   req: Request,
 ): Promise<AppConfig> {
   const opts = {
