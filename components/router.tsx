@@ -2,7 +2,7 @@
 
 import { Component, Fragment, h, log, red, render, tw } from "../deps.ts";
 import { joinUrl } from "../lib/utils.ts";
-import { AnimatedText } from "./animated_text.tsx";
+import { NotFound } from "./not_found.tsx";
 import { Route, RouteOptions } from "./route.tsx";
 
 type RouterChild = { component: typeof Route; props: RouteOptions };
@@ -113,17 +113,7 @@ export class Router extends Component<RouterOptions> {
       throw new RouteNotFoundError(this.props.url);
     }
 
-    return (
-      <Fragment>
-        <AnimatedText
-          speed={6}
-          class={tw
-            `container mx-auto p-5 mt-[10%] font-nerd text-xl text-center`}
-        >
-          Oops, you have requested a site that does not exist!
-        </AnimatedText>
-      </Fragment>
-    );
+    return <NotFound url={this.props.url} />;
   }
 }
 

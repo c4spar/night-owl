@@ -1,10 +1,10 @@
 /** @jsx h */
 
+import { NotFound } from "./components/not_found.tsx";
 import { PageBackground } from "./components/page_background.tsx";
 import { AppConfig } from "./lib/config.ts";
 import { mainStyles } from "./lib/styles.ts";
 import { Header } from "./components/header.tsx";
-import { RouteNotFoundError } from "./components/router.tsx";
 import { Component, h, Helmet, tw } from "./deps.ts";
 import { MarkdownPage } from "./pages/markdown_page.tsx";
 
@@ -66,7 +66,7 @@ export class App extends Component<AppOptions> {
     const file = files.find((file) => !file.isDirectory) ?? files[0];
 
     if (!file) {
-      throw new RouteNotFoundError(this.props.url);
+      return <NotFound url={this.props.url} />;
     }
 
     if (file.component) {
