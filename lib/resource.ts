@@ -80,45 +80,56 @@ async function readDir(
   opts: ReadDirOptions,
   basePath: string = path,
 ): Promise<Array<FileOptions>> {
-  const files: Array<FileOptions | Promise<FileOptions | Array<FileOptions>>> =
-    [];
+  const resultPromises: Array<Promise<FileOptions | Array<FileOptions>>> = [];
+  const { repository, rev, path: filePath } = parseRemotePath(path);
   opts.includeFiles ??= true;
 
-  const { repository, rev, path: filePath } = parseRemotePath(path);
-
-  for await (const file of read()) {
-    if (!file.isDirectory && (opts?.pattern && !opts.pattern.test(file.name))) {
+  for await (const dirEntry of read()) {
+    if (
+      opts?.pattern &&
+      !dirEntry.isDirectory &&
+      !opts.pattern.test(dirEntry.name)
+    ) {
       continue;
     }
-    if (file.isDirectory ? opts?.includeDirs : opts?.includeFiles) {
-      const fullPath = join(filePath, file.name);
 
-      files.push(
-        createFile(fullPath, {
-          rev,
-          ...opts,
-          isDirectory: file.isDirectory,
-          repository,
-          basePath,
-        }),
-      );
-    }
+    if (dirEntry.isDirectory ? opts?.includeDirs : opts?.includeFiles) {
+      const fullPath = join(filePath, dirEntry.name);
+      const filePromise = createFile(fullPath, {
+        rev,
+        ...opts,
+        isDirectory: dirEntry.isDirectory,
+        repository,
+        basePath,
+      });
 
-    if (file.isDirectory && opts?.recursive) {
-      files.push(
-        readDir(join(path, file.name), opts, basePath),
-      );
+      if (dirEntry.isDirectory) {
+        if (opts?.recursive) {
+          resultPromises.push(
+            readDir(
+              join(path, dirEntry.name),
+              opts,
+              basePath,
+            ).then((files) =>
+              files.length
+                ? filePromise.then((file) => [file, ...files])
+                : files
+            ),
+          );
+        }
+      } else {
+        resultPromises.push(filePromise);
+      }
     }
   }
 
-  return Promise.all(files).then(
-    (files) => {
-      if (repository || path !== basePath) {
-        return flat(files);
-      }
-      return flat(files).sort(sortByKey("path"));
-    },
-  );
+  const files = await Promise.all(resultPromises);
+
+  if (repository || path !== basePath) {
+    return flat(files);
+  }
+
+  return flat(files).sort(sortByKey("path"));
 
   function read() {
     return repository
