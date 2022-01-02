@@ -3,16 +3,12 @@
 include .env
 export
 
-run: export NO_CACHE=true
+run: export NO_CACHE=false
+run: export LOG_LEVEL=DEBUG
 
 lint:
-	deno lint --ignore=data
-	deno fmt --check --ignore=data
+	deno lint
 fmt:
-	deno fmt --ignore=data
+	deno fmt
 run:
-	deno run --watch \
-			--allow-env=NO_CACHE,GITHUB_TOKEN \
-			--allow-net=:8000,code.iconify.design,cdnjs.cloudflare.com,fonts.googleapis.com,mshaugh.github.io,api.github.com \
-			--allow-read=../deno-cliffy/docs \
-			 main.ts
+	deno run --watch --allow-all main.ts
