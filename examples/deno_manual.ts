@@ -1,4 +1,4 @@
-import { serve } from "./mod.ts";
+import { serve } from "../mod.ts";
 
 await serve({
   repository: "denoland/manual",
