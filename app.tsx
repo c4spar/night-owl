@@ -1,11 +1,10 @@
 /** @jsx h */
 
 import { NotFound } from "./components/not_found.tsx";
-import { PageBackground } from "./components/page_background.tsx";
 import { AppConfig } from "./lib/config.ts";
 import { mainStyles } from "./lib/styles.ts";
 import { Header } from "./components/header.tsx";
-import { Component, h, Helmet, tw } from "./deps.ts";
+import { Component, h, Helmet, render, tw } from "./deps.ts";
 import { MarkdownPage } from "./pages/markdown_page.tsx";
 
 interface AppOptions {
@@ -17,8 +16,7 @@ export class App extends Component<AppOptions> {
   render() {
     return (
       <div class={tw`${mainStyles} mb-7`}>
-        {/* background */}
-        <PageBackground />
+        {this.props.config.background?.()}
 
         {/* header */}
         <div class={tw`sticky top-0 z-10`}>
@@ -65,14 +63,19 @@ export class App extends Component<AppOptions> {
     );
     const file = files.find((file) => !file.isDirectory) ?? files[0];
 
+    // Render page not found.
     if (!file) {
-      return <NotFound url={this.props.url} />;
+      return this.props.config.notFound
+        ? this.props.config.notFound({ url: this.props.url })
+        : <NotFound url={this.props.url} />;
     }
 
+    // Render custom page component.
     if (file.component) {
       return file.component;
     }
 
+    // Render markdown page.
     return <MarkdownPage file={file} config={this.props.config} />;
   }
 }

@@ -1,4 +1,5 @@
 import { NavItemOptions } from "../components/header.tsx";
+import { NotFoundOptions } from "../components/not_found.tsx";
 import { bold, log } from "../deps.ts";
 import { getVersions, GithubVersions } from "./git.ts";
 import { FileOptions, getFiles } from "./resource.ts";
@@ -17,6 +18,8 @@ export interface CreateConfigOptions {
   versions?: Array<string>;
   pages?: boolean;
   nav?: NavOptions;
+  notFound?: (props: NotFoundOptions) => unknown;
+  background?: () => unknown;
 }
 
 export interface AppConfig extends Omit<CreateConfigOptions, "versions"> {

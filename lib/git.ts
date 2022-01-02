@@ -162,7 +162,7 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
     headers.set("Authorization", `token ${GITHUB_TOKEN}`);
   }
 
-  log.debug("Git fetch:", blue(url));
+  log.debug("Fetch %s", blue(url));
 
   const response = await fetch(url, {
     method: "GET",
@@ -171,12 +171,12 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
   });
 
   if (!response.status) {
-    throw new Error("Failed to fetch versions.");
+    throw new Error("Failed to fetch versions from github.");
   }
 
   data = await response.json();
 
-  log.debug("Git fetch done:", green(url));
+  log.debug("Done %s", green(url));
 
   if (!data) {
     throw new Error("Github request failed: " + url.toString());

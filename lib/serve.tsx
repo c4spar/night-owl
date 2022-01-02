@@ -7,7 +7,7 @@
 
 import { blue, h, log, serve as serveHttp } from "../deps.ts";
 import { Cache } from "./cache.ts";
-import { CreateConfigOptions, createConfig } from "./config.ts";
+import { createConfig, CreateConfigOptions } from "./config.ts";
 import { fromRemoteCache } from "./request.ts";
 import { App } from "../app.tsx";
 import { ssr } from "./ssr.ts";

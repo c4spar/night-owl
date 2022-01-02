@@ -1,10 +1,10 @@
 import { join } from "https://deno.land/std@0.119.0/path/mod.ts";
-import { RoutableComponent } from "../components/route.tsx";
 import { basename, dirname, encodeBase64, lookup, resolve } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { gitReadDir, gitReadFile } from "./git.ts";
 import { getMetaData } from "./page.ts";
 import { ProviderFunction, ProviderType } from "./provider.ts";
+import { ChildComponent } from "./types.ts";
 import {
   flat,
   getLabel,
@@ -27,7 +27,7 @@ export interface FileOptions {
   isDirectory: boolean;
   label: string;
   assets: Array<FileOptions>;
-  component?: RoutableComponent;
+  component?: ChildComponent;
 }
 
 export interface ReadDirOptions {
