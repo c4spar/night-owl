@@ -10,5 +10,5 @@ lint:
 	deno lint
 fmt:
 	deno fmt
-run:
-	deno run --watch --allow-all main.ts
+deno-manual:
+	deno run --watch --allow-all examples/deno_manual.ts
