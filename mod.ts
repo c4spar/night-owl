@@ -40,4 +40,15 @@ export { capitalize, sortByKey } from "./lib/utils.ts";
 export { type ChildComponent, type Children } from "./lib/types.ts";
 
 /** DEPS */
-export { Component, Fragment, h, Helmet, render, tw, apply, css, theme, twColors } from "./deps.ts";
+export {
+  apply,
+  Component,
+  css,
+  Fragment,
+  h,
+  Helmet,
+  render,
+  theme,
+  tw,
+  twColors,
+} from "./deps.ts";
