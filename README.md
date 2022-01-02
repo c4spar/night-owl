@@ -16,7 +16,7 @@ A simple in-memory static site generator.
 
 #### Deno manual
 
-This example serve the official deno manual directly from the Github repository.
+This example serves the official deno manual directly from the Github repository.
 
 ```ts
 import { serve } from "https://deno.land/x/nano_deploy/mod.ts";
@@ -29,4 +29,5 @@ await serve({
 
 ```console
 $ deno run --allow-env --allow-net -r https://raw.githubusercontent.com/c4spar/nano-deploy/main/examples/deno_manual.ts
+Listening on http://localhost:8000
 ```
