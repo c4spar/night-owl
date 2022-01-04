@@ -2,9 +2,9 @@ import {
   basename,
   dirname,
   encodeBase64,
+  isAbsolute,
   join,
   lookup,
-  resolve,
 } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { gitReadDir, gitReadFile } from "./git.ts";
@@ -178,8 +178,8 @@ async function createFile<O>(
 
   // Replace url prefix.
   if (opts.prefix && opts.basePath) {
-    const { path } = parseRemotePath(opts.prefix);
-    const regex = new RegExp(`^${pathToUrl("/", path)}`);
+    const { path: prefix } = parseRemotePath(opts.prefix);
+    const regex = new RegExp(`^${pathToUrl("/", prefix)}`);
     routePrefix = joinUrl(
       "/",
       routePrefix.replace(regex, "/"),
@@ -300,7 +300,7 @@ async function initComponent<O>(
   req: Request,
   providerInjections?: Array<ProviderOptions<O>>,
 ) {
-  const { default: component } = await import(resolve(path));
+  const { default: component } = await import(addProtocol(path));
   const { providers } = getMetaData(component) ?? { providers: [] };
   const props = Object.assign(
     {},
@@ -329,4 +329,14 @@ async function initComponent<O>(
     ),
   );
   return { component, props };
+}
+
+function addProtocol(script: string): string {
+  const hasProtocol: boolean = script.startsWith("http://") ||
+    script.startsWith("https://") || script.startsWith("file://");
+  if (!hasProtocol) {
+    script = "file://" +
+      (isAbsolute(script) ? script : join(Deno.cwd(), script));
+  }
+  return script;
 }
