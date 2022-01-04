@@ -29,33 +29,14 @@ export class Header extends Component<HeaderOptions> {
           supports-backdrop-blur:bg-white supports-backdrop-blur:bg-opacity-60
         `}
       >
-        <a
-          class={tw`flex font-medium items-center mb-4 md:mb-0`}
-          href="/"
-        >
-          <span class={tw`ml-3 text-xl`}>
-            Cliffy
-          </span>
-        </a>
+        {this.#renderLabel()}
 
         <nav
           class={tw`flex flex-wrap items-center md:ml-auto
             text-base justify-center space-x-3`}
         >
-          {this.props.config.pages
-            ? this.props.config.sourceFiles
-              .filter((file) => file.routePrefix === "/" && file.route !== "/")
-              .map((file) => <Link href={file.route}>{file.label}</Link>)
-            : null}
-
-          {this.props.config.nav?.items?.map(({ label, href, ...props }) => (
-            <Link
-              {...props}
-              href={href?.replace(/{(version|rev)}/, this.props.config.rev)}
-            >
-              {label}
-            </Link>
-          )) ?? null}
+          {this.#renderPageLinks()}
+          {this.#renderNavLinks()}
 
           <Link href={`https://github.com/${this.props.config.repository}`}>
             Github
@@ -65,5 +46,43 @@ export class Header extends Component<HeaderOptions> {
         <DarkModeSwitch class={tw`flex ml-3`} />
       </header>
     );
+  }
+
+  #renderLabel() {
+    if (!this.props.config.label) {
+      return null;
+    }
+    return (
+      <a
+        class={tw`flex font-medium items-center mb-4 md:mb-0`}
+        href="/"
+      >
+        <span class={tw`ml-3 text-xl`}>
+          {this.props.config.label}
+        </span>
+      </a>
+    );
+  }
+
+  #renderPageLinks() {
+    if (!this.props.config.pages) {
+      return null;
+    }
+    return this.props.config.sourceFiles
+      .filter((file) => file.routePrefix === "/" && file.route !== "/")
+      .map((file) => <Link href={file.route}>{file.label}</Link>);
+  }
+
+  #renderNavLinks() {
+    return this.props.config.nav?.items?.map(
+      ({ label, href, ...props }) => (
+        <Link
+          {...props}
+          href={href?.replace(/{(version|rev)}/, this.props.config.rev)}
+        >
+          {label}
+        </Link>
+      ),
+    ) ?? null;
   }
 }
