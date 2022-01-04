@@ -13,7 +13,7 @@ export interface NavOptions {
 
 export interface CreateConfigOptions<O> {
   repository: string;
-  src?: string | Array<FileOptions>;
+  src?: string | Array<string>;
   rev?: string;
   pagesDropdown?: boolean;
   versions?: Array<string>;
@@ -26,7 +26,7 @@ export interface CreateConfigOptions<O> {
 
 export interface AppConfig
   extends Omit<CreateConfigOptions<unknown>, "versions"> {
-  src: string | Array<FileOptions>;
+  src: string | Array<string>;
   rev: string;
   versions: GithubVersions;
   sourceFiles: Array<FileOptions>;
@@ -38,7 +38,7 @@ export async function createConfig<O>(
   req: Request,
 ): Promise<AppConfig> {
   const opts = {
-    src: "src/pages",
+    src: "./",
     ...options,
   };
 
@@ -60,9 +60,10 @@ export async function createConfig<O>(
     opts.pages,
   );
   const rev = selectedVersion ?? versions.latest;
+  const src = typeof opts.src === "string" ? [opts.src] : opts.src;
 
-  const sourceFiles = typeof opts.src === "string"
-    ? await getFiles(opts.src, {
+  const sourceFiles = await Promise.all(src.map((path) =>
+    getFiles(path, {
       recursive: true,
       includeDirs: true,
       loadAssets: true,
@@ -76,7 +77,7 @@ export async function createConfig<O>(
       pages: opts.pages,
       providers: opts.providers,
     })
-    : opts.src;
+  )).then((files) => files.flat());
 
   log.info(
     bold("%s Resources fetched in: %s"),
