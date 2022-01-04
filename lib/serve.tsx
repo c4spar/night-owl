@@ -12,7 +12,7 @@ import { fromRemoteCache } from "./request.ts";
 import { App } from "../app.tsx";
 import { ssr } from "./ssr.ts";
 
-export async function serve(options: CreateConfigOptions) {
+export async function serve<O>(options: CreateConfigOptions<O>) {
   console.log(`Listening on ${blue("http://localhost:8000")}`);
 
   const cache = new Cache<string>();

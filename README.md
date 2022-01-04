@@ -16,7 +16,8 @@ A simple in-memory static site generator.
 
 #### Deno manual
 
-This example serves the official deno manual directly from the Github repository.
+This example serves the official deno manual directly from the Github
+repository.
 
 ```ts
 import { serve } from "https://deno.land/x/nano_deploy/mod.ts";

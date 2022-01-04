@@ -2,6 +2,7 @@ import { NavItemOptions } from "../components/header.tsx";
 import { NotFoundOptions } from "../components/not_found.tsx";
 import { bold, log } from "../deps.ts";
 import { getVersions, GithubVersions } from "./git.ts";
+import { ProviderOptions } from "./provider.ts";
 import { FileOptions, getFiles } from "./resource.ts";
 import { parseRoute } from "./utils.ts";
 
@@ -10,7 +11,7 @@ export interface NavOptions {
   items?: Array<NavItemOptions>;
 }
 
-export interface CreateConfigOptions {
+export interface CreateConfigOptions<O> {
   repository: string;
   src?: string | Array<FileOptions>;
   rev?: string;
@@ -20,9 +21,11 @@ export interface CreateConfigOptions {
   nav?: NavOptions;
   notFound?: (props: NotFoundOptions) => unknown;
   background?: () => unknown;
+  providers?: Array<ProviderOptions<O>>;
 }
 
-export interface AppConfig extends Omit<CreateConfigOptions, "versions"> {
+export interface AppConfig
+  extends Omit<CreateConfigOptions<unknown>, "versions"> {
   src: string | Array<FileOptions>;
   rev: string;
   versions: GithubVersions;
@@ -30,8 +33,8 @@ export interface AppConfig extends Omit<CreateConfigOptions, "versions"> {
   selectedVersion: string;
 }
 
-export async function createConfig(
-  options: CreateConfigOptions,
+export async function createConfig<O>(
+  options: CreateConfigOptions<O>,
   req: Request,
 ): Promise<AppConfig> {
   const opts = {
@@ -71,6 +74,7 @@ export async function createConfig(
       req,
       versions: versions.all,
       pages: opts.pages,
+      providers: opts.providers,
     })
     : opts.src;
 

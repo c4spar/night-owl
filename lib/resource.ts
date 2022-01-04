@@ -3,7 +3,7 @@ import { basename, dirname, encodeBase64, lookup, resolve } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { gitReadDir, gitReadFile } from "./git.ts";
 import { getMetaData } from "./page.ts";
-import { ProviderFunction, ProviderType } from "./provider.ts";
+import { ProviderFunction, ProviderOptions, ProviderType } from "./provider.ts";
 import { ChildComponent } from "./types.ts";
 import {
   flat,
@@ -30,7 +30,7 @@ export interface FileOptions {
   component?: ChildComponent;
 }
 
-export interface ReadDirOptions {
+export interface ReadDirOptions<O> {
   recursive?: boolean;
   includeDirs?: boolean;
   includeFiles?: boolean;
@@ -44,17 +44,18 @@ export interface ReadDirOptions {
   req: Request;
   versions?: Array<string>;
   pages?: boolean;
+  providers?: Array<ProviderOptions<O>>;
 }
 
-export interface GetFilesOptions extends ReadDirOptions {
+export interface GetFilesOptions<O> extends ReadDirOptions<O> {
   map?: (file: FileOptions) => FileOptions;
 }
 
 const getFilesCache = new Cache<Array<FileOptions>>();
 
-export async function getFiles(
+export async function getFiles<O>(
   path: string,
-  opts: GetFilesOptions,
+  opts: GetFilesOptions<O>,
 ): Promise<Array<FileOptions>> {
   const cacheKey = JSON.stringify({ path, opts });
   opts.prefix ??= path;
@@ -75,9 +76,9 @@ export async function getFiles(
   return files;
 }
 
-async function readDir(
+async function readDir<O>(
   path: string,
-  opts: ReadDirOptions,
+  opts: ReadDirOptions<O>,
   basePath: string = path,
 ): Promise<Array<FileOptions>> {
   const resultPromises: Array<Promise<FileOptions | Array<FileOptions>>> = [];
@@ -113,7 +114,7 @@ async function readDir(
             ).then((files) =>
               files.length
                 ? filePromise.then((file) => [file, ...files])
-                : files
+                : files,
             ),
           );
         }
@@ -138,7 +139,7 @@ async function readDir(
   }
 }
 
-interface CreateFileOptions {
+interface CreateFileOptions<O> {
   isDirectory: boolean;
   repository: string;
   rev: string;
@@ -151,11 +152,12 @@ interface CreateFileOptions {
   req: Request;
   versions?: Array<string>;
   pages?: boolean;
+  providers?: Array<ProviderOptions<O>>;
 }
 
-async function createFile(
+async function createFile<O>(
   path: string,
-  opts: CreateFileOptions,
+  opts: CreateFileOptions<O>,
 ): Promise<FileOptions> {
   const fileName = basename(path);
   const dirName = dirname(path);
@@ -195,7 +197,7 @@ async function createFile(
       : [];
 
   const component = !opts.isDirectory && fileName.endsWith(".tsx")
-    ? await initComponent(path, opts.req)
+    ? await initComponent(path, opts.req, opts.providers)
     : undefined;
 
   let label: string;
@@ -256,10 +258,10 @@ async function denoReadFile(path: string, base64?: boolean): Promise<string> {
   return decoder.decode(file);
 }
 
-function getAssets(
+function getAssets<O>(
   filePath: string,
   content: string,
-  opts: CreateFileOptions,
+  opts: CreateFileOptions<O>,
 ): Promise<Array<FileOptions>> {
   const imgRegex1 = /!\[[^\]]*]\(([^)]+)\)/g;
   const imgRegex2 = /!\[[^\]]*]\(([^)]+)\)/;
@@ -280,21 +282,42 @@ function getAssets(
   );
 }
 
-function isProviderType<V extends unknown>(
-  p: unknown | ProviderType<V>,
-): p is ProviderType<V> {
+function isProviderType<V extends unknown, T extends unknown>(
+  p: unknown | ProviderType<V, T>,
+): p is ProviderType<V, T> {
   // deno-lint-ignore no-explicit-any
   return typeof (p as any).prototype.onInit === "function";
 }
 
-async function initComponent(path: string, req: Request) {
+async function initComponent<O>(
+  path: string,
+  req: Request,
+  providerInjections?: Array<ProviderOptions<O>>,
+) {
   const { default: component } = await import(resolve(path));
-  const { provider } = getMetaData(component) ?? { provider: [] };
+  const { providers } = getMetaData(component) ?? { providers: [] };
   const props = Object.assign(
     {},
     ...await Promise.all(
-      provider.map((p: ProviderType<unknown> | ProviderFunction<unknown>) =>
-        isProviderType(p) ? new p().onInit(req) : p(req)
+      providers.map(
+        (
+          provider:
+            | ProviderType<unknown, unknown>
+            | ProviderFunction<unknown, unknown>,
+        ) => {
+          const matchedProviders = providerInjections?.filter(({ component }) =>
+            component === provider,
+          ) ?? [];
+
+          const opts = {};
+          for (const { props } of matchedProviders) {
+            Object.assign(opts, props);
+          }
+
+          return isProviderType(provider)
+            ? new provider().onInit(req, opts)
+            : provider(req, opts);
+        },
       ),
     ),
   );
