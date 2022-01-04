@@ -1,5 +1,11 @@
-import { join } from "https://deno.land/std@0.119.0/path/mod.ts";
-import { basename, dirname, encodeBase64, lookup, resolve } from "../deps.ts";
+import {
+  basename,
+  dirname,
+  encodeBase64,
+  join,
+  lookup,
+  resolve,
+} from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { gitReadDir, gitReadFile } from "./git.ts";
 import { getMetaData } from "./page.ts";

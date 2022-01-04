@@ -1,24 +1,26 @@
 /** std */
-export { serve } from "https://deno.land/std@0.117.0/http/server.ts";
+export { serve } from "https://deno.land/std@0.119.0/http/server.ts";
 export {
   blue,
   bold,
   green,
   red,
   yellow,
-} from "https://deno.land/std@0.117.0/fmt/colors.ts";
+} from "https://deno.land/std@0.119.0/fmt/colors.ts";
 export {
   basename,
   dirname,
   extname,
+  join,
   resolve,
-} from "https://deno.land/std@0.117.0/path/mod.ts";
-export * as log from "https://deno.land/std@0.117.0/log/mod.ts";
+} from "https://deno.land/std@0.119.0/path/mod.ts";
+export * as log from "https://deno.land/std@0.119.0/log/mod.ts";
 export {
   decode as decodeBase64,
   encode as encodeBase64,
-} from "https://deno.land/std@0.117.0/encoding/base64.ts";
-export { assert } from "https://deno.land/std@0.117.0/testing/asserts.ts";
+} from "https://deno.land/std@0.119.0/encoding/base64.ts";
+export { assert } from "https://deno.land/std@0.119.0/testing/asserts.ts";
+export { debounce } from "https://deno.land/std@0.119.0/async/debounce.ts";
 
 /** media_types */
 export {
