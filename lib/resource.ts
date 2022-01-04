@@ -114,7 +114,7 @@ async function readDir<O>(
             ).then((files) =>
               files.length
                 ? filePromise.then((file) => [file, ...files])
-                : files,
+                : files
             ),
           );
         }
@@ -305,9 +305,10 @@ async function initComponent<O>(
             | ProviderType<unknown, unknown>
             | ProviderFunction<unknown, unknown>,
         ) => {
-          const matchedProviders = providerInjections?.filter(({ component }) =>
-            component === provider,
-          ) ?? [];
+          const matchedProviders =
+            providerInjections?.filter(({ component }) =>
+              component === provider
+            ) ?? [];
 
           const opts = {};
           for (const { props } of matchedProviders) {
