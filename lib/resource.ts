@@ -48,7 +48,6 @@ export interface ReadDirOptions<O> {
   loadAssets?: boolean;
   pattern?: RegExp;
   read?: boolean;
-  prefix?: string;
   rev?: string;
   selectedVersion?: string;
   cacheKey: string;
@@ -69,7 +68,6 @@ interface CreateFileOptions<O> extends InitComponentOptions<O> {
   isDirectory: boolean;
   selectedVersion?: string;
   basePath: string;
-  prefix?: string;
   read?: boolean;
   loadAssets?: boolean;
   base64?: true;
@@ -85,7 +83,6 @@ export async function getFiles<O>(
 ): Promise<Array<FileOptions>> {
   path = path.startsWith("file:") ? fromFileUrl(path) : path;
   const cacheKey = JSON.stringify({ path, opts });
-  opts.prefix ??= path;
 
   let files: Array<FileOptions> | undefined = getFilesCache.get(cacheKey);
   if (files) {
@@ -181,10 +178,10 @@ async function createFile<O>(
 
   let routePrefix = pathToUrl("/", dirName);
 
-  // Replace url prefix.
-  if (opts.prefix && opts.basePath) {
-    const { path: prefix } = parseRemotePath(opts.prefix);
-    const regex = new RegExp(`^${pathToUrl("/", prefix)}`);
+  // Remove base path.
+  if (opts.basePath) {
+    const { path: basePath } = parseRemotePath(opts.basePath);
+    const regex = new RegExp(`^${pathToUrl("/", basePath)}`);
     routePrefix = joinUrl(
       "/",
       routePrefix.replace(regex, "/"),
