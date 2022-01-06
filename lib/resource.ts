@@ -7,7 +7,7 @@ import {
   lookup,
 } from "../deps.ts";
 import { Cache } from "./cache.ts";
-import { gitReadDir, gitReadFile } from "./git.ts";
+import { GithubDirEntry, gitReadDir, gitReadFile } from "./git.ts";
 import { getMetaData } from "./page.ts";
 import { ProviderFunction, ProviderOptions, ProviderType } from "./provider.ts";
 import { ChildComponent } from "./types.ts";
@@ -36,6 +36,10 @@ export interface FileOptions {
   component?: ChildComponent;
 }
 
+export interface GetFilesOptions<O> extends ReadDirOptions<O> {
+  map?: (file: FileOptions) => FileOptions;
+}
+
 export interface ReadDirOptions<O> {
   recursive?: boolean;
   includeDirs?: boolean;
@@ -53,8 +57,23 @@ export interface ReadDirOptions<O> {
   providers?: Array<ProviderOptions<O>>;
 }
 
-export interface GetFilesOptions<O> extends ReadDirOptions<O> {
-  map?: (file: FileOptions) => FileOptions;
+interface InitComponentOptions<O> {
+  req: Request;
+  providers?: Array<ProviderOptions<O>>;
+  repository?: string;
+  rev?: string;
+}
+
+interface CreateFileOptions<O> extends InitComponentOptions<O> {
+  isDirectory: boolean;
+  selectedVersion?: string;
+  basePath: string;
+  prefix?: string;
+  read?: boolean;
+  loadAssets?: boolean;
+  base64?: true;
+  versions?: Array<string>;
+  pages?: boolean;
 }
 
 const getFilesCache = new Cache<Array<FileOptions>>();
@@ -103,11 +122,11 @@ async function readDir<O>(
     if (dirEntry.isDirectory ? opts?.includeDirs : opts?.includeFiles) {
       const fullPath = join(filePath, dirEntry.name);
       const filePromise = createFile(fullPath, {
-        rev,
         ...opts,
-        isDirectory: dirEntry.isDirectory,
+        rev: rev || opts.rev,
         repository,
         basePath,
+        isDirectory: dirEntry.isDirectory,
       });
 
       if (dirEntry.isDirectory) {
@@ -138,27 +157,11 @@ async function readDir<O>(
 
   return flat(files).sort(sortByKey("path"));
 
-  function read() {
+  function read(): AsyncIterable<GithubDirEntry | Deno.DirEntry> {
     return repository
       ? gitReadDir(repository, rev, filePath)
       : Deno.readDir(filePath);
   }
-}
-
-interface CreateFileOptions<O> {
-  isDirectory: boolean;
-  repository: string;
-  rev: string;
-  selectedVersion?: string;
-  basePath: string;
-  prefix?: string;
-  read?: boolean;
-  loadAssets?: boolean;
-  base64?: true;
-  req: Request;
-  versions?: Array<string>;
-  pages?: boolean;
-  providers?: Array<ProviderOptions<O>>;
 }
 
 async function createFile<O>(
@@ -203,7 +206,7 @@ async function createFile<O>(
       : [];
 
   const component = !opts.isDirectory && fileName.endsWith(".tsx")
-    ? await initComponent(path, opts.req, opts.providers)
+    ? await initComponent(path, opts)
     : undefined;
 
   let label: string;
@@ -237,7 +240,7 @@ async function createFile<O>(
   async function readTextFile() {
     try {
       return opts.repository
-        ? await gitReadFile(opts.repository, opts.rev, path, opts.base64)
+        ? await gitReadFile(opts.repository, opts.rev!, path, opts.base64)
         : await denoReadFile(path, opts.base64);
     } catch (error: unknown) {
       throw new Error("Failed to read file: " + path, {
@@ -297,11 +300,15 @@ function isProviderType<V extends unknown, T extends unknown>(
 
 async function initComponent<O>(
   path: string,
-  req: Request,
-  providerInjections?: Array<ProviderOptions<O>>,
+  options: InitComponentOptions<O>,
 ) {
-  const { default: component } = await import(addProtocol(path));
+  const importPath = options.repository
+    ? `https://raw.githubusercontent.com/${options.repository}/${options.rev}/${path}`
+    : addProtocol(path);
+
+  const { default: component } = await import(importPath);
   const { providers } = getMetaData(component) ?? { providers: [] };
+
   const props = Object.assign(
     {},
     ...await Promise.all(
@@ -311,19 +318,15 @@ async function initComponent<O>(
             | ProviderType<unknown, unknown>
             | ProviderFunction<unknown, unknown>,
         ) => {
-          const matchedProviders =
-            providerInjections?.filter(({ component }) =>
-              component === provider
-            ) ?? [];
+          const props =
+            options.providers?.filter(({ component }) => component === provider)
+              .map(({ props }) => props) ?? [];
 
-          const opts = {};
-          for (const { props } of matchedProviders) {
-            Object.assign(opts, props);
-          }
+          const opts = Object.assign({}, ...props);
 
           return isProviderType(provider)
-            ? new provider().onInit(req, opts)
-            : provider(req, opts);
+            ? new provider().onInit(options.req, opts)
+            : provider(options.req, opts);
         },
       ),
     ),

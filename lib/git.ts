@@ -61,7 +61,7 @@ export function getVersions(repository: string): Promise<GithubVersions> {
   }
 }
 
-interface GithubDirEntry {
+interface GithubDirResult {
   path: string;
   mode: string;
   type: "blob" | "tree";
@@ -70,17 +70,19 @@ interface GithubDirEntry {
   url: string;
 }
 
+export type GithubDirEntry = GithubDirResult & Deno.DirEntry;
+
 export async function gitGetDir(
   repository: string,
-  rev: string,
+  rev?: string,
   path?: string,
-): Promise<Array<GithubDirEntry & Deno.DirEntry>> {
+): Promise<Array<GithubDirEntry>> {
   path = path?.replace(/^\/+/, "")
     .replace(/\/+$/, "");
 
-  const { tree } = await gitFetch<{ tree: Array<GithubDirEntry> }>(
+  const { tree } = await gitFetch<{ tree: Array<GithubDirResult> }>(
     repository,
-    `git/trees/${rev}`,
+    `git/trees/${rev || "main"}`,
   );
 
   if (path) {
@@ -103,9 +105,9 @@ export async function gitGetDir(
 
 export async function* gitReadDir(
   repository: string,
-  rev: string,
+  rev?: string,
   path?: string,
-): AsyncGenerator<GithubDirEntry & Deno.DirEntry> {
+): AsyncGenerator<GithubDirEntry> {
   const files = await gitGetDir(repository, rev, path);
 
   for (const file of files) {
@@ -129,7 +131,7 @@ export async function gitReadFile(
 
   const file = await gitFetch<{ content: string }>(
     repository,
-    `contents/${path}?rev=${rev}`,
+    `contents/${path}${rev ? `?rev=${rev}` : ""}`,
   );
 
   try {

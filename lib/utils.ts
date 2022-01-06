@@ -65,12 +65,22 @@ export function getLabel(routeName: string): string {
   return label.length > 0 ? capitalize(label) : label;
 }
 
-export function parseRemotePath(path: string) {
+interface ParseRemotePathResult {
+  repository?: string;
+  rev?: string;
+  path: string;
+}
+
+export function parseRemotePath(path: string): ParseRemotePathResult {
   const [_, __, repository, rev, filePath] = path.match(
     /^((.*)@(.+):)?(.*)/,
   ) ?? [];
 
-  return { repository, rev, path: filePath || "/" };
+  return {
+    repository: repository || undefined,
+    rev: rev || undefined,
+    path: filePath || "/",
+  };
 }
 
 function getVersionsPattern(versions: Array<string>): string {
