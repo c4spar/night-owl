@@ -1,3 +1,5 @@
+import { fromFileUrl } from "../deps.ts";
+
 export function capitalize(str: string): string {
   return str.length > 0
     ? str[0].toUpperCase() + (str.length > 1 ? str.slice(1) : "")
@@ -72,9 +74,28 @@ interface ParseRemotePathResult {
 }
 
 export function parseRemotePath(path: string): ParseRemotePathResult {
-  const [_, __, repository, rev, filePath] = path.match(
-    /^((.*)@(.+):)?(.*)/,
-  ) ?? [];
+  let [_, repository, rev, filePath]: Array<string | undefined> = [];
+  if (path.startsWith("file:")) {
+    filePath = fromFileUrl(path);
+  } else if (path.startsWith("http:") || path.startsWith("https:")) {
+    const url = new URL(path);
+    // https://raw.githubusercontent.com/c4spar/cliffy.io/main/pages
+    // https://github.com/c4spar/cliffy.io/tree/main/pages
+    if (
+      url.hostname === "raw.githubusercontent.com" ||
+      url.hostname === "github.com"
+    ) {
+      [_, repository, _, rev, filePath] = url.pathname.match(
+        /^\/([^\/]+\/[^\/]+)(\/tree)?\/([^\/]+)(.*)/,
+      ) ?? [];
+    } else {
+      throw new Error("Unsupported src url: " + path);
+    }
+  } else {
+    [_, _, repository, rev, filePath] = path.match(
+      /^((.*)@(.+):)?(.*)/,
+    ) ?? [];
+  }
 
   return {
     repository: repository || undefined,

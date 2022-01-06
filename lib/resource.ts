@@ -2,7 +2,6 @@ import {
   basename,
   dirname,
   encodeBase64,
-  fromFileUrl,
   isAbsolute,
   join,
   lookup,
@@ -81,7 +80,6 @@ export async function getFiles<O>(
   path: string,
   opts: GetFilesOptions<O>,
 ): Promise<Array<FileOptions>> {
-  path = path.startsWith("file:") ? fromFileUrl(path) : path;
   const cacheKey = JSON.stringify({ path, opts });
 
   let files: Array<FileOptions> | undefined = getFilesCache.get(cacheKey);
@@ -132,7 +130,10 @@ async function readDir<O>(
         if (opts?.recursive) {
           resultPromises.push(
             readDir(
-              join(path, dirEntry.name),
+              join(
+                repository ? (`${repository}@${rev}:${filePath}`) : path,
+                dirEntry.name,
+              ),
               opts,
               basePath,
             ).then((files) =>
