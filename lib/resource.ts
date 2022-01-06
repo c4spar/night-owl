@@ -2,6 +2,7 @@ import {
   basename,
   dirname,
   encodeBase64,
+  fromFileUrl,
   isAbsolute,
   join,
   lookup,
@@ -82,6 +83,7 @@ export async function getFiles<O>(
   path: string,
   opts: GetFilesOptions<O>,
 ): Promise<Array<FileOptions>> {
+  path = path.startsWith("file:") ? fromFileUrl(path) : path;
   const cacheKey = JSON.stringify({ path, opts });
   opts.prefix ??= path;
 
