@@ -1,3 +1,17 @@
+# [v0.0.5](https://github.com/c4spar/nano-deploy/compare/v0.0.4...v0.0.5) (Jan 6, 2022)
+
+### Features
+
+- add support for raw.githubusercontent.com and github.com url's in options.src
+  ([6ab9fa7](https://github.com/c4spar/nano-deploy/commit/6ab9fa7))
+- add support for file url's
+  ([735f20a](https://github.com/c4spar/nano-deploy/commit/735f20a))
+
+### Code Refactoring
+
+- remove prefix from ReadDirOptions and CreateFileOptions
+  ([1d76d57](https://github.com/c4spar/nano-deploy/commit/1d76d57))
+
 # [v0.0.4](https://github.com/c4spar/nano-deploy/compare/v0.0.3...v0.0.4) (Jan 6, 2022)
 
 ### Bug Fixes
