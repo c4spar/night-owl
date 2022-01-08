@@ -3,9 +3,6 @@
 include .env
 export
 
-run: export NO_CACHE=false
-run: export LOG_LEVEL=DEBUG
-
 lint:
 	deno lint
 fmt:
