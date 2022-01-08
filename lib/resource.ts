@@ -36,9 +36,7 @@ export interface FileOptions {
   component?: ChildComponent;
 }
 
-export interface GetFilesOptions<O> extends ReadDirOptions<O> {
-  map?: (file: FileOptions) => FileOptions;
-}
+export type GetFilesOptions<O> = ReadDirOptions<O>;
 
 export interface ReadDirOptions<O> {
   recursive?: boolean;
@@ -88,10 +86,6 @@ export async function getFiles<O>(
   }
 
   files = await readDir(path, opts);
-
-  if (opts?.map) {
-    files = files.map(opts.map);
-  }
 
   getFilesCache.set(cacheKey, files);
 
