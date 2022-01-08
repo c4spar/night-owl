@@ -6,8 +6,12 @@ export async function setupLog(): Promise<void> {
       console: new log.handlers.ConsoleHandler("DEBUG", {
         formatter: (logRecord) => {
           let msg = logRecord.msg;
+          if (typeof msg !== "string") {
+            return format(msg);
+          }
 
           const specifiers = msg.match(/%[sdifoO]/g) ?? [];
+          let args: Array<unknown>;
 
           if (specifiers.length) {
             for (let i = 0; i < specifiers.length; i++) {
@@ -29,10 +33,13 @@ export async function setupLog(): Promise<void> {
               }
               msg = msg.replace(specifiers[i], value);
             }
+            args = logRecord.args.slice(specifiers.length);
           } else {
-            for (const arg of logRecord.args) {
-              msg += " " + (typeof arg === "string" ? arg : format(arg));
-            }
+            args = logRecord.args;
+          }
+
+          for (const arg of args) {
+            msg += " " + (typeof arg === "string" ? arg : format(arg));
           }
 
           return `[${logRecord.levelName}] ${msg}`;
