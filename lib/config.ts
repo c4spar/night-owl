@@ -71,7 +71,7 @@ export async function createConfig<O>(
       recursive: true,
       includeDirs: true,
       loadAssets: true,
-      pattern: /\.(md|js|jsx|ts|tsx)/,
+      pattern: /\.(md|js|jsx|ts|tsx)$/,
       read: true,
       cacheKey: req.url,
       rev,
