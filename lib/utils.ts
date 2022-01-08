@@ -104,7 +104,7 @@ export function parseRemotePath(path: string): ParseRemotePathResult {
   };
 }
 
-function getVersionsPattern(versions: Array<string>): string {
+function getVersionsPattern(versions: Array<string> = []): string {
   return "(" +
     versions
       .map((version) => version.replace(/\./g, "\."))
@@ -113,7 +113,7 @@ function getVersionsPattern(versions: Array<string>): string {
 }
 
 export function getRouteRegex(
-  versions: Array<string>,
+  versions?: Array<string>,
   pages?: boolean,
 ): RegExp {
   return new RegExp(
@@ -125,7 +125,7 @@ export function getRouteRegex(
 
 export function parseRoute(
   route: string,
-  versions: Array<string>,
+  versions?: Array<string>,
   pages?: boolean,
 ) {
   const match = route.match(getRouteRegex(versions, pages)) ?? [];

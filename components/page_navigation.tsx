@@ -26,7 +26,7 @@ export class PageNavigation extends Component<PageNavigationOptions> {
       selectedPage,
     } = parseRoute(
       this.props.file.route,
-      this.props.config.versions.all,
+      this.props.file.versions?.all,
       this.props.config.pages,
     );
 

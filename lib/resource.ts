@@ -7,16 +7,22 @@ import {
   lookup,
 } from "../deps.ts";
 import { Cache } from "./cache.ts";
-import { GithubDirEntry, gitReadDir, gitReadFile } from "./git.ts";
+import {
+  getVersions,
+  GithubDirEntry,
+  GithubVersions,
+  gitReadDir,
+  gitReadFile,
+} from "./git.ts";
 import { getMetaData } from "./page.ts";
 import { ProviderFunction, ProviderOptions, ProviderType } from "./provider.ts";
 import { ChildComponent } from "./types.ts";
 import {
-  flat,
   getLabel,
   getRouteRegex,
   joinUrl,
   parseRemotePath,
+  parseRoute,
   pathToUrl,
   sortByKey,
 } from "./utils.ts";
@@ -34,6 +40,9 @@ export interface FileOptions {
   label: string;
   assets: Array<FileOptions>;
   component?: ChildComponent;
+  versions?: GithubVersions;
+  rev?: string;
+  repository?: string;
 }
 
 export type GetFilesOptions<O> = ReadDirOptions<O>;
@@ -46,10 +55,11 @@ export interface ReadDirOptions<O> {
   pattern?: RegExp;
   read?: boolean;
   rev?: string;
-  selectedVersion?: string;
+  repository?: string;
+  addVersion?: boolean;
   cacheKey: string;
   req: Request;
-  versions?: Array<string>;
+  versions?: GithubVersions;
   pages?: boolean;
   providers?: Array<ProviderOptions<O>>;
 }
@@ -63,16 +73,28 @@ interface InitComponentOptions<O> {
 
 interface CreateFileOptions<O> extends InitComponentOptions<O> {
   isDirectory: boolean;
-  selectedVersion?: string;
+  addVersion?: boolean;
   basePath: string;
   read?: boolean;
   loadAssets?: boolean;
   base64?: true;
-  versions?: Array<string>;
+  versions?: GithubVersions;
   pages?: boolean;
 }
 
+interface GetRoutePrefixOptions {
+  basePath?: string;
+  addVersion?: boolean;
+  versions?: GithubVersions;
+  pages?: boolean;
+  rev?: string;
+}
+
+const decoder = new TextDecoder("utf8");
+
 const getFilesCache = new Cache<Array<FileOptions>>();
+
+const local = Deno.env.get("LOCAL") === "true";
 
 export async function getFiles<O>(
   path: string,
@@ -80,12 +102,42 @@ export async function getFiles<O>(
 ): Promise<Array<FileOptions>> {
   const cacheKey = JSON.stringify({ path, opts });
 
-  let files: Array<FileOptions> | undefined = getFilesCache.get(cacheKey);
+  let files = getFilesCache.get(cacheKey);
   if (files) {
     return files;
   }
 
-  files = await readDir(path, opts);
+  let { repository, rev, path: filePath } = parseRemotePath(path);
+  const versionsRepo = repository ?? opts.repository;
+  const versions: GithubVersions | undefined = !opts.versions && versionsRepo
+    ? await getVersions(versionsRepo)
+    : undefined;
+
+  const { version: selectedVersion } = parseRoute(
+    new URL(opts.req.url).pathname,
+    versions?.all ?? [],
+    opts.pages,
+  );
+
+  rev = selectedVersion ?? versions?.latest ?? rev;
+
+  // Fetch only from local (latest deployed version) if no version is selected
+  // and local is not enforced.
+  if (!repository && !local && selectedVersion) {
+    repository = opts.repository;
+  }
+
+  files = await readDir(filePath, {
+    versions,
+    addVersion: !!selectedVersion,
+    ...opts,
+    repository,
+    rev,
+  });
+
+  if (!repository) {
+    files = files.sort(sortByKey("path"));
+  }
 
   getFilesCache.set(cacheKey, files);
 
@@ -98,8 +150,6 @@ async function readDir<O>(
   basePath: string = path,
 ): Promise<Array<FileOptions>> {
   const resultPromises: Array<Promise<FileOptions | Array<FileOptions>>> = [];
-  const { repository, rev, path: filePath } = parseRemotePath(path);
-  opts.includeFiles ??= true;
 
   for await (const dirEntry of read()) {
     if (
@@ -110,12 +160,12 @@ async function readDir<O>(
       continue;
     }
 
-    if (dirEntry.isDirectory ? opts?.includeDirs : opts?.includeFiles) {
-      const fullPath = join(filePath, dirEntry.name);
+    if (
+      dirEntry.isDirectory ? opts?.includeDirs : opts.includeFiles !== false
+    ) {
+      const fullPath = join(path, dirEntry.name);
       const filePromise = createFile(fullPath, {
         ...opts,
-        rev: rev || opts.rev,
-        repository,
         basePath,
         isDirectory: dirEntry.isDirectory,
       });
@@ -124,10 +174,7 @@ async function readDir<O>(
         if (opts?.recursive) {
           resultPromises.push(
             readDir(
-              join(
-                repository ? (`${repository}@${rev}:${filePath}`) : path,
-                dirEntry.name,
-              ),
+              join(path, dirEntry.name),
               opts,
               basePath,
             ).then((files) =>
@@ -143,18 +190,12 @@ async function readDir<O>(
     }
   }
 
-  const files = await Promise.all(resultPromises);
-
-  if (repository || path !== basePath) {
-    return flat(files);
-  }
-
-  return flat(files).sort(sortByKey("path"));
+  return Promise.all(resultPromises).then((files) => files.flat());
 
   function read(): AsyncIterable<GithubDirEntry | Deno.DirEntry> {
-    return repository
-      ? gitReadDir(repository, rev, filePath)
-      : Deno.readDir(filePath);
+    return opts.repository
+      ? gitReadDir(opts.repository, opts.rev, path)
+      : Deno.readDir(path);
   }
 }
 
@@ -164,33 +205,8 @@ async function createFile<O>(
 ): Promise<FileOptions> {
   const fileName = basename(path);
   const dirName = dirname(path);
-
-  let routeName = pathToUrl("/", fileName);
-
-  if (["/index", "/README"].includes(routeName)) {
-    routeName = "/";
-  }
-
-  let routePrefix = pathToUrl("/", dirName);
-
-  // Remove base path.
-  if (opts.basePath) {
-    const { path: basePath } = parseRemotePath(opts.basePath);
-    const regex = new RegExp(`^${pathToUrl("/", basePath)}`);
-    routePrefix = joinUrl(
-      "/",
-      routePrefix.replace(regex, "/"),
-    );
-  }
-
-  // Add selected version to url.
-  if (opts.selectedVersion && opts.versions) {
-    routePrefix = routePrefix.replace(
-      getRouteRegex(opts.versions, opts.pages),
-      opts.pages ? "$3@" + opts.rev + "$6$8" : "/" + opts.rev + "$5$7",
-    ).replace(/\/+$/, "");
-  }
-
+  const routePrefix = getRoutePrefix(path, opts);
+  const routeName = getRouteName(path);
   const route = joinUrl(routePrefix, routeName);
   const content = opts.read && !opts.isDirectory ? await readTextFile() : "";
 
@@ -205,7 +221,13 @@ async function createFile<O>(
 
   let label: string;
   if (route === routePrefix) {
-    if (fileName.startsWith("index.")) {
+    const headline = (
+      opts.pages ? routePrefix.split("/").length === 2 : routePrefix === "/"
+    ) && content.trim().match(/^# (.*)\n/)?.[1];
+
+    if (headline) {
+      label = headline;
+    } else if (fileName.startsWith("index.")) {
       label = "Home";
     } else if (route === "/") {
       label = getLabel(pathToUrl(fileName));
@@ -229,6 +251,9 @@ async function createFile<O>(
     assets,
     component,
     label,
+    versions: opts.versions,
+    rev: opts.rev,
+    repository: opts.repository,
   };
 
   async function readTextFile() {
@@ -244,7 +269,45 @@ async function createFile<O>(
   }
 }
 
-const decoder = new TextDecoder("utf8");
+export function getRoutePrefix(path: string, opts: GetRoutePrefixOptions) {
+  console.log("getRoutePrefix: '%s' <-> '%s'", path, opts.basePath);
+  const dirName = dirname(path);
+  let routePrefix = pathToUrl("/", dirName);
+
+  // Remove base path.
+  if (opts.basePath) {
+    const { path: basePath } = parseRemotePath(opts.basePath);
+    const regex = new RegExp(`^${pathToUrl("/", basePath)}`);
+    routePrefix = joinUrl(
+      "/",
+      routePrefix.replace(regex, "/"),
+    );
+  }
+
+  // Add selected version to url.
+  if (
+    opts.addVersion &&
+    opts.versions
+  ) {
+    routePrefix = routePrefix.replace(
+      getRouteRegex(opts.versions.all, opts.pages),
+      opts.pages ? "$3@" + opts.rev + "$6$8" : "/" + opts.rev + "$5$7",
+    ).replace(/\/+$/, "");
+  }
+
+  return routePrefix;
+}
+
+function getRouteName(path: string) {
+  const fileName = basename(path);
+  let routeName = pathToUrl("/", fileName);
+
+  if (["/index", "/README"].includes(routeName)) {
+    routeName = "/";
+  }
+
+  return routeName;
+}
 
 async function denoReadFile(path: string, base64?: boolean): Promise<string> {
   const file = await Deno.readFile(path);

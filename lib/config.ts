@@ -1,10 +1,8 @@
 import { NavItemOptions } from "../components/header.tsx";
 import { NotFoundOptions } from "../components/not_found.tsx";
 import { bold, log } from "../deps.ts";
-import { getVersions, GithubVersions } from "./git.ts";
 import { ProviderOptions } from "./provider.ts";
 import { FileOptions, getFiles } from "./resource.ts";
-import { parseRoute } from "./utils.ts";
 
 export interface NavOptions {
   collapse?: boolean;
@@ -30,9 +28,7 @@ export interface AppConfig
   src: string | Array<string>;
   rev: string;
   label: unknown;
-  versions: GithubVersions;
   sourceFiles: Array<FileOptions>;
-  selectedVersion: string;
 }
 
 export async function createConfig<O>(
@@ -49,21 +45,6 @@ export async function createConfig<O>(
   const now = Date.now();
   log.info(bold("Fetching resources..."));
 
-  const versions: GithubVersions = opts.versions
-    ? {
-      all: opts.versions,
-      tags: [],
-      branches: [],
-      latest: opts.versions[0],
-    }
-    : await getVersions(opts.repository);
-
-  const { version: selectedVersion } = parseRoute(
-    new URL(req.url).pathname,
-    versions.all,
-    opts.pages,
-  );
-  const rev = selectedVersion ?? versions.latest;
   const src = typeof opts.src === "string" ? [opts.src] : opts.src;
 
   const sourceFiles = await Promise.all(src.map((path) =>
@@ -74,10 +55,8 @@ export async function createConfig<O>(
       pattern: /\.(md|js|jsx|ts|tsx)$/,
       read: true,
       cacheKey: req.url,
-      rev,
-      selectedVersion,
+      repository: opts.repository,
       req,
-      versions: versions.all,
       pages: opts.pages,
       providers: opts.providers,
     })
@@ -90,9 +69,7 @@ export async function createConfig<O>(
   );
 
   return {
-    selectedVersion: rev,
     ...opts,
     sourceFiles,
-    versions,
   };
 }

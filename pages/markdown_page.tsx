@@ -32,23 +32,25 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
 
     // @TODO: move to custom provider
     // Add selected version to cliffy module imports.
-    file.content = file.content
-      .replace(
-        /https:\/\/deno\.land\/x\/cliffy\//g,
-        `https://deno.land/x/cliffy@${this.props.config.selectedVersion}/`,
-      )
-      .replace(
-        /https:\/\/deno\.land\/x\/cliffy@<version>\//g,
-        `https://deno.land/x/cliffy@${this.props.config.selectedVersion}/`,
-      )
-      .replace(
-        /https:\/\/x\.nest\.land\/cliffy@<version>\//g,
-        `https://x.nest.land/cliffy@${this.props.config.selectedVersion}/`,
-      )
-      .replace(
-        /https:\/\/raw\.githubusercontent\.com\/c4spar\/deno-cliffy\/<version>\//g,
-        `https://raw.githubusercontent.com/c4spar/deno-cliffy/${this.props.config.selectedVersion}/`,
-      );
+    if (this.props.file.rev) {
+      file.content = file.content
+        .replace(
+          /https:\/\/deno\.land\/x\/cliffy\//g,
+          `https://deno.land/x/cliffy@${this.props.file.rev}/`,
+        )
+        .replace(
+          /https:\/\/deno\.land\/x\/cliffy@<version>\//g,
+          `https://deno.land/x/cliffy@${this.props.file.rev}/`,
+        )
+        .replace(
+          /https:\/\/x\.nest\.land\/cliffy@<version>\//g,
+          `https://x.nest.land/cliffy@${this.props.file.rev}/`,
+        )
+        .replace(
+          /https:\/\/raw\.githubusercontent\.com\/c4spar\/deno-cliffy\/<version>\//g,
+          `https://raw.githubusercontent.com/c4spar/deno-cliffy/${this.props.file.rev}/`,
+        );
+    }
 
     return (
       <Fragment>
@@ -81,6 +83,7 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
             >
               <VersionSelection
                 class={tw`mb-3`}
+                file={this.props.file}
                 config={this.props.config}
               />
               <SecondaryPageNavigation file={file} />

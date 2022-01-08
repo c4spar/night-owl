@@ -2,17 +2,19 @@
 
 import { Component, Fragment, h, Helmet } from "../deps.ts";
 import { AppConfig } from "../lib/config.ts";
+import { FileOptions } from "../lib/resource.ts";
 import { getRouteRegex } from "../lib/utils.ts";
 import { Selection } from "./selection.tsx";
 
 export interface VersionSelectionOptions {
+  file: FileOptions;
   config: AppConfig;
   class?: string;
 }
 
 export class VersionSelection extends Component<VersionSelectionOptions> {
   render() {
-    return (
+    return !this.props.file.versions ? <Fragment /> : (
       <Fragment>
         <Helmet footer>
           <script type="application/javascript">
@@ -21,8 +23,8 @@ export class VersionSelection extends Component<VersionSelectionOptions> {
         </Helmet>
         <Selection
           class={this.props.class}
-          options={this.props.config.versions.all}
-          selected={this.props.config.selectedVersion}
+          options={this.props.file.versions.all}
+          selected={this.props.file.rev}
           onchange="switchVersion(this.value)"
         />
       </Fragment>
@@ -30,8 +32,11 @@ export class VersionSelection extends Component<VersionSelectionOptions> {
   }
 
   #getScript(): string {
+    if (!this.props.file.versions) {
+      return "";
+    }
     const regex = getRouteRegex(
-      this.props.config.versions.all,
+      this.props.file.versions.all,
       this.props.config.pages,
     );
     const replace = this.props.config.pages
