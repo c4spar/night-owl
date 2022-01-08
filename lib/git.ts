@@ -1,4 +1,12 @@
-import { basename, blue, decodeBase64, green, log, lookup } from "../deps.ts";
+import {
+  basename,
+  blue,
+  decodeBase64,
+  green,
+  log,
+  lookup,
+  red,
+} from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { joinUrl } from "./utils.ts";
 
@@ -76,6 +84,8 @@ export async function gitGetDir(
   repository: string,
   rev?: string,
   path?: string,
+  baseRev: string | undefined = rev,
+  basePath: string | undefined = path,
 ): Promise<Array<GithubDirEntry>> {
   path = path?.replace(/^\/+/, "")
     .replace(/\/+$/, "");
@@ -89,9 +99,20 @@ export async function gitGetDir(
     const [name, ...parts] = path.split("/");
     for (const file of tree) {
       if (file.path === name) {
-        return gitGetDir(repository, file.sha, parts.join("/"));
+        return gitGetDir(
+          repository,
+          file.sha,
+          parts.join("/"),
+          baseRev,
+          basePath,
+        );
       }
     }
+    throw new Error(
+      `File not found: ${red(`${repository}@${rev}:${path}`)}, original rev: ${
+        blue(`${repository}@${baseRev}:${basePath}`)
+      }`,
+    );
   }
 
   return tree.map((file) => ({
