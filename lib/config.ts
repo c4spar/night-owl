@@ -54,7 +54,6 @@ export async function createConfig<O>(
       loadAssets: true,
       pattern: /\.(md|js|jsx|ts|tsx)$/,
       read: true,
-      cacheKey: req.url,
       repository: opts.repository,
       req,
       pages: opts.pages,

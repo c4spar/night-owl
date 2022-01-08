@@ -57,7 +57,6 @@ export interface ReadDirOptions<O> {
   rev?: string;
   repository?: string;
   addVersion?: boolean;
-  cacheKey: string;
   req: Request;
   versions?: GithubVersions;
   pages?: boolean;
@@ -100,7 +99,7 @@ export async function getFiles<O>(
   path: string,
   opts: GetFilesOptions<O>,
 ): Promise<Array<FileOptions>> {
-  const cacheKey = JSON.stringify({ path, opts });
+  const cacheKey = JSON.stringify({ path, opts, cacheKey: opts.req.url });
 
   let files = getFilesCache.get(cacheKey);
   if (files) {
