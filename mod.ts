@@ -13,11 +13,7 @@ export {
 export { Code } from "./components/code.tsx";
 
 /** LIB */
-export {
-  type ComponentType,
-  Page,
-  type PageDecoratorOptions,
-} from "./lib/page.ts";
+export { type ComponentType, Page, type PageOptions } from "./lib/page.ts";
 export { serve } from "./lib/serve.tsx";
 export {
   type AppConfig,
@@ -30,11 +26,12 @@ export {
   type ProviderType,
 } from "./lib/provider.ts";
 export {
-  type FileOptions,
   getFiles,
   type GetFilesOptions,
   type ReadDirOptions,
 } from "./lib/resource.ts";
+export { SourceFile, type SourceFileOptions } from "./lib/source_file.ts";
+export { Asset, type AssetOptions } from "./lib/asset.ts";
 export { bgMain, textMain, transformGpu } from "./lib/styles.ts";
 export { capitalize, sortByKey } from "./lib/utils.ts";
 export { type ChildComponent, type Children } from "./lib/types.ts";

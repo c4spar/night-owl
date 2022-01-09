@@ -2,7 +2,8 @@ import { NavItemOptions } from "../components/header.tsx";
 import { NotFoundOptions } from "../components/not_found.tsx";
 import { bold, log } from "../deps.ts";
 import { ProviderOptions } from "./provider.ts";
-import { FileOptions, getFiles, SourceFilesOptions } from "./resource.ts";
+import { getFiles, SourceFilesOptions } from "./resource.ts";
+import { SourceFile } from "./source_file.ts";
 
 export interface NavOptions {
   collapse?: boolean;
@@ -28,7 +29,7 @@ export interface AppConfig
   src: string | Array<string | SourceFilesOptions>;
   rev: string;
   label: unknown;
-  sourceFiles: Array<FileOptions>;
+  sourceFiles: Array<SourceFile>;
 }
 
 export async function createConfig<O>(
@@ -47,7 +48,7 @@ export async function createConfig<O>(
 
   const src = typeof opts.src === "string" ? [opts.src] : opts.src;
 
-  const sourceFiles: Array<FileOptions> = await Promise.all(
+  const sourceFiles: Array<SourceFile<O>> = await Promise.all(
     src.map((path: string | SourceFilesOptions) =>
       getFiles(path, {
         recursive: true,

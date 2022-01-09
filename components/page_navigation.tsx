@@ -1,15 +1,15 @@
 /** @jsx h */
 
 import { AppConfig } from "../lib/config.ts";
+import { SourceFile } from "../lib/source_file.ts";
 import { parseRoute, sortByKey } from "../lib/utils.ts";
 import { ModuleSelection } from "./module_selection.tsx";
 import { Navigation } from "./navigation.tsx";
 import { Component, Fragment, h, log, tw } from "../deps.ts";
-import { FileOptions } from "../lib/resource.ts";
 
 export interface PageNavigationOptions {
   config: AppConfig;
-  file: FileOptions;
+  file: SourceFile;
 }
 
 export class PageNavigation extends Component<PageNavigationOptions> {
@@ -53,7 +53,7 @@ export class PageNavigation extends Component<PageNavigationOptions> {
     );
   }
 
-  #renderNavLink(file: FileOptions) {
+  #renderNavLink(file: SourceFile) {
     const hasDuplicateRoutes = this.props.config.sourceFiles.find(
       (f) => f !== file && f.route === file.route,
     );
@@ -87,7 +87,7 @@ export class PageNavigation extends Component<PageNavigationOptions> {
       );
   }
 
-  #getNavFiles(): Array<FileOptions> {
+  #getNavFiles(): Array<SourceFile> {
     return this.props.config.sourceFiles.filter((file) => {
       let valid = true;
       if (this.props.config.nav?.collapse) {
@@ -107,12 +107,12 @@ export class PageNavigation extends Component<PageNavigationOptions> {
     });
   }
 
-  #getDropDownFiles(): Array<FileOptions> {
+  #getDropDownFiles(): Array<SourceFile> {
     if (!this.props.config.pagesDropdown || this.#pagePrefix === "/") {
       return [];
     }
     const prefix = this.props.config.pages ? this.#pagePrefix : "/";
-    const pages: Array<FileOptions> = [];
+    const pages: Array<SourceFile> = [];
     for (const file of this.props.config.sourceFiles) {
       if (
         file.routePrefix === prefix &&

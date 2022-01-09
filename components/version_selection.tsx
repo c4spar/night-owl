@@ -2,12 +2,12 @@
 
 import { Component, Fragment, h, Helmet } from "../deps.ts";
 import { AppConfig } from "../lib/config.ts";
-import { FileOptions } from "../lib/resource.ts";
+import { SourceFile } from "../lib/source_file.ts";
 import { getRouteRegex } from "../lib/utils.ts";
 import { Selection } from "./selection.tsx";
 
 export interface VersionSelectionOptions {
-  file: FileOptions;
+  file: SourceFile;
   config: AppConfig;
   class?: string;
 }

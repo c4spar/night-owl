@@ -2,28 +2,26 @@
 
 import { EditPageOnGithub } from "../components/edit_page_on_github.tsx";
 import { Markdown } from "../components/markdown.tsx";
-import { ModuleSelection } from "../components/module_selection.tsx";
 import { Sidebar } from "../components/sidebar.tsx.tsx";
 import { VersionSelection } from "../components/version_selection.tsx";
 import { Component, Fragment, h, log, tw } from "../deps.ts";
 import { AppConfig } from "../lib/config.ts";
-import { FileOptions } from "../lib/resource.ts";
+import { SourceFile } from "../lib/source_file.ts";
 import { transformGpu } from "../lib/styles.ts";
-import { joinUrl } from "../lib/utils.ts";
 import { PageNavigation } from "../components/page_navigation.tsx";
 import { SecondaryPageNavigation } from "../components/secondary_page_navigation.tsx";
 
 export interface MarkdownPageOptions {
   config: AppConfig;
-  file: FileOptions;
+  file: SourceFile;
 }
 
 export class MarkdownPage extends Component<MarkdownPageOptions> {
   render() {
     let file = this.props.file;
     if (file.isDirectory) {
-      const matchedFile = this.props.config.sourceFiles.find((f) =>
-        f.route === file.route && !f.isDirectory
+      const matchedFile = this.props.config.sourceFiles.find((sourceFile) =>
+        sourceFile.route === file.route && !sourceFile.isDirectory
       );
       if (matchedFile) {
         file = matchedFile;
@@ -32,23 +30,23 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
 
     // @TODO: move to custom provider
     // Add selected version to cliffy module imports.
-    if (this.props.file.rev) {
+    if (file.rev) {
       file.content = file.content
         .replace(
           /https:\/\/deno\.land\/x\/cliffy\//g,
-          `https://deno.land/x/cliffy@${this.props.file.rev}/`,
+          `https://deno.land/x/cliffy@${file.rev}/`,
         )
         .replace(
           /https:\/\/deno\.land\/x\/cliffy@<version>\//g,
-          `https://deno.land/x/cliffy@${this.props.file.rev}/`,
+          `https://deno.land/x/cliffy@${file.rev}/`,
         )
         .replace(
           /https:\/\/x\.nest\.land\/cliffy@<version>\//g,
-          `https://x.nest.land/cliffy@${this.props.file.rev}/`,
+          `https://x.nest.land/cliffy@${file.rev}/`,
         )
         .replace(
           /https:\/\/raw\.githubusercontent\.com\/c4spar\/deno-cliffy\/<version>\//g,
-          `https://raw.githubusercontent.com/c4spar/deno-cliffy/${this.props.file.rev}/`,
+          `https://raw.githubusercontent.com/c4spar/deno-cliffy/${file.rev}/`,
         );
     }
 
@@ -56,7 +54,7 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
       <Fragment>
         {/* sidebar left */}
         <Sidebar position="left" class={tw`${transformGpu} hidden lg:block`}>
-          <PageNavigation config={this.props.config} file={this.props.file} />
+          <PageNavigation config={this.props.config} file={file} />
         </Sidebar>
 
         {/* main */}
@@ -71,7 +69,7 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
 
               <EditPageOnGithub
                 path={file.path}
-                repository={this.props.file.repository ??
+                repository={file.repository ??
                   this.props.config.repository}
                 rev={this.props.config.rev}
               />
@@ -84,7 +82,7 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
             >
               <VersionSelection
                 class={tw`mb-3`}
-                file={this.props.file}
+                file={file}
                 config={this.props.config}
               />
               <SecondaryPageNavigation file={file} />

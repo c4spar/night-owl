@@ -2,7 +2,7 @@
 
 import { NotFound } from "./components/not_found.tsx";
 import { AppConfig } from "./lib/config.ts";
-import { FileOptions } from "./lib/resource.ts";
+import { SourceFile } from "./lib/source_file.ts";
 import { mainStyles } from "./lib/styles.ts";
 import { Header } from "./components/header.tsx";
 import { Component, h, Helmet, tw } from "./deps.ts";
@@ -14,7 +14,7 @@ interface AppOptions {
 }
 
 export class App extends Component<AppOptions> {
-  #file?: FileOptions;
+  #file?: SourceFile;
 
   constructor(props: AppOptions) {
     super(props);

@@ -1,7 +1,7 @@
 /** @jsx h */
 
 import { AppConfig } from "../lib/config.ts";
-import { FileOptions } from "../lib/resource.ts";
+import { SourceFile } from "../lib/source_file.ts";
 import { DarkModeSwitch } from "./dark_mode_switch.tsx";
 import { Link, LinkOptions } from "./link.tsx";
 import { Component, h, tw } from "../deps.ts";
@@ -13,7 +13,7 @@ export interface NavItemOptions extends Omit<LinkOptions, "children"> {
 
 export interface HeaderOptions {
   config: AppConfig;
-  file?: FileOptions;
+  file?: SourceFile;
 }
 
 export class Header extends Component<HeaderOptions> {

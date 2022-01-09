@@ -1,11 +1,11 @@
 /** @jsx h */
 
 import { Component, h } from "../deps.ts";
-import { FileOptions } from "../lib/resource.ts";
+import { SourceFile } from "../lib/source_file.ts";
 import { Selection } from "./selection.tsx";
 
 export interface ModuleSelectionOptions {
-  files: Array<FileOptions>;
+  files: Array<SourceFile>;
   selected?: string;
   class?: string;
 }

@@ -5,7 +5,7 @@ export interface ComponentType<T, S> {
   new (props: T): Component<T, S>;
 }
 
-export interface PageDecoratorOptions<R, O> {
+export interface PageOptions<R, O> {
   providers: Array<ProviderType<R, O> | ProviderFunction<R, O>>;
 }
 
@@ -13,10 +13,10 @@ const pageMetaData = new WeakMap<
   // deno-lint-ignore no-explicit-any
   ComponentType<any, any>,
   // deno-lint-ignore no-explicit-any
-  PageDecoratorOptions<any, any>
+  PageOptions<any, any>
 >();
 
-export function Page<P, S>(props: PageDecoratorOptions<P, unknown>) {
+export function Page<P, S>(props: PageOptions<P, unknown>) {
   return function <T extends ComponentType<P, S>>(
     constructor: T,
   ) {
@@ -26,7 +26,7 @@ export function Page<P, S>(props: PageDecoratorOptions<P, unknown>) {
 
 export function addMetaData<T, S>(
   type: ComponentType<T, S>,
-  value: PageDecoratorOptions<T, unknown>,
+  value: PageOptions<T, unknown>,
 ): void {
   const meta = getMetaData(type) ?? {};
   setMetaData(type, { ...meta, ...value });
@@ -34,13 +34,13 @@ export function addMetaData<T, S>(
 
 export function setMetaData<T, S>(
   type: ComponentType<T, S>,
-  value: PageDecoratorOptions<T, unknown>,
+  value: PageOptions<T, unknown>,
 ): void {
   pageMetaData.set(type, value);
 }
 
 export function getMetaData<T, S>(
   type: ComponentType<T, S>,
-): PageDecoratorOptions<T, unknown> | undefined {
-  return pageMetaData.get(type) as PageDecoratorOptions<T, unknown> | undefined;
+): PageOptions<T, unknown> | undefined {
+  return pageMetaData.get(type) as PageOptions<T, unknown> | undefined;
 }

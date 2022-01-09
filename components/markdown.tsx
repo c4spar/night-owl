@@ -8,14 +8,15 @@ import {
   Fragment,
   h,
   Helmet,
+  join,
   tw,
 } from "../deps.ts";
-import { FileOptions } from "../lib/resource.ts";
+import { SourceFile } from "../lib/source_file.ts";
 import { syntaxHighlighting, textMain, transformGpu } from "../lib/styles.ts";
 import { joinUrl, pathToUrl } from "../lib/utils.ts";
 
 export interface MarkdownOptions {
-  file: FileOptions;
+  file: SourceFile;
 }
 
 export class Markdown extends Component<MarkdownOptions> {
@@ -53,10 +54,12 @@ export class Markdown extends Component<MarkdownOptions> {
       // replace local image urls with data urls
       .replace(
         /<img src="([^"]+)"/g,
-        (_, path) => {
-          return `<img src="${this.props.file.assets.find((asset) =>
-            this.props.file.dirName + "/" + path === asset.path
-          )?.content}"`;
+        (src, path) => {
+          return `<img src="${
+            this.props.file.assets.find((asset) =>
+              join(this.props.file.dirName, "/", path) === asset.path
+            )?.content || src
+          }"`;
         },
       )
       // add anchor link

@@ -1,11 +1,11 @@
 /** @jsx h */
 
+import { SourceFile } from "../lib/source_file.ts";
 import { Navigation } from "./navigation.tsx";
 import { Component, h, render, tw } from "../deps.ts";
-import { FileOptions } from "../lib/resource.ts";
 
 export interface SecondaryPageNavigationOptions {
-  file: FileOptions;
+  file: SourceFile;
 }
 
 export class SecondaryPageNavigation
