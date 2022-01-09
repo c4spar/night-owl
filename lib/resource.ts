@@ -61,6 +61,7 @@ export interface ReadDirOptions<O> {
   versions?: GithubVersions;
   pages?: boolean;
   providers?: Array<ProviderOptions<O>>;
+  prefix?: string;
 }
 
 interface InitComponentOptions<O> {
@@ -79,6 +80,7 @@ interface CreateFileOptions<O> extends InitComponentOptions<O> {
   base64?: true;
   versions?: GithubVersions;
   pages?: boolean;
+  prefix?: string;
 }
 
 interface GetRoutePrefixOptions {
@@ -86,6 +88,14 @@ interface GetRoutePrefixOptions {
   addVersion?: boolean;
   versions?: GithubVersions;
   pages?: boolean;
+  rev?: string;
+  prefix?: string;
+}
+
+export interface SourceFilesOptions {
+  src: string;
+  prefix?: string;
+  repository?: string;
   rev?: string;
 }
 
@@ -96,9 +106,14 @@ const getFilesCache = new Cache<Array<FileOptions>>();
 const local = Deno.env.get("LOCAL") === "true";
 
 export async function getFiles<O>(
-  path: string,
+  path: string | SourceFilesOptions,
   opts: GetFilesOptions<O>,
 ): Promise<Array<FileOptions>> {
+  // const prefix = typeof path === "string" ? undefined : path.prefix;
+  // if (typeof path !== "string") {
+  //   path = path.src;
+  // }
+
   const cacheKey = JSON.stringify({ path, opts, cacheKey: opts.req.url });
 
   let files = getFilesCache.get(cacheKey);
@@ -106,8 +121,22 @@ export async function getFiles<O>(
     return files;
   }
 
-  let { repository, rev, path: filePath } = parseRemotePath(path);
-  const versionsRepo = repository ?? opts.repository;
+  if (typeof path === "string") {
+    const { repository, rev, path: filePath } = parseRemotePath(path);
+    path = {
+      src: filePath,
+      repository,
+      rev,
+    };
+  } else {
+    const { repository, rev, path: src } = parseRemotePath(path.src);
+    path.src = src;
+    path.repository ??= repository;
+    path.rev ??= rev;
+  }
+
+  // let { repository, rev, path: filePath } = parseRemotePath(path);
+  const versionsRepo = path.repository ?? opts.repository;
   const versions: GithubVersions | undefined = !opts.versions && versionsRepo
     ? await getVersions(versionsRepo)
     : undefined;
@@ -118,23 +147,24 @@ export async function getFiles<O>(
     opts.pages,
   );
 
-  rev = selectedVersion ?? versions?.latest ?? rev;
+  path.rev = selectedVersion ?? versions?.latest ?? path.rev;
 
   // Fetch only from local (latest deployed version) if no version is selected
   // and local is not enforced.
-  if (!repository && !local && selectedVersion) {
-    repository = opts.repository;
+  if (!path.repository && !local && selectedVersion) {
+    path.repository = opts.repository;
   }
 
-  files = await readDir(filePath, {
+  files = await readDir(path.src, {
     versions,
     addVersion: !!selectedVersion,
     ...opts,
-    repository,
-    rev,
+    repository: path.repository,
+    rev: path.rev,
+    prefix: path.prefix,
   });
 
-  if (!repository) {
+  if (!path.repository) {
     files = files.sort(sortByKey("path"));
   }
 
@@ -167,6 +197,7 @@ async function readDir<O>(
         ...opts,
         basePath,
         isDirectory: dirEntry.isDirectory,
+        prefix: opts.prefix,
       });
 
       if (dirEntry.isDirectory) {
@@ -204,10 +235,14 @@ async function createFile<O>(
 ): Promise<FileOptions> {
   const fileName = basename(path);
   const dirName = dirname(path);
-  const routePrefix = getRoutePrefix(path, opts);
+  let routePrefix = getRoutePrefix(path, opts);
   const routeName = getRouteName(path);
   const route = joinUrl(routePrefix, routeName);
   const content = opts.read && !opts.isDirectory ? await readTextFile() : "";
+
+  if (routePrefix === route) {
+    routePrefix = "/";
+  }
 
   const assets =
     opts.loadAssets && !opts.isDirectory && fileName.endsWith(".md")
@@ -218,21 +253,17 @@ async function createFile<O>(
     ? await initComponent(path, opts)
     : undefined;
 
-  let label: string;
-  if (route === routePrefix) {
-    const headline = (
-      opts.pages ? routePrefix.split("/").length === 2 : routePrefix === "/"
-    ) && content.trim().match(/^# (.*)\n/)?.[1];
+  const headline = fileName.endsWith(".md") &&
+    (fileName.startsWith("index.") || fileName.startsWith("README.")) &&
+    content.trim().match(/^#\s+([^\n]+)/)?.[1];
 
-    if (headline) {
-      label = headline;
-    } else if (fileName.startsWith("index.")) {
-      label = "Home";
-    } else if (route === "/") {
-      label = getLabel(pathToUrl(fileName));
-    } else {
-      label = getLabel(route.split("/").at(-1)!.split("@")[0]);
-    }
+  let label: string;
+  if (headline) {
+    label = headline;
+  } else if (route === "/") {
+    label = getLabel(pathToUrl(fileName));
+  } else if (routeName === "/") {
+    label = getLabel(route.split("/").at(-1)!.split("@")[0]);
   } else {
     label = getLabel(routeName);
   }
@@ -269,7 +300,6 @@ async function createFile<O>(
 }
 
 export function getRoutePrefix(path: string, opts: GetRoutePrefixOptions) {
-  console.log("getRoutePrefix: '%s' <-> '%s'", path, opts.basePath);
   const dirName = dirname(path);
   let routePrefix = pathToUrl("/", dirName);
 
@@ -283,6 +313,10 @@ export function getRoutePrefix(path: string, opts: GetRoutePrefixOptions) {
     );
   }
 
+  if (opts.prefix) {
+    routePrefix = joinUrl(opts.prefix, routePrefix);
+  }
+
   // Add selected version to url.
   if (
     opts.addVersion &&
@@ -294,7 +328,7 @@ export function getRoutePrefix(path: string, opts: GetRoutePrefixOptions) {
     ).replace(/\/+$/, "");
   }
 
-  return routePrefix;
+  return routePrefix || "/";
 }
 
 function getRouteName(path: string) {

@@ -2,7 +2,7 @@ import { NavItemOptions } from "../components/header.tsx";
 import { NotFoundOptions } from "../components/not_found.tsx";
 import { bold, log } from "../deps.ts";
 import { ProviderOptions } from "./provider.ts";
-import { FileOptions, getFiles } from "./resource.ts";
+import { FileOptions, getFiles, SourceFilesOptions } from "./resource.ts";
 
 export interface NavOptions {
   collapse?: boolean;
@@ -11,7 +11,7 @@ export interface NavOptions {
 
 export interface CreateConfigOptions<O> {
   repository: string;
-  src?: string | Array<string>;
+  src?: string | Array<string | SourceFilesOptions>;
   rev?: string;
   label?: unknown;
   pagesDropdown?: boolean;
@@ -25,7 +25,7 @@ export interface CreateConfigOptions<O> {
 
 export interface AppConfig
   extends Omit<CreateConfigOptions<unknown>, "versions"> {
-  src: string | Array<string>;
+  src: string | Array<string | SourceFilesOptions>;
   rev: string;
   label: unknown;
   sourceFiles: Array<FileOptions>;
@@ -47,19 +47,21 @@ export async function createConfig<O>(
 
   const src = typeof opts.src === "string" ? [opts.src] : opts.src;
 
-  const sourceFiles = await Promise.all(src.map((path) =>
-    getFiles(path, {
-      recursive: true,
-      includeDirs: true,
-      loadAssets: true,
-      pattern: /\.(md|js|jsx|ts|tsx)$/,
-      read: true,
-      repository: opts.repository,
-      req,
-      pages: opts.pages,
-      providers: opts.providers,
-    })
-  )).then((files) => files.flat());
+  const sourceFiles: Array<FileOptions> = await Promise.all(
+    src.map((path: string | SourceFilesOptions) =>
+      getFiles(path, {
+        recursive: true,
+        includeDirs: true,
+        loadAssets: true,
+        pattern: /\.(md|js|jsx|ts|tsx)$/,
+        read: true,
+        repository: opts.repository,
+        req,
+        pages: opts.pages,
+        providers: opts.providers,
+      })
+    ),
+  ).then((files) => files.flat());
 
   log.info(
     bold("%s Resources fetched in: %s"),

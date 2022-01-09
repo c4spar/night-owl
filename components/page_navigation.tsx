@@ -75,14 +75,14 @@ export class PageNavigation extends Component<PageNavigationOptions> {
           class={tw`p-3 w-full ${marginLeft} ${bold}`}
           href={file.route}
         >
-          {file.label || "UNKNOWN"}
+          {file.label}
         </a>
       )
       : (
         <div
           class={`${tw`font-bold p-3 w-full ${marginLeft}`}`}
         >
-          {file.label || "UNKNOWN"}
+          {file.label}
         </div>
       );
   }
