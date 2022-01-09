@@ -83,8 +83,6 @@ setup({
       "url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Titan+One&family=Varela+Round&display=swap')",
       // FiraCode Nerd Font
       "url('https://mshaugh.github.io/nerdfont-webfonts/build/firacode-nerd-font.css')",
-      // highlight.js theme: an-old-hope
-      "url(https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/an-old-hope.min.css)",
     ],
   },
 });

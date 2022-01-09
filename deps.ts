@@ -76,3 +76,11 @@ import * as comrak from "https://deno.land/x/comrak@0.1.1/mod.ts";
 
 await comrak.init();
 export { comrak };
+
+export { lowlight } from "https://esm.sh/lowlight@2.4.1?pin=v58";
+
+// Used to sanitize some output, ensuring html entities are encoded.
+export * as htmlEntities from "https://cdn.skypack.dev/html-entities@2.3.2?dts";
+
+// Used to convert lowlight trees to HTML
+export { toHtml } from "https://esm.sh/hast-util-to-html@8.0.3?pin=v58";

@@ -25,13 +25,6 @@ export async function serve<O>(options: CreateConfigOptions<O>) {
     }
 
     switch (new URL(req.url).pathname) {
-      // case "/an-old-hope.min.css":
-      //   return fromRemoteCache(
-      //     "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/styles/an-old-hope.min.css",
-      //     "text/css",
-      //     req,
-      //   );
-      //
       // case "/google/fonts.css":
       //   return fromRemoteCache(
       //     "https://fonts.googleapis.com/css2?family=Fredoka+One&family=Titan+One&family=Varela+Round&display=swap",
@@ -52,13 +45,6 @@ export async function serve<O>(options: CreateConfigOptions<O>) {
       case "/iconify.min.js":
         return fromRemoteCache(
           "https://code.iconify.design/2/2.1.0/iconify.min.js",
-          "application/javascript",
-          req,
-        );
-
-      case "/highlight.min.js":
-        return fromRemoteCache(
-          "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/highlight.min.js",
           "application/javascript",
           req,
         );
