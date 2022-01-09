@@ -10,7 +10,10 @@ import { ProviderOptions } from "./provider.ts";
 import { SourceFile } from "./source_file.ts";
 import { parseRemotePath, parseRoute, sortByKey } from "./utils.ts";
 
-export type GetFilesOptions<O> = ReadDirOptions<O>;
+export interface GetFilesOptions<O>
+  extends Omit<ReadDirOptions<O>, "versions" | "addVersion"> {
+  versions?: Array<string>;
+}
 
 export interface ReadDirOptions<O> {
   recursive?: boolean;
@@ -66,9 +69,16 @@ export async function getFiles<O>(
   }
 
   const versionsRepo = path.repository ?? opts.repository;
-  const versions: GithubVersions | undefined = !opts.versions && versionsRepo
-    ? await getVersions(versionsRepo)
-    : undefined;
+  const versions: GithubVersions | undefined = opts.versions?.length
+    ? {
+      all: opts.versions,
+      latest: opts.versions[0],
+      tags: [],
+      branches: [],
+    } as GithubVersions
+    : (
+      versionsRepo ? await getVersions(versionsRepo) : undefined
+    );
 
   const { version: selectedVersion } = parseRoute(
     new URL(opts.req.url).pathname,
@@ -85,9 +95,9 @@ export async function getFiles<O>(
   }
 
   files = await readDir(path.src, {
-    versions,
-    addVersion: !!selectedVersion,
     ...opts,
+    addVersion: !!selectedVersion,
+    versions,
     repository: path.repository,
     rev: path.rev,
     prefix: path.prefix,

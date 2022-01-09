@@ -61,6 +61,7 @@ export async function createConfig<O>(
         req,
         pages: opts.pages,
         providers: opts.providers,
+        versions: opts.versions,
       })
     ),
   ).then((files) => files.flat());
