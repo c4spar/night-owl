@@ -71,7 +71,8 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
 
               <EditPageOnGithub
                 path={file.path}
-                repository={this.props.config.repository}
+                repository={this.props.file.repository ??
+                  this.props.config.repository}
                 rev={this.props.config.rev}
               />
             </main>

@@ -1,6 +1,7 @@
 /** @jsx h */
 
 import { AppConfig } from "../lib/config.ts";
+import { FileOptions } from "../lib/resource.ts";
 import { DarkModeSwitch } from "./dark_mode_switch.tsx";
 import { Link, LinkOptions } from "./link.tsx";
 import { Component, h, tw } from "../deps.ts";
@@ -12,6 +13,7 @@ export interface NavItemOptions extends Omit<LinkOptions, "children"> {
 
 export interface HeaderOptions {
   config: AppConfig;
+  file?: FileOptions;
 }
 
 export class Header extends Component<HeaderOptions> {
@@ -38,7 +40,11 @@ export class Header extends Component<HeaderOptions> {
           {this.#renderPageLinks()}
           {this.#renderNavLinks()}
 
-          <Link href={`https://github.com/${this.props.config.repository}`}>
+          <Link
+            href={`https://github.com/${
+              this.props.file?.repository ?? this.props.config.repository
+            }`}
+          >
             Github
           </Link>
         </nav>

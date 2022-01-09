@@ -2,9 +2,10 @@
 
 import { NotFound } from "./components/not_found.tsx";
 import { AppConfig } from "./lib/config.ts";
+import { FileOptions } from "./lib/resource.ts";
 import { mainStyles } from "./lib/styles.ts";
 import { Header } from "./components/header.tsx";
-import { Component, h, Helmet, render, tw } from "./deps.ts";
+import { Component, h, Helmet, tw } from "./deps.ts";
 import { MarkdownPage } from "./pages/markdown_page.tsx";
 
 interface AppOptions {
@@ -13,6 +14,21 @@ interface AppOptions {
 }
 
 export class App extends Component<AppOptions> {
+  #file?: FileOptions;
+
+  constructor(props: AppOptions) {
+    super(props);
+
+    const url = new URL(this.props.url);
+    const pathname = url.pathname.replace(/\/+$/, "") || "/";
+
+    const files = this.props.config.sourceFiles.filter((file) =>
+      file.route === pathname
+    );
+
+    this.#file = files.find((file) => !file.isDirectory) ?? files[0];
+  }
+
   render() {
     return (
       <div class={tw`${mainStyles} mb-7`}>
@@ -20,7 +36,7 @@ export class App extends Component<AppOptions> {
 
         {/* header */}
         <div class={tw`sticky top-0 z-10`}>
-          <Header config={this.props.config} />
+          <Header config={this.props.config} file={this.#file} />
         </div>
 
         {/* content */}
@@ -55,27 +71,19 @@ export class App extends Component<AppOptions> {
   }
 
   #renderPage() {
-    const url = new URL(this.props.url);
-    const pathname = url.pathname.replace(/\/+$/, "") || "/";
-
-    const files = this.props.config.sourceFiles.filter((file) =>
-      file.route === pathname
-    );
-    const file = files.find((file) => !file.isDirectory) ?? files[0];
-
     // Render page not found.
-    if (!file) {
+    if (!this.#file) {
       return this.props.config.notFound
         ? this.props.config.notFound({ url: this.props.url })
         : <NotFound url={this.props.url} />;
     }
 
     // Render custom page component.
-    if (file.component) {
-      return file.component;
+    if (this.#file.component) {
+      return this.#file.component;
     }
 
     // Render markdown page.
-    return <MarkdownPage file={file} config={this.props.config} />;
+    return <MarkdownPage file={this.#file} config={this.props.config} />;
   }
 }
