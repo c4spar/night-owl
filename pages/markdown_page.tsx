@@ -28,28 +28,6 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
       }
     }
 
-    // @TODO: move to custom provider
-    // Add selected version to cliffy module imports.
-    if (file.rev) {
-      file.content = file.content
-        .replace(
-          /https:\/\/deno\.land\/x\/cliffy\//g,
-          `https://deno.land/x/cliffy@${file.rev}/`,
-        )
-        .replace(
-          /https:\/\/deno\.land\/x\/cliffy@<version>\//g,
-          `https://deno.land/x/cliffy@${file.rev}/`,
-        )
-        .replace(
-          /https:\/\/x\.nest\.land\/cliffy@<version>\//g,
-          `https://x.nest.land/cliffy@${file.rev}/`,
-        )
-        .replace(
-          /https:\/\/raw\.githubusercontent\.com\/c4spar\/deno-cliffy\/<version>\//g,
-          `https://raw.githubusercontent.com/c4spar/deno-cliffy/${file.rev}/`,
-        );
-    }
-
     return (
       <Fragment>
         {/* sidebar left */}
@@ -65,7 +43,7 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
           >
             {/* content */}
             <main class={tw`${transformGpu} relative`}>
-              <Markdown file={file} />
+              <Markdown file={file} sanitize={this.props.config.sanitize} />
 
               <EditPageOnGithub
                 path={file.path}

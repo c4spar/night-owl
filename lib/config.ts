@@ -22,6 +22,7 @@ export interface CreateConfigOptions<O> {
   notFound?: (props: NotFoundOptions) => unknown;
   background?: () => unknown;
   providers?: Array<ProviderOptions<O>>;
+  sanitize?: (file: SourceFile) => string;
 }
 
 export interface AppConfig

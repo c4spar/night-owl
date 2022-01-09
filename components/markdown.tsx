@@ -17,11 +17,15 @@ import { joinUrl, pathToUrl } from "../lib/utils.ts";
 
 export interface MarkdownOptions {
   file: SourceFile;
+  sanitize?: (file: SourceFile) => string;
 }
 
 export class Markdown extends Component<MarkdownOptions> {
   render() {
-    let html = comrak.markdownToHTML(this.props.file.content, {
+    const markdown: string = this.props.sanitize?.(this.props.file) ??
+      this.props.file.content;
+
+    let html = comrak.markdownToHTML(markdown, {
       render: {
         escape: false,
         githubPreLang: false,

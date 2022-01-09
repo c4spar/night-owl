@@ -60,10 +60,6 @@ export class Asset {
     return this.#content;
   }
 
-  set content(content: string) {
-    this.#content = content;
-  }
-
   get rev() {
     return this.#rev;
   }
