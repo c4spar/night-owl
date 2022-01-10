@@ -28,6 +28,8 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
       }
     }
 
+    const repo = file.repository ?? this.props.config.repository;
+
     return (
       <Fragment>
         {/* sidebar left */}
@@ -45,12 +47,15 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
             <main class={tw`${transformGpu} relative`}>
               <Markdown file={file} sanitize={this.props.config.sanitize} />
 
-              <EditPageOnGithub
-                path={file.path}
-                repository={file.repository ??
-                  this.props.config.repository}
-                rev={this.props.config.rev}
-              />
+              {repo
+                ? (
+                  <EditPageOnGithub
+                    path={file.path}
+                    repository={repo}
+                    rev={this.props.config.rev}
+                  />
+                )
+                : null}
             </main>
 
             {/* sidebar right */}

@@ -12,7 +12,7 @@ export interface NavOptions {
 }
 
 export interface CreateConfigOptions<O> {
-  repository: string;
+  repository?: string;
   src?: string | Array<string | SourceFilesOptions>;
   rev?: string;
   label?: unknown;
