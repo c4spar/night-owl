@@ -16,7 +16,7 @@ export interface CreateConfigOptions<O> {
   rev?: string;
   label?: unknown;
   pagesDropdown?: boolean;
-  versions?: Array<string>;
+  versions?: Array<string> | boolean;
   pages?: boolean;
   nav?: NavOptions;
   notFound?: (props: NotFoundOptions) => unknown;
@@ -61,7 +61,7 @@ export async function createConfig<O>(
         req,
         pages: opts.pages,
         providers: opts.providers,
-        versions: opts.versions,
+        versions: opts.versions ?? true,
       })
     ),
   ).then((files) => files.flat());

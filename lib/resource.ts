@@ -12,7 +12,7 @@ import { parseRemotePath, parseRoute, sortByKey } from "./utils.ts";
 
 export interface GetFilesOptions<O>
   extends Omit<ReadDirOptions<O>, "versions" | "addVersion"> {
-  versions?: Array<string>;
+  versions?: Array<string> | boolean;
 }
 
 export interface ReadDirOptions<O> {
@@ -68,17 +68,22 @@ export async function getFiles<O>(
     path.rev ??= rev;
   }
 
-  const versionsRepo = path.repository ?? opts.repository;
-  const versions: GithubVersions | undefined = opts.versions?.length
-    ? {
-      all: opts.versions,
-      latest: opts.versions[0],
-      tags: [],
-      branches: [],
-    } as GithubVersions
-    : (
-      versionsRepo ? await getVersions(versionsRepo) : undefined
-    );
+  let versions: GithubVersions | undefined;
+  if (opts.versions) {
+    if (Array.isArray(opts.versions)) {
+      versions = {
+        all: opts.versions,
+        latest: opts.versions[0],
+        tags: [],
+        branches: [],
+      };
+    } else {
+      const repo = path.repository ?? opts.repository;
+      if (repo) {
+        versions = await getVersions(repo);
+      }
+    }
+  }
 
   const { version: selectedVersion } = parseRoute(
     new URL(opts.req.url).pathname,
