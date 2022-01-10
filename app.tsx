@@ -1,12 +1,13 @@
 /** @jsx h */
 
 import { NotFound } from "./components/not_found.tsx";
+import { PageBackground } from "./components/page_background.tsx";
 import { AppConfig } from "./lib/config.ts";
 import { Script } from "./lib/request.ts";
 import { SourceFile } from "./lib/source_file.ts";
 import { mainStyles } from "./lib/styles.ts";
 import { Header } from "./components/header.tsx";
-import { Component, Fragment, h, Helmet, tw } from "./deps.ts";
+import { Component, Fragment, h, Helmet, render, tw } from "./deps.ts";
 import { MarkdownPage } from "./pages/markdown_page.tsx";
 
 interface AppOptions {
@@ -49,7 +50,9 @@ export class App extends Component<AppOptions> {
         </Helmet>
 
         <div class={tw`${mainStyles} mb-7`}>
-          {this.props.config.background?.()}
+          <PageBackground>
+            {render(this.props.config.background ?? null)}
+          </PageBackground>
 
           {/* header */}
           <div class={tw`sticky top-0 z-10`}>
