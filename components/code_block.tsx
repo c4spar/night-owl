@@ -3,7 +3,7 @@
 import { Component, h, htmlEntities, lowlight, toHtml, tw } from "../deps.ts";
 import { syntaxHighlighting, transformGpu } from "../lib/styles.ts";
 
-export interface CodeOptions {
+export interface CodeBlockOptions {
   id?: string;
   class?: string;
   code: string;
@@ -12,7 +12,7 @@ export interface CodeOptions {
   margin?: boolean;
 }
 
-export class Code extends Component<CodeOptions> {
+export class CodeBlock extends Component<CodeBlockOptions> {
   render() {
     const tree = lowlight.highlight(
       this.props.lang,

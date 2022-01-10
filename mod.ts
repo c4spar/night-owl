@@ -10,7 +10,7 @@ export {
   PrimaryButton,
   SecondaryButton,
 } from "./components/buttons.tsx";
-export { Code } from "./components/code.tsx";
+export { CodeBlock } from "./components/code_block.tsx";
 
 /** LIB */
 export { type ComponentType, Page, type PageOptions } from "./lib/page.ts";

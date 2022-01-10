@@ -4,7 +4,7 @@ import { apply, Component, comrak, css, h, join, render, tw } from "../deps.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { textMain, transformGpu } from "../lib/styles.ts";
 import { pathToUrl } from "../lib/utils.ts";
-import { Code } from "./code.tsx";
+import { CodeBlock } from "./code_block.tsx";
 
 export interface MarkdownOptions {
   file: SourceFile;
@@ -72,7 +72,7 @@ export class Markdown extends Component<MarkdownOptions> {
       .replace(
         /<pre><code class="language-([^"]+)">([^<]+)<\/code><\/pre>/g,
         (_, lang, code) => {
-          return render(<Code rounded lang={lang} code={code} />);
+          return render(<CodeBlock rounded lang={lang} code={code} />);
         },
       );
 
