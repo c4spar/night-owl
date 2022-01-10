@@ -55,7 +55,8 @@ export const syntaxHighlighting = css({
   ".code-regexp": apply`text-red(700 dark:300)`,
   ".code-meta, .code-string": apply`text-yellow(500 dark:200)`,
   ".code-meta": apply`font-bold`,
-  ".code-type, .code-built_in": apply`text-cyan(600 dark:400) font-italic font-bold`,
+  ".code-type, .code-built_in": apply
+    `text-cyan(600 dark:400) font-italic font-bold`,
 });
 
 const links = css({

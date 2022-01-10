@@ -2,15 +2,17 @@
 
 import { NotFound } from "./components/not_found.tsx";
 import { AppConfig } from "./lib/config.ts";
+import { Script } from "./lib/request.ts";
 import { SourceFile } from "./lib/source_file.ts";
 import { mainStyles } from "./lib/styles.ts";
 import { Header } from "./components/header.tsx";
-import { Component, h, Helmet, tw } from "./deps.ts";
+import { Component, Fragment, h, Helmet, tw } from "./deps.ts";
 import { MarkdownPage } from "./pages/markdown_page.tsx";
 
 interface AppOptions {
   url: string;
   config: AppConfig;
+  scripts: Record<string, Script>;
 }
 
 export class App extends Component<AppOptions> {
@@ -31,42 +33,57 @@ export class App extends Component<AppOptions> {
 
   render() {
     return (
-      <div class={tw`${mainStyles} mb-7`}>
-        {this.props.config.background?.()}
+      <Fragment>
+        <Helmet>
+          {Object.entries(this.props.scripts)
+            .filter(([route, script]) => script.contentType === "text/css")
+            .map(([route]) => <link rel="stylesheet" href={route} />)}
+          {Object.entries(this.props.scripts)
+            .filter(([route, script]) =>
+              script.contentType === "application/javascript"
+            )
+            .map(([route]) => (
+              <script type="application/javascript" src={route} defere />
+            ))}
+        </Helmet>
 
-        {/* header */}
-        <div class={tw`sticky top-0 z-10`}>
-          <Header config={this.props.config} file={this.#file} />
-        </div>
+        <div class={tw`${mainStyles} mb-7`}>
+          {this.props.config.background?.()}
 
-        {/* content */}
-        <div class={tw`max-w-8xl mx-auto px-4 sm:px-6 md:px-8 relative`}>
-          {this.#renderPage()}
+          {/* header */}
+          <div class={tw`sticky top-0 z-10`}>
+            <Header config={this.props.config} file={this.#file} />
+          </div>
+
+          {/* content */}
+          <div class={tw`max-w-8xl mx-auto px-4 sm:px-6 md:px-8 relative`}>
+            {this.#renderPage()}
+          </div>
         </div>
 
         <Helmet footer>
           <script type="application/javascript">
             {`
-            main();
-
-            function main() {
-              if (isDarkModeEnabled()) {
-                document.documentElement.classList.add("dark");
-              } else {
-                document.documentElement.classList.remove("dark");
+              main();
+  
+              function main() {
+                if (isDarkModeEnabled()) {
+                  document.documentElement.classList.add("dark");
+                } else {
+                  document.documentElement.classList.remove("dark");
+                }
               }
-            }
-
-            function isDarkModeEnabled() {
-              return localStorage.theme === "dark" || (
-                !localStorage.theme &&
-                window.matchMedia("(prefers-color-scheme: dark)").matches
-              );
-            }
-          `}
+  
+              function isDarkModeEnabled() {
+                return localStorage.theme === "dark" || (
+                  !localStorage.theme &&
+                  window.matchMedia("(prefers-color-scheme: dark)").matches
+                );
+              }
+            `}
           </script>
         </Helmet>
-      </div>
+      </Fragment>
     );
   }
 

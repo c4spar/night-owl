@@ -1,7 +1,12 @@
 import { Cache } from "./cache.ts";
 
-const remoteCache: Cache<ArrayBuffer> = new Cache();
-const localCache: Cache<Uint8Array> = new Cache();
+export interface Script {
+  url: string;
+  contentType: string;
+}
+
+const remoteCache: Cache<Promise<ArrayBuffer>> = new Cache();
+const localCache: Cache<Promise<Uint8Array>> = new Cache();
 
 export async function fromLocalCache(
   path: string,
@@ -22,30 +27,35 @@ export async function fromRemoteCache(
   });
 }
 
-export async function getLocalFile(path: string): Promise<Uint8Array> {
-  let content = localCache.get(path);
-  if (content) {
-    return content;
+export function getLocalFile(path: string): Promise<Uint8Array> {
+  let response = localCache.get(path);
+  if (response) {
+    return response;
   }
-  content = await Deno.readFile(path);
-  localCache.set(path, content);
-  return content;
+  response = Deno.readFile(path);
+  localCache.set(path, response);
+  return response;
 }
 
-async function getRemoteFile(
+export function getRemoteFile(
   url: string,
-  req: Request,
+  req?: Request,
 ): Promise<ArrayBuffer> {
-  let content = remoteCache.get(url);
-  if (content) {
-    return content;
+  let response = remoteCache.get(url);
+  if (response) {
+    return response;
   }
-  const response = await fetch(url, {
-    headers: req.headers,
-    method: req.method,
-    body: req.body,
-  });
-  content = await response.arrayBuffer();
-  remoteCache.set(url, content);
-  return content;
+  response = fetch(
+    url,
+    req
+      ? {
+        headers: req.headers,
+        method: req.method,
+        body: req.body,
+      }
+      : undefined,
+  ).then((response) => response.arrayBuffer());
+  // } : undefined).then(response => response.text());
+  remoteCache.set(url, response);
+  return response;
 }

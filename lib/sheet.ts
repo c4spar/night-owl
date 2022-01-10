@@ -74,17 +74,6 @@ setup({
       },
     },
   },
-  preflight: {
-    // Import external stylesheet
-    "@import": [
-      // Font Awesome 5 Free
-      "url('https://use.fontawesome.com/releases/v5.0.1/css/all.css')",
-      // Fredoka One
-      "url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Titan+One&family=Varela+Round&display=swap')",
-      // FiraCode Nerd Font
-      "url('https://mshaugh.github.io/nerdfont-webfonts/build/firacode-nerd-font.css')",
-    ],
-  },
 });
 
 function leftRight(x: string) {
