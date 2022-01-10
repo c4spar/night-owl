@@ -47,15 +47,13 @@ export {
 // @deno-types=https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=types/twind.d.ts
 export {
   apply,
+  type CSSRules,
+  type Directive,
   setup,
   strict,
+  type Theme,
   tw,
 } from "https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=imports/optimized/twind.js";
-
-export type {
-  CSSRules,
-  Directive,
-} from "https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=types/twind.d.ts";
 
 // @deno-types=https://cdn.skypack.dev/-/twind@v0.16.16-LPGqCzM3XVHFUO0IDjyk/dist=es2020,mode=types/css/css.d.ts
 export {
