@@ -2,6 +2,7 @@ import { NavItemOptions } from "../components/header.tsx";
 import { NotFoundOptions } from "../components/not_found.tsx";
 import { bold, log, Theme } from "../deps.ts";
 import { ProviderOptions } from "./provider.ts";
+import { Script } from "./request.ts";
 import { getFiles, SourceFilesOptions } from "./resource.ts";
 import { SourceFile } from "./source_file.ts";
 
@@ -24,6 +25,7 @@ export interface CreateConfigOptions<O> {
   providers?: Array<ProviderOptions<O>>;
   sanitize?: (file: SourceFile) => string;
   theme?: Partial<Theme>;
+  scripts?: Record<string, Script>;
 }
 
 export interface AppConfig

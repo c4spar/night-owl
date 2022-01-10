@@ -9,7 +9,7 @@ import { blue, h, log, serve as serveHttp } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { createConfig, CreateConfigOptions } from "./config.ts";
 import { App } from "../app.tsx";
-import { fromRemoteCache, Script } from "./request.ts";
+import { fromLocalCache, fromRemoteCache, Script } from "./request.ts";
 import { setupTwind } from "./sheet.ts";
 import { ssr } from "./ssr.ts";
 
@@ -23,24 +23,31 @@ export async function serve<O>(options: CreateConfigOptions<O>) {
       url: "https://use.fontawesome.com/releases/v5.0.1/css/all.css",
       contentType: "text/css",
     },
-    "/google-fonts.css": {
-      url: "https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap",
-      contentType: "text/css",
+    "/webfonts/fa-solid-900.woff2": {
+      url:
+        "https://use.fontawesome.com/releases/v5.0.1/webfonts/fa-solid-900.woff2",
+      contentType: "font/woff2",
     },
     "/firacode-nerd-font.css": {
       url:
         "https://mshaugh.github.io/nerdfont-webfonts/build/firacode-nerd-font.css",
       contentType: "text/css",
     },
-    "/iconify.min.js": {
+    "/fonts/Fira%20Code%20Bold%20Nerd%20Font%20Complete.woff2": {
+      url:
+        "https://mshaugh.github.io/nerdfont-webfonts/build/fonts/Fira%20Code%20Bold%20Nerd%20Font%20Complete.woff2",
+      contentType: "font/woff2",
+    },
+    "/fonts/Fira%20Code%20Bold%20Nerd%20Font%20Complete.ttf": {
+      url:
+        "https://mshaugh.github.io/nerdfont-webfonts/build/fonts/Fira%20Code%20Bold%20Nerd%20Font%20Complete.ttf",
+      contentType: "font/ttf",
+    },
+    "/iconify.js": {
       url: "https://code.iconify.design/2/2.1.0/iconify.min.js",
       contentType: "application/javascript",
     },
-    "/webfonts/fa-solid-900.woff2": {
-      url:
-        "https://use.fontawesome.com/releases/v5.0.1/webfonts/fa-solid-900.woff2",
-      contentType: "application/x-font-woff2",
-    },
+    ...options.scripts ?? {},
   };
 
   setupTwind(options.theme);
@@ -54,11 +61,17 @@ export async function serve<O>(options: CreateConfigOptions<O>) {
     const { pathname } = new URL(req.url);
 
     if (scripts[pathname]) {
-      return fromRemoteCache(
-        scripts[pathname].url,
-        scripts[pathname].contentType,
-        req,
-      );
+      return scripts[pathname].url.startsWith("http://") ||
+          scripts[pathname].url.startsWith("https://")
+        ? fromRemoteCache(
+          scripts[pathname].url,
+          scripts[pathname].contentType,
+          req,
+        )
+        : fromLocalCache(
+          scripts[pathname].url,
+          scripts[pathname].contentType,
+        );
     }
 
     let html: string | undefined = cache.get(req.url);
