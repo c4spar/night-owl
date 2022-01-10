@@ -10,6 +10,7 @@ import { Cache } from "./cache.ts";
 import { createConfig, CreateConfigOptions } from "./config.ts";
 import { App } from "../app.tsx";
 import { fromRemoteCache, Script } from "./request.ts";
+import { setupTwind } from "./sheet.ts";
 import { ssr } from "./ssr.ts";
 
 export async function serve<O>(options: CreateConfigOptions<O>) {
@@ -41,6 +42,8 @@ export async function serve<O>(options: CreateConfigOptions<O>) {
       contentType: "application/x-font-woff2",
     },
   };
+
+  setupTwind(options.theme);
 
   await serveHttp(async (req) => {
     log.info(blue(`[${req.method}]`), req.url);

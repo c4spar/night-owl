@@ -23,6 +23,7 @@ export {
 } from "https://deno.land/std@0.119.0/encoding/base64.ts";
 export { assert } from "https://deno.land/std@0.119.0/testing/asserts.ts";
 export { debounce } from "https://deno.land/std@0.119.0/async/debounce.ts";
+export { deepMerge } from "https://deno.land/std@0.119.0/collections/deep_merge.ts";
 
 /** media_types */
 export {
