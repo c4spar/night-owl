@@ -7,14 +7,21 @@
 
 import { blue, h, log, serve as serveHttp } from "../deps.ts";
 import { Cache } from "./cache.ts";
-import { createConfig, CreateConfigOptions } from "./config.ts";
+import { createConfig, CreateConfigOptions, Script } from "./config.ts";
 import { App } from "../app.tsx";
-import { fromLocalCache, fromRemoteCache, Script } from "./request.ts";
+import { fromLocalCache, fromRemoteCache } from "./request.ts";
 import { setupTwind } from "./sheet.ts";
 import { ssr } from "./ssr.ts";
 
-export async function serve<O>(options: CreateConfigOptions<O>) {
-  console.log(`Listening on ${blue("http://localhost:8000")}`);
+export interface ServeOptions<O> extends CreateConfigOptions<O> {
+  port?: number;
+  hostname?: string;
+}
+
+export async function serve<O>(
+  { port = 8000, hostname, ...options }: ServeOptions<O>,
+) {
+  console.log(`Listening on ${blue(`http://localhost:${port}`)}`);
 
   const cache = new Cache<string>();
 
@@ -83,5 +90,8 @@ export async function serve<O>(options: CreateConfigOptions<O>) {
     }
 
     return new Response(html, { headers: { "content-type": "text/html" } });
+  }, {
+    port,
+    hostname,
   });
 }

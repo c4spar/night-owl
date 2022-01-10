@@ -2,13 +2,17 @@ import { NavItemOptions } from "../components/header.tsx";
 import { NotFoundOptions } from "../components/not_found.tsx";
 import { bold, log, Theme } from "../deps.ts";
 import { ProviderOptions } from "./provider.ts";
-import { Script } from "./request.ts";
 import { getFiles, SourceFilesOptions } from "./resource.ts";
 import { SourceFile } from "./source_file.ts";
 
 export interface NavOptions {
   collapse?: boolean;
   items?: Array<NavItemOptions>;
+}
+
+export interface Script {
+  url: string;
+  contentType: string;
 }
 
 export interface CreateConfigOptions<O> {
@@ -60,8 +64,8 @@ export async function createConfig<O>(
         loadAssets: true,
         pattern: /\.(md|js|jsx|ts|tsx)$/,
         read: true,
-        repository: opts.repository,
         req,
+        repository: opts.repository,
         pages: opts.pages,
         providers: opts.providers,
         versions: opts.versions ?? true,

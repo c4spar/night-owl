@@ -1,10 +1,5 @@
 import { Cache } from "./cache.ts";
 
-export interface Script {
-  url: string;
-  contentType: string;
-}
-
 const remoteCache: Cache<Promise<ArrayBuffer>> = new Cache();
 const localCache: Cache<Promise<Uint8Array>> = new Cache();
 
