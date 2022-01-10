@@ -130,6 +130,24 @@ export class SourceFile<O = unknown> extends Asset {
   get versions() {
     return this.#versions;
   }
+
+  override toJson(compact = true) {
+    return {
+      ...{
+        ...super.toJson(compact),
+        isDirectory: this.#isDirectory,
+        label: this.#label,
+        route: this.#route,
+        routeName: this.#routeName,
+        routePrefix: this.#routePrefix,
+      },
+      ...compact ? {} : {
+        assets: this.#assets,
+        component: this.#component,
+        versions: this.#versions,
+      },
+    };
+  }
 }
 
 export interface GetRoutePrefix {

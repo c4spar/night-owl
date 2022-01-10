@@ -67,6 +67,20 @@ export class Asset {
   get repository() {
     return this.#repository;
   }
+
+  toJson(compact = true) {
+    return {
+      ...{
+        basePath: this.#basePath,
+        path: this.#path,
+        dirName: this.#dirName,
+        fileName: this.#fileName,
+        rev: this.#rev,
+        repository: this.#repository,
+      },
+      ...compact ? {} : { content: this.#content },
+    };
+  }
 }
 
 export async function readTextFile(path: string, opts: AssetOptions) {
