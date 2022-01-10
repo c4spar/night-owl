@@ -1,7 +1,7 @@
 /** @jsx h */
 
 import { Component, h, htmlEntities, lowlight, toHtml, tw } from "../deps.ts";
-import { syntaxHighlighting } from "../lib/styles.ts";
+import { syntaxHighlighting, transformGpu } from "../lib/styles.ts";
 
 export interface CodeOptions {
   id?: string;
@@ -9,6 +9,7 @@ export interface CodeOptions {
   code: string;
   lang: string;
   rounded?: boolean;
+  margin?: boolean;
 }
 
 export class Code extends Component<CodeOptions> {
@@ -24,13 +25,15 @@ export class Code extends Component<CodeOptions> {
     return (
       <div
         id={this.props.id}
-        class={`${tw`flex-grow bg(indigo-50 dark:gray-900) my-5 p-4 ${
+        class={`${tw`flex-grow text-sm bg(indigo-50 dark:gray-900) p-4 ${
+          this.props.margin === false ? "" : "my-5"
+        } ${
           this.props.rounded ? "rounded-xl shadow-lg overflow-y-auto" : ""
-        } ${syntaxHighlighting}`} ${this.props.class}`}
+        } ${transformGpu} ${syntaxHighlighting}`} ${this.props.class ?? ""}`}
       >
         <pre>
           <code
-            class={"language-" + this.props.lang}
+            class={`language-${this.props.lang}`}
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </pre>

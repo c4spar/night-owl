@@ -42,7 +42,7 @@ const headlines = css({
 });
 
 export const syntaxHighlighting = css({
-  "code": apply`font-mono text-sm overflow-visible`,
+  "code": apply`font-mono overflow-visible`,
   ".language-console": apply`text-blue(500 dark:400)`,
   ".language-console .bash": textMain,
   ".code-comment": apply`text-gray(500 dark:400)`,
