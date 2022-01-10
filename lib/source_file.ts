@@ -73,17 +73,15 @@ export class SourceFile<O = unknown> extends Asset {
   ) {
     super(path, content, opts);
 
+    const { routePrefix, routeName, route } = pathToRoute(path, opts);
+
     this.#assets = assets;
     this.#component = component;
-    this.#routeName = getRouteName(path);
     this.#isDirectory = opts.isDirectory;
+    this.#route = route;
+    this.#routeName = routeName;
+    this.#routePrefix = routePrefix;
     this.#versions = opts.versions;
-
-    this.#routePrefix = getRoutePrefix(path, opts);
-    this.#route = joinUrl(this.#routePrefix, this.#routeName);
-    if (this.#routePrefix === this.#route) {
-      this.#routePrefix = "/";
-    }
 
     const headline = this.fileName.endsWith(".md") &&
       (this.fileName.startsWith("index.") ||
@@ -134,12 +132,23 @@ export class SourceFile<O = unknown> extends Asset {
   }
 }
 
-function getRoutePrefix<O>(path: string, opts: SourceFileOptions<O>) {
+export interface GetRoutePrefix {
+  basePath?: string;
+  prefix?: string;
+  addVersion?: boolean;
+  versions?: GithubVersions;
+  pages?: boolean;
+  rev?: string;
+}
+
+export function pathToRoute<O>(path: string, opts?: GetRoutePrefix) {
+  const fileName = basename(path);
   const dirName = dirname(path);
+  let routeName = pathToUrl("/", fileName);
   let routePrefix = pathToUrl("/", dirName);
 
   // Remove base path.
-  if (opts.basePath) {
+  if (opts?.basePath) {
     const { path: basePath } = parseRemotePath(opts.basePath);
     const regex = new RegExp(`^${pathToUrl("/", basePath)}`);
     routePrefix = joinUrl(
@@ -148,33 +157,35 @@ function getRoutePrefix<O>(path: string, opts: SourceFileOptions<O>) {
     );
   }
 
-  if (opts.prefix) {
+  if (opts?.prefix) {
     routePrefix = joinUrl(opts.prefix, routePrefix);
   }
 
   // Add selected version to url.
   if (
-    opts.addVersion &&
-    opts.versions
+    opts?.addVersion &&
+    opts?.versions
   ) {
     routePrefix = routePrefix.replace(
       getRouteRegex(opts.versions.all, opts.pages),
       opts.pages ? "$3@" + opts.rev + "$6$8" : "/" + opts.rev + "$5$7",
-    ).replace(/\/+$/, "");
+    ).replace(/\/+$/, "") || "/";
   }
 
-  return routePrefix || "/";
-}
-
-function getRouteName(path: string) {
-  const fileName = basename(path);
-  let routeName = pathToUrl("/", fileName);
-
+  let route: string;
   if (["/index", "/README"].includes(routeName)) {
     routeName = "/";
+    route = joinUrl(routePrefix, routeName);
+    routePrefix = routePrefix.split("/").slice(0, -1).join("/") || "/";
+  } else {
+    route = joinUrl(routePrefix, routeName);
   }
 
-  return routeName;
+  return {
+    routePrefix,
+    routeName,
+    route,
+  };
 }
 
 function getAssets(

@@ -38,6 +38,7 @@ export class App extends Component<AppOptions> {
           {Object.entries(this.props.scripts)
             .filter(([route, script]) => script.contentType === "text/css")
             .map(([route]) => <link rel="stylesheet" href={route} />)}
+
           {Object.entries(this.props.scripts)
             .filter(([route, script]) =>
               script.contentType === "application/javascript"
