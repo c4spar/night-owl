@@ -4,24 +4,26 @@ import { Component, h, htmlEntities, lowlight, toHtml, tw } from "../deps.ts";
 import { syntaxHighlighting, transformGpu } from "../lib/styles.ts";
 
 export interface CodeBlockOptions {
+  code: string;
   id?: string;
   class?: string;
-  code: string;
-  lang: string;
+  lang?: string;
   rounded?: boolean;
   margin?: boolean;
 }
 
 export class CodeBlock extends Component<CodeBlockOptions> {
   render() {
-    const tree = lowlight.highlight(
-      this.props.lang,
-      htmlEntities.decode(this.props.code.trim()),
-      {
-        prefix: "code-",
-      },
-    );
-    const html = toHtml(tree);
+    const html = this.props.lang
+      ? toHtml(lowlight.highlight(
+        this.props.lang,
+        htmlEntities.decode(this.props.code),
+        {
+          prefix: "code-",
+        },
+      ))
+      : this.props.code;
+
     return (
       <div
         id={this.props.id}

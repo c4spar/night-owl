@@ -38,6 +38,9 @@ export function setupTwind(theme: Partial<Theme> = {}) {
           purple: twColors.fuchsia,
           pink: twColors.pink,
         },
+        boxShadow: {
+          code: "inset 0px 0px 5px 1px rgba(0, 0, 0, .7)",
+        },
         animation: {
           "left-right-heading": "left-right-heading .4s forwards",
           "left-right": "left-right .4s forwards",

@@ -4,6 +4,7 @@ import { apply, Component, comrak, css, h, join, render, tw } from "../deps.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { textMain, transformGpu } from "../lib/styles.ts";
 import { pathToUrl } from "../lib/utils.ts";
+import { Code } from "./code.tsx";
 import { CodeBlock } from "./code_block.tsx";
 
 export interface MarkdownOptions {
@@ -68,7 +69,14 @@ export class Markdown extends Component<MarkdownOptions> {
         /<a href="((http|https):\/\/.+)">/g,
         (_, url) => `<a href="${url}" target="_blank">`,
       )
-      // Syntax highlighting:
+      // Syntax highlighting: inline code
+      .replace(
+        /<code>([^<]+)<\/code>/g,
+        (_, code) => {
+          return render(<Code code={code} />);
+        },
+      )
+      // Syntax highlighting: code block
       .replace(
         /<pre><code class="language-([^"]+)">([^<]+)<\/code><\/pre>/g,
         (_, lang, code) => {

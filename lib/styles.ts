@@ -41,24 +41,6 @@ const headlines = css({
   },
 });
 
-export const syntaxHighlighting = css({
-  "code": apply`font-mono overflow-visible`,
-  ".language-console": apply`text-blue(500 dark:400)`,
-  ".language-console .bash": textMain,
-  ".code-comment": apply`text-gray(500 dark:400)`,
-  ".code-function": apply`text-green(700 dark:300)`,
-  ".code-literal": apply`text-cyan(600 dark:400) font-bold`,
-  ".code-keyword, .code-operator, .code-variable.code-language": apply
-    `text-purple(700 dark:400)`,
-  ".code-keyword": apply`font-italic`,
-  ".code-number, .code-doctag": apply`text-indigo(600 dark:400)`,
-  ".code-regexp": apply`text-red(700 dark:300)`,
-  ".code-meta, .code-string": apply`text-yellow(500 dark:200)`,
-  ".code-meta": apply`font-bold`,
-  ".code-type, .code-built_in": apply
-    `text-cyan(600 dark:400) font-italic font-bold`,
-});
-
 const links = css({
   "a:not(nav a,header a)": apply
     `text-blue(500 dark:400) hover:text-blue(600 dark:500)`,
@@ -87,3 +69,21 @@ export const mainStyles = css(
   links,
   images,
 );
+
+export const syntaxHighlighting = css({
+  ".language-console": apply`text-blue(500 dark:400)`,
+  ".language-console .bash": textMain,
+  ".code-comment": apply`text-gray(500 dark:400)`,
+  ".code-function": apply`text-green(700 dark:300)`,
+  ".code-literal": apply`text-cyan(600 dark:400) font-bold`,
+  ".code-keyword": apply`text-purple(700 dark:400) font-italic`,
+  ".code-operator": apply`text-purple(700 dark:400)`,
+  ".code-variable.code-language": apply`text-purple(700 dark:400)`,
+  ".code-number": apply`text-indigo(600 dark:400)`,
+  ".code-doctag": apply`text-indigo(600 dark:400)`,
+  ".code-regexp": apply`text-red(700 dark:300)`,
+  ".code-meta, .code-string": apply`text-yellow(500 dark:200)`,
+  ".code-meta": apply`font-bold`,
+  ".code-type": apply`text-cyan(600 dark:400) font-italic`,
+  ".code-built_in": apply`text-cyan(600 dark:400) font-italic`,
+});
