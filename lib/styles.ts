@@ -45,6 +45,7 @@ const links = css({
   "a:not(nav a,header a)": apply
     `text-blue(500 dark:400) hover:text-blue(600 dark:500)`,
   "nav a": apply`hover:text(gray-500 dark:white)`,
+  "nav a.selected": apply`text-blue(500 dark:400)`,
   'a[href*="//"]': {
     "&::after": {
       fontFamily: theme("fontFamily.awesome"),

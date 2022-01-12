@@ -65,26 +65,17 @@ export class PageNavigation extends Component<PageNavigationOptions> {
     }
 
     const isRootFile = file.routePrefix === "/";
-    const bold = isRootFile || hasDuplicateRoutes ? "font-bold" : "";
-    const rem = file.route.split("/").length - 2;
+    const selected = this.#isSelected(file) ? "selected" : "";
+    const bold = isRootFile || hasDuplicateRoutes || file.isDirectory
+      ? "font-bold"
+      : "";
+    const rem = file.route.split("/").length - 1;
     const marginLeft = `pl-[${rem}rem]`;
+    const css = `${selected} ${tw`p-3 w-full ${marginLeft} ${bold}`}`;
 
     return file.content || hasDuplicateRoutes
-      ? (
-        <a
-          class={tw`p-3 w-full ${marginLeft} ${bold}`}
-          href={file.route}
-        >
-          {file.label}
-        </a>
-      )
-      : (
-        <div
-          class={`${tw`font-bold p-3 w-full ${marginLeft}`}`}
-        >
-          {file.label}
-        </div>
-      );
+      ? <a class={css} href={file.route}>{file.label}</a>
+      : <div class={css}>{file.label}</div>;
   }
 
   #getNavFiles(): Array<SourceFile> {
@@ -123,5 +114,9 @@ export class PageNavigation extends Component<PageNavigationOptions> {
       }
     }
     return pages.sort(sortByKey("route"));
+  }
+
+  #isSelected(file: SourceFile): boolean {
+    return this.props.file === file;
   }
 }
