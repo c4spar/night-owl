@@ -48,7 +48,7 @@ export class PageNavigation extends Component<PageNavigationOptions> {
       <Fragment>
         <ModuleSelection
           files={dropDownFiles}
-          selected={this.#selectedPage}
+          selected={this.#path}
         />
         <Navigation class="primary-nav">
           {navFiles.map((file, i) => this.#renderNavLink(file, i, navFiles))}
