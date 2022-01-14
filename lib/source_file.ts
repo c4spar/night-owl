@@ -115,6 +115,10 @@ export class SourceFile<O = unknown> extends Asset {
     return this.#label;
   }
 
+  set label(label: string) {
+    this.#label = label;
+  }
+
   get route() {
     return this.#route;
   }
