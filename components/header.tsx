@@ -5,7 +5,7 @@ import { SourceFile } from "../lib/source_file.ts";
 import { DarkModeSwitch } from "./dark_mode_switch.tsx";
 import { Link, LinkOptions } from "./link.tsx";
 import { Component, h, tw } from "../deps.ts";
-import { bgMain, transformGpu } from "../lib/styles.ts";
+import { styles } from "../lib/styles.ts";
 
 export interface NavItemOptions extends Omit<LinkOptions, "children"> {
   label: string;
@@ -21,12 +21,12 @@ export class Header extends Component<HeaderOptions> {
     return (
       <header
         class={tw`
-          ${transformGpu} ${bgMain}
-          w-full
+          ${styles.transform.primary} ${styles.bg.secondary}
+          w-full h-[5.2rem]
           flex flex-wrap p-5 flex-col md:flex-row items-center 
           backdrop-blur
-          lg:z-50 lg:border-b lg:border-gray-900 lg:border-opacity-10
-          dark:lg:border-gray-200 dark:lg:border-opacity-10
+          lg:z-50 lg:border-b lg:border-gray-200
+          dark:lg:border-gray-700
           bg-opacity-95 dark:bg-opacity-95
           supports-backdrop-blur:bg-white supports-backdrop-blur:bg-opacity-60
         `}

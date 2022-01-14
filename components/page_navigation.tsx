@@ -16,6 +16,7 @@ export class PageNavigation extends Component<PageNavigationOptions> {
   #path: string;
   #pagePrefix: string;
   #selectedPage: string;
+  #isDirectory: boolean;
 
   constructor(props: PageNavigationOptions) {
     super(props);
@@ -33,6 +34,10 @@ export class PageNavigation extends Component<PageNavigationOptions> {
     this.#path = path;
     this.#pagePrefix = pagePrefix;
     this.#selectedPage = selectedPage;
+    this.#isDirectory = this.props.file.isDirectory ||
+      this.props.config.sourceFiles.some(
+        (f) => f !== this.props.file && f.route === this.props.file.route,
+      );
   }
 
   render() {
@@ -42,44 +47,68 @@ export class PageNavigation extends Component<PageNavigationOptions> {
     return (
       <Fragment>
         <ModuleSelection
-          class={tw`mb-3`}
           files={dropDownFiles}
           selected={this.#selectedPage}
         />
-        <Navigation>
-          {navFiles.map((file) => this.#renderNavLink(file))}
+        <Navigation class="primary-nav">
+          {navFiles.map((file, i) => this.#renderNavLink(file, i, navFiles))}
         </Navigation>
       </Fragment>
     );
   }
 
-  #renderNavLink(file: SourceFile) {
-    const hasDuplicateRoutes = this.props.config.sourceFiles.find(
-      (f) => f !== file && f.route === file.route,
+  #renderNavLink(file: SourceFile, i: number, files: Array<SourceFile>) {
+    const duplicateRoute = this.props.config.sourceFiles.find(
+      (f) => f.route === file.route && f.isDirectory != file.isDirectory,
     );
 
-    if (file.isDirectory && hasDuplicateRoutes) {
-      file = hasDuplicateRoutes;
-    } else if (!file.isDirectory && hasDuplicateRoutes) {
-      return null;
+    if (duplicateRoute) {
+      if (file.isDirectory) {
+        file = duplicateRoute;
+      } else {
+        return null;
+      }
     }
 
+    const isDirectory = file.isDirectory || !!duplicateRoute;
     const isRootFile = file.routePrefix === "/";
-    const selected = this.#isSelected(file) ? "selected" : "";
-    const bold = isRootFile || hasDuplicateRoutes || file.isDirectory
-      ? "font-bold"
-      : "";
-    const rem = file.route.split("/").length - 1;
-    const marginLeft = `pl-[${rem}rem]`;
-    const css = `${selected} ${tw`p-3 w-full ${marginLeft} ${bold}`}`;
+    const isSelected = this.#isSelected(file);
+    const isActive = this.#isActive(file);
+    const isPrevActive = !!files[i - 1] && this.#isActive(files[i - 1]);
+    const isNextActive = !!files[i + 1] && this.#isActive(files[i + 1]);
+    const isFirstActive = isActive && !isPrevActive;
+    const isLastActive = isActive && !isNextActive;
 
-    return file.content || hasDuplicateRoutes
-      ? <a class={css} href={file.route}>{file.label}</a>
+    const paddingLeft = file.route.split("/").length - 2;
+
+    const css = `${tw`w-full pr-3 pl-[${paddingLeft}rem]`}
+      ${isSelected ? "selected" : ""}
+      ${isActive ? "active" : ""}
+      ${isFirstActive ? "first" : ""}
+      ${isLastActive ? "last" : ""}
+      ${isDirectory ? "directory" : "file"}
+      ${isRootFile ? "root" : ""}`;
+
+    return file.content || duplicateRoute
+      ? (
+        <a class={css} href={file.route}>
+          <div class={tw`${isLastActive ? "pt-3 mb-3" : "py-3"} pl-[1.25rem]`}>
+            {file.label}
+          </div>
+        </a>
+      )
       : <div class={css}>{file.label}</div>;
   }
 
   #getNavFiles(): Array<SourceFile> {
-    return this.props.config.sourceFiles.filter((file) => {
+    return this.props.config.sourceFiles.filter((file, i, files) => {
+      const hasDuplicateRoutes = files.some(
+        (f) => f !== file && f.route === file.route,
+      );
+      if (hasDuplicateRoutes && !file.isDirectory) {
+        return false;
+      }
+
       let valid = true;
       if (this.props.config.nav?.collapse) {
         if (this.#path === this.#pagePrefix) {
@@ -118,5 +147,11 @@ export class PageNavigation extends Component<PageNavigationOptions> {
 
   #isSelected(file: SourceFile): boolean {
     return this.props.file === file;
+  }
+
+  #isActive(file: SourceFile): boolean {
+    return file.route.startsWith(
+      this.#isDirectory ? this.props.file.route : this.props.file.routePrefix,
+    );
   }
 }

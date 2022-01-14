@@ -1,6 +1,6 @@
 /** @jsx h */
 import { Fragment, h, Helmet, tw } from "../deps.ts";
-import { transformGpu } from "../lib/styles.ts";
+import { styles } from "../lib/styles.ts";
 
 export function DarkModeSwitch({ class: className }: { class?: string }) {
   return (
@@ -38,16 +38,16 @@ export function DarkModeSwitch({ class: className }: { class?: string }) {
       <label class={className} onclick="toggleDarkMode()">
         <div
           class={`toggle-slot ${tw`
-            ${transformGpu}
+            ${styles.transform.primary}
             cursor-pointer relative
             w-20 h-10 bg-gray-50 dark:bg-gray-700
-            border-2 border-gray-300 dark:border-gray-600
+            border-1 border-gray-300 dark:border-gray-600
             shadow-lg shadow-inner rounded-full`}`}
         >
           <div
             class={`sun-icon-wrapper ${tw`absolute h-6 w-6
               origin-center opacity-100 dark:opacity-0
-              translate-x-[.6rem] dark:translate-x-[1rem] translate-y-[.35rem]
+              translate-x-[.6rem] dark:translate-x-[1rem] translate-y-[.45rem]
               rotate-[15deg] dark:rotate-0`}`}
           >
             <span
@@ -59,12 +59,12 @@ export function DarkModeSwitch({ class: className }: { class?: string }) {
           <div
             class={`toggle-button ${tw`absolute h-6 w-6 rounded-full
               bg-gray-300 dark:bg-gray-800 shadow
-              translate-x-[2.9rem] dark:translate-x-[.4rem] translate-y-[.35rem]`}`}
+              translate-x-[2.9rem] dark:translate-x-[.4rem] translate-y-[.45rem]`}`}
           />
           <div
             class={`moon-icon-wrapper ${tw`absolute h-6 w-6
               origin-center opacity-0 dark:opacity-100
-              translate-x-[2.2rem] dark:translate-x-[2.7rem] translate-y-[.35rem]
+              translate-x-[2.2rem] dark:translate-x-[2.7rem] translate-y-[.45rem]
               rotate-0 dark:rotate-[-15deg]`}`}
           >
             <span

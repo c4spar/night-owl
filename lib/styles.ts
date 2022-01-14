@@ -1,15 +1,25 @@
 import { apply, css, theme } from "../deps.ts";
 
-const transformMain = apply`transform-colors duration-500 ease-out`;
-export const transformGpu = apply`${transformMain} transform-gpu`;
-
-export const bgMain = apply`bg-gray(50 dark:800)`;
-export const textMain = apply`antialiased text-gray(700 dark:200)`;
+export const styles = {
+  transform: {
+    primary: apply`transform-colors duration-500 ease-out transform-gpu`,
+  },
+  bg: {
+    primary: apply`bg-gray(50 dark:900)`,
+    secondary: apply`bg(gray-100 dark:gray-800)`,
+  },
+  text: {
+    primary: apply`text-gray(700 dark:200)`,
+    secondary: apply`text-gray(600 dark:300)`,
+    accent: apply`text-purple(500 dark:400)`,
+  },
+};
 
 const globalStyles = css({
   ":global": {
     "html": apply`min-h-full flex`,
-    "body": apply`${textMain} ${bgMain} flex-1 w-full`,
+    "body": apply
+      `${styles.text.primary} ${styles.bg.primary} flex-1 w-full antialiased`,
   },
 });
 
@@ -42,10 +52,8 @@ const headlines = css({
 });
 
 const links = css({
-  "a:not(nav a,header a)": apply
-    `text-blue(500 dark:400) hover:text-blue(600 dark:500)`,
-  "nav a": apply`hover:text(gray-500 dark:white)`,
-  "nav a.selected": apply`text-blue(500 dark:400)`,
+  "a:not(nav a,header a), a:not(nav a,header a) code": apply
+    `text-blue(500 dark:400 hover:(600 dark:500))`,
   'a[href*="//"]': {
     "&::after": {
       fontFamily: theme("fontFamily.awesome"),
@@ -60,6 +68,18 @@ const links = css({
   },
 });
 
+const nav = css({
+  "nav a": apply`hover:text(blue-600 dark:white)`,
+  "nav a.selected": apply`font-bold text-blue(500 dark:400)`,
+  "nav": apply`${styles.transform.primary} `,
+  "nav a.active": apply`${styles.transform.primary} ${styles.bg.secondary}`,
+  "nav a.active.first": apply`rounded-t-xl`,
+  "nav a.active.last": apply`rounded-b-xl`,
+  "nav a.active.file:not(.root) div": apply
+    `border-l-2 border-blue(400 dark:400)`,
+  "nav a.root.file, nav a.directory": apply`font-bold`,
+});
+
 const images = css({
   "p img": apply`mt-5 mb-5`,
 });
@@ -68,13 +88,15 @@ export const mainStyles = css(
   globalStyles,
   headlines,
   links,
+  nav,
   images,
 );
 
 export const syntaxHighlighting = css({
   ".language-console": apply`text-blue(500 dark:400)`,
-  ".language-console .bash": textMain,
+  ".language-console .bash": styles.text.primary,
   ".code-comment": apply`text-gray(500 dark:400)`,
+  ".code-property": apply`text-green(700 dark:300)`,
   ".code-function": apply`text-green(700 dark:300)`,
   ".code-literal": apply`text-cyan(600 dark:400) font-bold`,
   ".code-keyword": apply`text-purple(700 dark:400) font-italic`,

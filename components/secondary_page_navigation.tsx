@@ -1,6 +1,7 @@
 /** @jsx h */
 
 import { SourceFile } from "../lib/source_file.ts";
+import { styles } from "../mod.ts";
 import { Navigation } from "./navigation.tsx";
 import { Component, h, render, tw } from "../deps.ts";
 
@@ -23,13 +24,17 @@ export class SecondaryPageNavigation
     );
 
     return (
-      <Navigation>
+      <Navigation
+        class={tw
+          `${styles.transform.primary} ${styles.bg.secondary} rounded-xl`}
+      >
         {render(headlines?.map((headline) => {
-          const rem = headline.size - 1;
+          const rem = headline.size;
           const marginLeft = `pl-[${rem}rem]`;
+          const bold = headline.size === 1 ? "font-bold" : "";
           return (
             <a
-              class={`${tw`p-3 w-full ${marginLeft}`}`}
+              class={`${tw`p-3 w-full ${bold} ${marginLeft}`}`}
               href={headline.href}
             >
               {headline.label}

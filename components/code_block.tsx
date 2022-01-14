@@ -1,7 +1,7 @@
 /** @jsx h */
 
 import { Component, h, htmlEntities, lowlight, toHtml, tw } from "../deps.ts";
-import { syntaxHighlighting, transformGpu } from "../lib/styles.ts";
+import { styles, syntaxHighlighting } from "../lib/styles.ts";
 
 export interface CodeBlockOptions {
   code: string;
@@ -10,13 +10,15 @@ export interface CodeBlockOptions {
   lang?: string;
   rounded?: boolean;
   margin?: boolean;
+  dark?: boolean;
 }
 
 export class CodeBlock extends Component<CodeBlockOptions> {
   render() {
-    const html = this.props.lang
+    const lang = this.props.lang === "jsonc" ? "json" : this.props.lang;
+    const html = lang
       ? toHtml(lowlight.highlight(
-        this.props.lang,
+        lang,
         htmlEntities.decode(this.props.code),
         {
           prefix: "code-",
@@ -27,15 +29,15 @@ export class CodeBlock extends Component<CodeBlockOptions> {
     return (
       <div
         id={this.props.id}
-        class={`${tw`flex-grow text-sm bg(indigo-50 dark:gray-900) p-4 ${
+        class={`${this.props.class ?? ""} ${tw`flex-grow text-sm p-4 ${
           this.props.margin === false ? "" : "my-5"
         } ${
-          this.props.rounded ? "rounded-xl shadow-lg overflow-y-auto" : ""
-        } ${transformGpu} ${syntaxHighlighting}`} ${this.props.class ?? ""}`}
+          this.props.rounded ? "rounded-xl overflow-y-auto" : ""
+        } ${styles.bg.secondary} ${styles.text.primary} ${styles.transform.primary} ${syntaxHighlighting}`}`}
       >
         <pre>
           <code
-            class={`language-${this.props.lang}`}
+            class={`language-${lang}`}
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </pre>

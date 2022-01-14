@@ -35,7 +35,7 @@ export {
 export { type GithubVersions } from "./lib/git.ts";
 export { SourceFile, type SourceFileOptions } from "./lib/source_file.ts";
 export { Asset, type AssetOptions } from "./lib/asset.ts";
-export { bgMain, textMain, transformGpu } from "./lib/styles.ts";
+export { styles } from "./lib/styles.ts";
 export { capitalize, sortByKey } from "./lib/utils.ts";
 export { type ChildComponent, type Children } from "./lib/types.ts";
 

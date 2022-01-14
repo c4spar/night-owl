@@ -2,7 +2,7 @@
 
 import { apply, Component, comrak, css, h, join, render, tw } from "../deps.ts";
 import { SourceFile } from "../lib/source_file.ts";
-import { textMain, transformGpu } from "../lib/styles.ts";
+import { styles } from "../lib/styles.ts";
 import { pathToUrl } from "../lib/utils.ts";
 import { Code } from "./code.tsx";
 import { CodeBlock } from "./code_block.tsx";
@@ -87,8 +87,8 @@ export class Markdown extends Component<MarkdownOptions> {
     const markdownStyles = css(
       {
         "ul": apply`list-disc ml-5 my-5`,
-        "p": apply`text-gray-600 dark:text-gray-300 ${transformGpu}`,
-        "strong": apply`${textMain}`,
+        "p": apply`${styles.text.secondary} ${styles.transform.primary}`,
+        "strong": apply`${styles.text.primary}`,
       },
     );
 

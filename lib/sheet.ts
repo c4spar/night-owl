@@ -39,7 +39,10 @@ export function setupTwind(theme: Partial<Theme> = {}) {
           pink: twColors.pink,
         },
         boxShadow: {
-          code: "inset 0px 0px 5px 1px rgba(0, 0, 0, .7)",
+          "code-dark":
+            "inset 0px 0px 8px 0px rgba(0, 0, 0, .4), inset 0px 0px 2px 1px rgba(0, 0, 0, .6)",
+          code:
+            "inset 0px 0px 8px 0px rgba(0, 0, 0, 0.03), inset 0px 0px 2px 1px rgba(0, 0, 0, 0.03)",
         },
         animation: {
           "left-right-heading": "left-right-heading .4s forwards",

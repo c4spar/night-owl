@@ -1,7 +1,7 @@
 /** @jsx h */
 
 import { Component, Fragment, h, render, tw } from "../deps.ts";
-import { transformGpu } from "../lib/styles.ts";
+import { styles } from "../lib/styles.ts";
 
 export interface SelectionOption {
   value: string;
@@ -19,14 +19,16 @@ export class Selection extends Component<SelectionOptions> {
   render() {
     return (
       <Fragment>
-        <div class={`${this.props.class} ${tw`relative inline-block w-full`}`}>
+        <div
+          class={`${this.props.class} ${tw`mb-7 relative inline-block w-full`}`}
+        >
           <select
             onchange={this.props.onchange}
             class={tw`w-full h-10 pl-3 pr-6
               bg-gray-100 dark:bg-gray-700
-              border-2 border-gray-200 dark:border-gray-600 rounded-full
+              border-1 border-gray-200 dark:border-gray-600 rounded-xl
               appearance-none
-              ${transformGpu}`}
+              ${styles.transform.primary}`}
           >
             {this.props.options
               .map((value) =>
@@ -42,7 +44,7 @@ export class Selection extends Component<SelectionOptions> {
           </select>
           <div
             class={tw
-              `absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none`}
+              `absolute inset-y-0 right-2 flex items-center px-2 pointer-events-none`}
           >
             <svg class={tw`w-4 h-4 fill-current`} viewBox="0 0 20 20">
               <path
