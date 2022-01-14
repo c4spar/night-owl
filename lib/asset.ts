@@ -1,6 +1,4 @@
-import { basename, dirname } from "https://deno.land/std@0.119.0/path/mod.ts";
-import { lookup } from "https://deno.land/x/media_types@v2.11.1/mod.ts";
-import { encodeBase64 } from "../deps.ts";
+import { basename, dirname, encodeBase64, lookup } from "../deps.ts";
 import { gitReadFile } from "./git.ts";
 
 export interface AssetOptions {

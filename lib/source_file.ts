@@ -1,9 +1,4 @@
-import {
-  basename,
-  dirname,
-  isAbsolute,
-  join,
-} from "https://deno.land/std@0.119.0/path/mod.ts";
+import { basename, dirname, isAbsolute, join } from "../deps.ts";
 import { GithubVersions } from "./git.ts";
 import { getMetaData } from "./page.ts";
 import { ProviderFunction, ProviderOptions, ProviderType } from "./provider.ts";
