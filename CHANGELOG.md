@@ -1,3 +1,15 @@
+# [v0.0.7](https://github.com/c4spar/nano-deploy/compare/v0.0.6...v0.0.7) (Jan 15, 2022)
+
+### Bug Fixes
+
+- catch not found error when fetching git tags and branches
+  ([d99e3c5](https://github.com/c4spar/nano-deploy/commit/d99e3c5))
+
+### Chore
+
+- **upgrade:** deno/std v0.121.0
+  ([846e12e](https://github.com/c4spar/nano-deploy/commit/846e12e))
+
 # [v0.0.6](https://github.com/c4spar/nano-deploy/compare/v0.0.5...v0.0.6) (Jan 15, 2022)
 
 ### Features
