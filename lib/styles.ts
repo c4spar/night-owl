@@ -24,7 +24,7 @@ const globalStyles = css({
 });
 
 const headlines = css({
-  "h1, h2, h3": css(apply`flex relative font-bold sm:truncate`, {
+  "h1, h2, h3, h4, h5": css(apply`flex relative font-bold sm:truncate`, {
     "&:hover": {
       ".anchor-link": {
         "&::before": {
@@ -33,13 +33,17 @@ const headlines = css({
       },
     },
   }),
-  "h1": apply`text-2xl leading-7 sm:text-3xl mb-5 mr-8 -left-8`,
-  "h2": apply`text-xl leading-6 sm:text-2xl mb-4 mt-10 mr-7 -left-7`,
-  "h3": apply`text-lg leading-5 sm:text-xl mb-3 mt-10 mr-6 -left-6`,
+  "h1": apply`text-2xl leading-7 sm:text-3xl mb-5 mr-8 left-[-2rem]`,
+  "h2": apply`text-xl leading-6 sm:text-2xl mb-4 mt-10 mr-7 left-[-1.75rem]`,
+  "h3": apply`text-lg leading-5 sm:text-xl mb-3 mt-10 mr-6 left-[-1.5rem]`,
+  "h4": apply`text-base leading-4 sm:text-lg mb-2 mt-10 mr-5 left-[-1.4rem]`,
+  "h5": apply`text-sm leading-3 sm:text-base mb-1 mt-10 mr-4 left-[-1.35rem]`,
   ".anchor": apply`block relative -top-28 invisible`,
   "h1 .anchor-link::before": apply`text-xl sm:text-2xl`,
   "h2 .anchor-link::before": apply`text-lg sm:text-xl`,
-  "h3 .anchor-link::before": apply`text-sm sm:text-lg`,
+  "h3 .anchor-link::before": apply`text-base sm:text-lg`,
+  "h4 .anchor-link::before": apply`text-sm sm:text-base`,
+  "h5 .anchor-link::before": apply`text-xs sm:text-sm`,
   ".anchor-link": {
     "&::before": {
       fontFamily: theme("fontFamily.awesome"),

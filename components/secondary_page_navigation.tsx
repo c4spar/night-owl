@@ -20,7 +20,9 @@ export class SecondaryPageNavigation
         return {
           size: Number(size),
           label,
-          href: "#" + label?.toLowerCase().replace(/\s/g, "-"),
+          href: "#" + label?.toLowerCase()
+            .replace(/[\s+]+/g, "-")
+            .replace(/[\/.]+/g, ""),
         };
       },
     );
