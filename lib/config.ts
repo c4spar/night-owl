@@ -12,6 +12,7 @@ import {
 import { ProviderOptions } from "./provider.ts";
 import { getFiles, SourceFilesOptions } from "./resource.ts";
 import { SourceFile } from "./source_file.ts";
+import { pathToUrl } from "./utils.ts";
 
 export interface NavOptions {
   collapse?: boolean;
@@ -177,13 +178,14 @@ function flatToc(
   routes: Record<string, string> = {},
 ) {
   for (const [path, nameOrItem] of Object.entries(toc)) {
+    const route = pathToUrl("/", prefix, path);
     const item = typeof nameOrItem === "string"
       ? { name: nameOrItem }
       : nameOrItem;
+    routes[route] = item.name;
     if (item.children) {
-      flatToc(item.children, path, routes);
+      flatToc(item.children, route, routes);
     }
-    routes[prefix + path] = item.name;
   }
   return routes;
 }
