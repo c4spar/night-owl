@@ -21,7 +21,7 @@ interface GithubResponse {
 }
 
 export interface GithubVersions {
-  latest: string;
+  latest?: string;
   all: Array<string>;
   tags: Array<string>;
   branches: Array<string>;
@@ -38,10 +38,16 @@ export function getVersions(repository: string): Promise<GithubVersions> {
 
   async function get() {
     const [tags, branches] = await Promise.all([
-      gitFetch<Array<{ ref: string }>>(repository, "git/refs/tags"),
+      gitFetch<Array<{ ref: string }>>(repository, "git/refs/tags").catch(
+        // catch not found error if no tags are available.
+        () => [],
+      ),
       gitFetch<Array<{ name: string; protected: boolean }>>(
         repository,
         "branches",
+      ).catch(
+        // catch not found error if no branches are available.
+        () => [],
       ),
     ]);
 
