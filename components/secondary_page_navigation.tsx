@@ -3,7 +3,7 @@
 import { SourceFile } from "../lib/source_file.ts";
 import { styles } from "../mod.ts";
 import { Navigation } from "./navigation.tsx";
-import { Component, h, render, tw } from "../deps.ts";
+import { Component, comrak, h, render, tw } from "../deps.ts";
 
 export interface SecondaryPageNavigationOptions {
   file: SourceFile;
@@ -12,11 +12,13 @@ export interface SecondaryPageNavigationOptions {
 export class SecondaryPageNavigation
   extends Component<SecondaryPageNavigationOptions> {
   render() {
-    const headlines = this.props.file.content.match(/\n?#+\s+([^\n]+)/g)?.map(
+    const html = comrak.markdownToHTML(this.props.file.content);
+
+    const headlines = html.match(/<h(1|2|3|4|5)>([^<]+)<\/h\1>/g)?.map(
       (h) => {
-        const label = h.match(/#+\s+([^\n]+)/)?.[1];
+        const [_, size, label] = h.match(/<h(1|2|3|4|5)>([^<]+)<\/h\1>/) ?? [];
         return {
-          size: h.split("#").length - 1,
+          size: Number(size),
           label,
           href: "#" + label?.toLowerCase().replace(/\s/g, "-"),
         };
