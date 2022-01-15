@@ -1,6 +1,14 @@
 /** @jsx h */
 
-import { Component, h, htmlEntities, lowlight, toHtml, tw } from "../deps.ts";
+import {
+  Component,
+  h,
+  htmlEntities,
+  log,
+  lowlight,
+  toHtml,
+  tw,
+} from "../deps.ts";
 import { styles, syntaxHighlighting } from "../lib/styles.ts";
 
 export interface CodeBlockOptions {
@@ -16,15 +24,22 @@ export interface CodeBlockOptions {
 export class CodeBlock extends Component<CodeBlockOptions> {
   render() {
     const lang = this.props.lang === "jsonc" ? "json" : this.props.lang;
-    const html = lang
-      ? toHtml(lowlight.highlight(
-        lang,
-        htmlEntities.decode(this.props.code),
-        {
-          prefix: "code-",
-        },
-      ))
-      : this.props.code;
+    let html: string | undefined;
+
+    try {
+      html = lang
+        ? toHtml(lowlight.highlight(
+          lang,
+          htmlEntities.decode(this.props.code),
+          {
+            prefix: "code-",
+          },
+        ))
+        : this.props.code;
+    } catch (error: unknown) {
+      log.error(error);
+      html = this.props.code;
+    }
 
     return (
       <div
