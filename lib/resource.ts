@@ -8,7 +8,7 @@ import {
 } from "./git.ts";
 import { ProviderOptions } from "./provider.ts";
 import { SourceFile } from "./source_file.ts";
-import { parseRemotePath, parseRoute, sortByKey } from "./utils.ts";
+import { env, parseRemotePath, parseRoute, sortByKey } from "./utils.ts";
 
 export interface GetFilesOptions<O>
   extends Omit<ReadDirOptions<O>, "versions" | "addVersion"> {
@@ -41,7 +41,7 @@ export interface SourceFilesOptions {
 
 const getFilesCache = new Cache<Array<SourceFile<unknown>>>();
 
-const local = Deno.env.get("LOCAL") === "true";
+const local = (await env("LOCAL"))?.toLowerCase() === "true";
 
 export async function getFiles<O>(
   path: string | SourceFilesOptions,

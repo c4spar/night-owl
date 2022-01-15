@@ -1,6 +1,10 @@
+import { env } from "./utils.ts";
+
+const isCacheEnabled: boolean =
+  (await env("NO_CACHE"))?.toLowerCase() !== "true";
+
 export class Cache<T> {
-  static readonly #isEnabled: boolean =
-    Deno.env.get("NO_CACHE")?.toLowerCase() !== "true";
+  static readonly #isEnabled: boolean = isCacheEnabled;
 
   #cache = new Map<string, T>();
 

@@ -1,5 +1,26 @@
 import { fromFileUrl } from "../deps.ts";
 
+export async function env(
+  name: string,
+  required?: boolean,
+): Promise<string | undefined> {
+  const desc: Deno.PermissionDescriptor = { name: "env", variable: name };
+
+  const { state } = required
+    ? await Deno.permissions.request(desc)
+    : await Deno.permissions.query(desc);
+
+  if (state === "granted") {
+    return Deno.env.get(name);
+  }
+
+  if (required) {
+    throw new Error("Permission denied to env var: " + name);
+  }
+
+  return undefined;
+}
+
 export function capitalize(str: string): string {
   return str.length > 0
     ? str[0].toUpperCase() + (str.length > 1 ? str.slice(1) : "")

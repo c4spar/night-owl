@@ -8,7 +8,7 @@ import {
   red,
 } from "../deps.ts";
 import { Cache } from "./cache.ts";
-import { joinUrl } from "./utils.ts";
+import { env, joinUrl } from "./utils.ts";
 
 const apiUrl = "https://api.github.com";
 
@@ -185,7 +185,7 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
 
   const headers = new Headers({ "Content-Type": "application/json" });
 
-  const GITHUB_TOKEN = Deno.env.get("GITHUB_TOKEN");
+  const GITHUB_TOKEN = await env("GITHUB_TOKEN");
 
   if (GITHUB_TOKEN) {
     headers.set("Authorization", `token ${GITHUB_TOKEN}`);

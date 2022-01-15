@@ -1,4 +1,5 @@
 import { log } from "../deps.ts";
+import { env } from "./utils.ts";
 
 export async function setupLog(): Promise<void> {
   await log.setup({
@@ -48,7 +49,7 @@ export async function setupLog(): Promise<void> {
     },
     loggers: {
       default: {
-        level: Deno.env.get("LOG_LEVEL") as log.LevelName | undefined || "INFO",
+        level: await env("LOG_LEVEL") as log.LevelName | undefined || "INFO",
         handlers: ["console"],
       },
     },
