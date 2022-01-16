@@ -1,6 +1,6 @@
 /** @jsx h */
 
-import { EditPageOnGithub } from "../components/edit_page_on_github.tsx";
+import { Footer } from "../components/footer.tsx";
 import { Markdown } from "../components/markdown.tsx";
 import { Sidebar } from "../components/sidebar.tsx";
 import { VersionSelection } from "../components/version_selection.tsx";
@@ -22,17 +22,10 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
   #contentWidth = 90;
 
   render() {
-    let file = this.props.file;
-    if (file.isDirectory) {
-      const matchedFile = this.props.config.sourceFiles.find((sourceFile) =>
-        sourceFile.route === file.route && !sourceFile.isDirectory
-      );
-      if (matchedFile) {
-        file = matchedFile;
-      }
-    }
-
-    const repo = file.repository ?? this.props.config.repository;
+    const index = this.props.config.sourceFiles.findIndex((sourceFile) =>
+      sourceFile.route === this.props.file.route && !sourceFile.isDirectory
+    );
+    const file: SourceFile = this.props.config.sourceFiles[index];
 
     return (
       <Fragment>
@@ -55,16 +48,7 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
             {/* content */}
             <main class={tw`${styles.transform.primary} relative`}>
               <Markdown file={file} sanitize={this.props.config.sanitize} />
-
-              {repo
-                ? (
-                  <EditPageOnGithub
-                    path={file.path}
-                    repository={repo}
-                    rev={this.props.config.rev}
-                  />
-                )
-                : null}
+              <Footer file={file} config={this.props.config} />
             </main>
 
             {/* sidebar right */}

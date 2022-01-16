@@ -5,11 +5,6 @@ await setupLog();
 /** COMPONENTS */
 export { NotFound, type NotFoundOptions } from "./components/not_found.tsx";
 export { AnimatedText } from "./components/animated_text.tsx";
-export {
-  type ButtonOptions,
-  PrimaryButton,
-  SecondaryButton,
-} from "./components/buttons.tsx";
 export { CodeBlock } from "./components/code_block.tsx";
 
 /** LIB */

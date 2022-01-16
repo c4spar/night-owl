@@ -76,19 +76,33 @@ export class Header extends Component<HeaderOptions> {
     }
     return this.props.config.sourceFiles
       .filter((file) => file.routePrefix === "/" && file.route !== "/")
-      .map((file) => <Link href={file.route}>{file.name}</Link>);
+      .map((file) =>
+        this.#renderLink({
+          href: file.route,
+          label: file.name,
+        })
+      );
   }
 
   #renderNavLinks() {
     return this.props.config.nav?.items?.map(
-      ({ label, href, ...props }) => (
-        <Link
-          {...props}
-          href={href?.replace(/{(version|rev)}/, this.props.config.rev)}
-        >
-          {label}
-        </Link>
-      ),
+      ({ href, ...props }) =>
+        this.#renderLink({
+          ...props,
+          href: href?.replace(/{(version|rev)}/, this.props.config.rev),
+        }),
     ) ?? null;
+  }
+
+  #renderLink({ label, href, ...props }: NavItemOptions) {
+    return (
+      <Link
+        {...props}
+        class={tw`py-1 border-b-2 border-transparent hover:border-indigo-500`}
+        href={href}
+      >
+        {label}
+      </Link>
+    );
   }
 }

@@ -18,9 +18,7 @@ export class Link extends Component<LinkOptions> {
 
     return (
       <a
-        class={`${tw`py-1
-          border-b-2 border-transparent hover:border-indigo-500`}
-          ${this.props.class ?? ""}`}
+        class={this.props.class ?? ""}
         href={this.props.href}
         target={target}
       >
