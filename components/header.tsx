@@ -55,7 +55,7 @@ export class Header extends Component<HeaderOptions> {
   }
 
   #renderLabel() {
-    if (!this.props.config.label) {
+    if (!this.props.config.name) {
       return null;
     }
     return (
@@ -64,7 +64,7 @@ export class Header extends Component<HeaderOptions> {
         href="/"
       >
         <span class={tw`ml-3 text-xl`}>
-          {this.props.config.label}
+          {this.props.config.name}
         </span>
       </a>
     );

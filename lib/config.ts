@@ -28,7 +28,7 @@ export interface CreateConfigOptions<O> {
   repository?: string;
   src?: string | Array<string | SourceFilesOptions>;
   rev?: string;
-  label?: unknown;
+  name?: string;
   pagesDropdown?: boolean;
   versions?: Array<string> | boolean;
   pages?: boolean;
@@ -46,7 +46,7 @@ export interface AppConfig
   extends Omit<CreateConfigOptions<unknown>, "versions"> {
   src: string | Array<string | SourceFilesOptions>;
   rev: string;
-  label: unknown;
+  name: string;
   sourceFiles: Array<SourceFile>;
   toc?: Toc;
 }
@@ -69,7 +69,7 @@ export async function createConfig<O>(
   const opts = {
     src: "./",
     rev: "main",
-    label: "Nano Deploy",
+    name: "Nano Deploy",
     ...options,
   };
 
