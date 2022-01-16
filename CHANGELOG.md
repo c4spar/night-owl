@@ -1,3 +1,56 @@
+# [v0.1.0](https://github.com/c4spar/nano-deploy/compare/v0.0.7...v0.1.0) (Jan 16, 2022)
+
+### Features
+
+- add prev and next page links
+  ([131f719](https://github.com/c4spar/nano-deploy/commit/131f719))
+
+### Bug Fixes
+
+- prev & next link not working correctly
+  ([22878e2](https://github.com/c4spar/nano-deploy/commit/22878e2))
+- fix margin in secondary sidebar
+  ([4972340](https://github.com/c4spar/nano-deploy/commit/4972340))
+- remove padding from first headlines and add styles for p and ul tags
+  ([9ff810e](https://github.com/c4spar/nano-deploy/commit/9ff810e))
+- fix headline with
+  ([be5c4eb](https://github.com/c4spar/nano-deploy/commit/be5c4eb))
+- miing source files with toc
+  ([a9c766e](https://github.com/c4spar/nano-deploy/commit/a9c766e))
+- fallback to first file from toc if no index route is present in the toc file
+  ([9b4d276](https://github.com/c4spar/nano-deploy/commit/9b4d276))
+- fix links in secondary sidebar and missing styles for h4 & h5
+  ([723ef63](https://github.com/c4spar/nano-deploy/commit/723ef63))
+- fallback to plain text for unknown languages in code block component
+  ([bf60354](https://github.com/c4spar/nano-deploy/commit/bf60354))
+- fix headlines in secondary page sidebar
+  ([106aff4](https://github.com/c4spar/nano-deploy/commit/106aff4))
+- **toc:** support routes without / as prefix in toc file and fix nested route
+  prefix ([917ab94](https://github.com/c4spar/nano-deploy/commit/917ab94))
+
+### Code Refactoring
+
+- rename SourceFile.label to SourceFile.name
+  ([eb63b56](https://github.com/c4spar/nano-deploy/commit/eb63b56))
+- rename label option to name
+  ([7559089](https://github.com/c4spar/nano-deploy/commit/7559089))
+- make env variables optional
+  ([fcce82c](https://github.com/c4spar/nano-deploy/commit/fcce82c))
+- add table styles
+  ([11229a4](https://github.com/c4spar/nano-deploy/commit/11229a4))
+- update list styles
+  ([465e9f0](https://github.com/c4spar/nano-deploy/commit/465e9f0))
+
+### Chore
+
+- **ci:** add lint workflow
+  ([6c0c93b](https://github.com/c4spar/nano-deploy/commit/6c0c93b))
+
+### Documentation Updates
+
+- update readme
+  ([42304ca](https://github.com/c4spar/nano-deploy/commit/42304ca))
+
 # [v0.0.7](https://github.com/c4spar/nano-deploy/compare/v0.0.6...v0.0.7) (Jan 15, 2022)
 
 ### Bug Fixes
