@@ -1,6 +1,6 @@
 /** @jsx h */
 
-import { h, tw, Component } from "../deps.ts";
+import { Component, h, tw } from "../deps.ts";
 import { Link } from "./link.tsx";
 
 export interface EditPageOnGithubOptions {

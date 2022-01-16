@@ -24,15 +24,18 @@ const globalStyles = css({
 });
 
 const headlines = css({
-  "h1, h2, h3, h4, h5": css(apply`flex relative font-bold sm:truncate`, {
-    "&:hover": {
-      ".anchor-link": {
-        "&::before": {
-          visibility: "visible",
+  "h1, h2, h3, h4, h5": css(
+    apply`flex relative font-bold sm:truncate w-[fit-content]`,
+    {
+      "&:hover": {
+        ".anchor-link": {
+          "&::before": {
+            visibility: "visible",
+          },
         },
       },
     },
-  }),
+  ),
   "h1": apply`text-2xl leading-7 sm:text-3xl mb-5 mr-8 left-[-2rem]`,
   "h2": apply`text-xl leading-6 sm:text-2xl mb-4 mt-10 mr-7 left-[-1.75rem]`,
   "h3": apply`text-lg leading-5 sm:text-xl mb-3 mt-10 mr-6 left-[-1.5rem]`,
