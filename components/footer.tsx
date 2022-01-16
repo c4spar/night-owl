@@ -79,8 +79,7 @@ export class Footer extends Component<FooterOptions> {
       return undefined;
     }
     if (
-      this.props.config.sourceFiles[index + step] &&
-      this.props.config.sourceFiles[index + step].isDirectory
+      this.props.config.sourceFiles[index + step].route === this.props.file.route
     ) {
       return this.#getFile(index + step);
     }
