@@ -16,6 +16,7 @@ export function setupTwind(theme: Partial<Theme> = {}) {
     mode: strict,
     theme: {
       extend: deepMerge({
+        backgroundColor: ["even"],
         maxWidth: {
           "8xl": "90rem",
         },

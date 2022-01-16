@@ -99,6 +99,13 @@ const list = css({
   "ul, li > p": apply`m-0`,
 });
 
+const table = css({
+  "table, th, td": apply
+    `border-collapse border border-gray(300 dark:700) ${styles.transform.primary}`,
+  "th, td": apply`py-2 px-3`,
+  "tr": apply`even:bg-gray(100 dark:800) ${styles.transform.primary}`,
+});
+
 const images = css({
   "p img": apply`my-5`,
 });
@@ -110,6 +117,7 @@ export const mainStyles = css(
   nav,
   paragraph,
   list,
+  table,
   images,
 );
 
