@@ -153,7 +153,7 @@ async function getToc<T>(
       path = dirname(opts.toc);
       pattern = new RegExp(`${basename(opts.toc).replace(".", "\.")}$`);
     } else {
-      pattern = /toc\.(yml|yaml|json)$/;
+      pattern = /^toc\.(yml|yaml|json)$/;
     }
 
     const [file] = await getFiles(path, {
