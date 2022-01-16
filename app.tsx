@@ -29,6 +29,12 @@ export class App extends Component<AppOptions> {
     );
 
     this.#file = files.find((file) => !file.isDirectory) ?? files[0];
+
+    if (!this.#file && pathname === "/") {
+      this.#file = this.props.config.sourceFiles.find((file) =>
+        !file.isDirectory
+      );
+    }
   }
 
   render() {
