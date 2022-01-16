@@ -36,6 +36,8 @@ const headlines = css({
       },
     },
   ),
+  "h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child":
+    apply`mt-0`,
   "h1": apply`text-2xl leading-7 sm:text-3xl mb-5 mr-8 left-[-2rem]`,
   "h2": apply`text-xl leading-6 sm:text-2xl mb-4 mt-10 mr-7 left-[-1.75rem]`,
   "h3": apply`text-lg leading-5 sm:text-xl mb-3 mt-10 mr-6 left-[-1.5rem]`,
@@ -87,8 +89,16 @@ const nav = css({
   "nav a.root.file, nav a.directory": apply`font-bold`,
 });
 
+const paragraph = css({
+  "p": apply`my-5`,
+});
+
+const list = css({
+  "ul, li > p": apply`m-0`,
+});
+
 const images = css({
-  "p img": apply`mt-5 mb-5`,
+  "p img": apply`my-5`,
 });
 
 export const mainStyles = css(
@@ -96,6 +106,8 @@ export const mainStyles = css(
   headlines,
   links,
   nav,
+  paragraph,
+  list,
   images,
 );
 
