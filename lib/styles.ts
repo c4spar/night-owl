@@ -94,6 +94,8 @@ const paragraph = css({
 });
 
 const list = css({
+  "ul": apply`pl-4`,
+  "ul:not(ul ul)": apply`my-5`,
   "ul, li > p": apply`m-0`,
 });
 
