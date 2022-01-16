@@ -113,13 +113,14 @@ export async function createConfig<O>(
   if (toc) {
     const filesTmp: Array<SourceFile<O>> = [];
     for (const [route, name] of Object.entries(toc)) {
-      const i = sourceFiles.findIndex((file) => file.route === route);
-      const file = sourceFiles[i];
-      if (!file) {
+      const matchedFiles = sourceFiles.filter((file) => file.route === route);
+      if (!matchedFiles.length) {
         throw new Error(`Table of content file not found: ${route} -> ${name}`);
       }
-      file.name = name;
-      filesTmp.push(file);
+      for (const file of matchedFiles) {
+        file.name = name;
+        filesTmp.push(file);
+      }
     }
     sourceFiles = filesTmp;
   }
