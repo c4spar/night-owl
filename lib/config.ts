@@ -118,7 +118,7 @@ export async function createConfig<O>(
       if (!file) {
         throw new Error(`Table of content file not found: ${route} -> ${name}`);
       }
-      file.label = name;
+      file.name = name;
       filesTmp.push(file);
     }
     sourceFiles = filesTmp;

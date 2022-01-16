@@ -16,9 +16,9 @@ export class ModuleSelection extends Component<ModuleSelectionOptions> {
       this.props.files.length === 0 ? null : (
         <Selection
           class={this.props.class}
-          options={this.props.files.map((module) => ({
-            value: module.route,
-            label: module.label,
+          options={this.props.files.map((file) => ({
+            value: file.route,
+            name: file.name,
           }))}
           selected={this.props.selected}
           onchange="window.location.href = this.value"

@@ -76,7 +76,7 @@ export class Header extends Component<HeaderOptions> {
     }
     return this.props.config.sourceFiles
       .filter((file) => file.routePrefix === "/" && file.route !== "/")
-      .map((file) => <Link href={file.route}>{file.label}</Link>);
+      .map((file) => <Link href={file.route}>{file.name}</Link>);
   }
 
   #renderNavLinks() {

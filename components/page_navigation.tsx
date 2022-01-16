@@ -93,11 +93,11 @@ export class PageNavigation extends Component<PageNavigationOptions> {
       ? (
         <a class={css} href={file.route}>
           <div class={tw`${isLastActive ? "pt-3 mb-3" : "py-3"} pl-[1.25rem]`}>
-            {file.label}
+            {file.name}
           </div>
         </a>
       )
-      : <div class={css}>{file.label}</div>;
+      : <div class={css}>{file.name}</div>;
   }
 
   #getNavFiles(): Array<SourceFile> {

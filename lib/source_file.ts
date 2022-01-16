@@ -34,7 +34,7 @@ export class SourceFile<O = unknown> extends Asset {
   #assets: Array<Asset>;
   #component?: ChildComponent;
   #isDirectory: boolean;
-  #label: string;
+  #name: string;
   #route: string;
   #routeName: string;
   #routePrefix: string;
@@ -84,13 +84,13 @@ export class SourceFile<O = unknown> extends Asset {
       content.trim().match(/^#\s+([^\n]+)/)?.[1];
 
     if (headline) {
-      this.#label = headline;
+      this.#name = headline;
     } else if (this.#route === "/") {
-      this.#label = getLabel(pathToUrl(this.fileName));
+      this.#name = getLabel(pathToUrl(this.fileName));
     } else if (this.#routeName === "/") {
-      this.#label = getLabel(this.#route.split("/").at(-1)!.split("@")[0]);
+      this.#name = getLabel(this.#route.split("/").at(-1)!.split("@")[0]);
     } else {
-      this.#label = getLabel(this.#routeName);
+      this.#name = getLabel(this.#routeName);
     }
   }
 
@@ -106,12 +106,12 @@ export class SourceFile<O = unknown> extends Asset {
     return this.#isDirectory;
   }
 
-  get label() {
-    return this.#label;
+  get name() {
+    return this.#name;
   }
 
-  set label(label: string) {
-    this.#label = label;
+  set name(label: string) {
+    this.#name = label;
   }
 
   get route() {
@@ -135,7 +135,7 @@ export class SourceFile<O = unknown> extends Asset {
       ...{
         ...super.toJson(compact),
         isDirectory: this.#isDirectory,
-        label: this.#label,
+        name: this.#name,
         route: this.#route,
         routeName: this.#routeName,
         routePrefix: this.#routePrefix,

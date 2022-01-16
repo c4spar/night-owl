@@ -16,11 +16,11 @@ export class SecondaryPageNavigation
 
     const headlines = html.match(/<h(1|2|3|4|5)>([^<]+)<\/h\1>/g)?.map(
       (h) => {
-        const [_, size, label] = h.match(/<h(1|2|3|4|5)>([^<]+)<\/h\1>/) ?? [];
+        const [_, size, name] = h.match(/<h(1|2|3|4|5)>([^<]+)<\/h\1>/) ?? [];
         return {
           size: Number(size),
-          label,
-          href: "#" + label?.toLowerCase()
+          name,
+          href: "#" + name?.toLowerCase()
             .replace(/[\s+]+/g, "-")
             .replace(/[\/.]+/g, ""),
         };
@@ -41,7 +41,7 @@ export class SecondaryPageNavigation
               class={`${tw`p-3 w-full ${bold} ${marginLeft}`}`}
               href={headline.href}
             >
-              {headline.label}
+              {headline.name}
             </a>
           );
         }))}

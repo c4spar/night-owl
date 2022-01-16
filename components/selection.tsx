@@ -5,7 +5,7 @@ import { styles } from "../lib/styles.ts";
 
 export interface SelectionOption {
   value: string;
-  label: string;
+  name: string;
 }
 
 export interface SelectionOptions {
@@ -32,13 +32,13 @@ export class Selection extends Component<SelectionOptions> {
           >
             {this.props.options
               .map((value) =>
-                typeof value === "string" ? { value, label: value } : value
+                typeof value === "string" ? { value, name: value } : value
               )
-              .map(({ value, label }) =>
+              .map(({ value, name }) =>
                 render(
                   this.props.selected === value
-                    ? <option value={value} selected>{label}</option>
-                    : <option value={value}>{label}</option>,
+                    ? <option value={value} selected>{name}</option>
+                    : <option value={value}>{name}</option>,
                 )
               )}
           </select>
