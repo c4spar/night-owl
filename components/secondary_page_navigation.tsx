@@ -27,14 +27,24 @@ export class SecondaryPageNavigation
       },
     );
 
+    if (headlines) {
+      const minSize = headlines.reduce(
+        (prev, h) => h.size < prev ? h.size : prev,
+        Infinity,
+      ) ?? 0;
+
+      for (const headline of headlines) {
+        headline.size = headline.size - minSize + 1;
+      }
+    }
+
     return (
       <Navigation
         class={tw
           `${styles.transform.primary} ${styles.bg.secondary} rounded-xl`}
       >
         {render(headlines?.map((headline) => {
-          const rem = headline.size;
-          const marginLeft = `pl-[${rem}rem]`;
+          const marginLeft = `pl-[${headline.size}rem]`;
           const bold = headline.size === 1 ? "font-bold" : "";
           return (
             <a
