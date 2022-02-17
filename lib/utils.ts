@@ -39,25 +39,28 @@ export function sortByKey<K extends string>(name: K) {
   };
 }
 
-export function joinUrl(...path: Array<string | undefined>) {
+export function joinUrl(...paths: Array<string | undefined>) {
+  const hash = paths.at(-1)?.[0] === "#" ? paths.pop() : "";
   let url = "";
 
-  for (const part of path) {
-    if (part && part !== "." && part !== "./") {
-      url += part + "/";
+  for (const path of paths) {
+    if (path && path !== "." && path !== "./") {
+      url += path + "/";
     }
   }
 
-  return url
+  url = url
     // replace double slash's with single slash
     .replace(/\/+/g, "/")
     // replace trailing slash
     .replace(/\/$/, "") || "/";
+
+  return url + hash;
 }
 
 export function pathToUrl(...paths: Array<string>): string {
   return joinUrl(...paths.map((path) => {
-    if (path === "/") {
+    if (path === "/" || path[0] === "#") {
       return path;
     }
     return path

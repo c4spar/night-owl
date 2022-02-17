@@ -44,8 +44,9 @@ export class Markdown extends Component<MarkdownOptions> {
       // Rewrite links to markdown files:
       //   ./01_getting_started.md -> ./getting-started
       .replace(
-        /<a href="(.+\.md)">/g,
-        (_, path) => `<a href="${pathToUrl(path)}">`,
+        /<a href="(.+\.md)(#.+)?">/g,
+        (_, path, hash) =>
+          `<a href="${hash ? pathToUrl(path, hash) : pathToUrl(path)}">`,
       )
       // Replace local image urls with data urls:
       .replace(
