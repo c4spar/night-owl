@@ -74,9 +74,9 @@ export function pathToUrl(...paths: Array<string>): string {
       .replace(/^[0-9]+_/, "")
       .replace(/\/[0-9]+_/g, "/")
       // replace special chars with hyphens
-      .replace(/[_\s]/g, "-")
+      .replace(/[_\s,]+/g, "-")
       // remove file extension
-      .replace(/\.[a-zA-Z0-9]+/, "");
+      .replace(/\.[a-zA-Z0-9]+$/, "");
   }));
 }
 

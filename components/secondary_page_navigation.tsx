@@ -4,6 +4,7 @@ import { SourceFile } from "../lib/source_file.ts";
 import { styles } from "../mod.ts";
 import { Navigation } from "./navigation.tsx";
 import { Component, comrak, h, render, tw } from "../deps.ts";
+import { pathToUrl } from "../lib/utils.ts";
 
 export interface SecondaryPageNavigationOptions {
   file: SourceFile;
@@ -20,9 +21,7 @@ export class SecondaryPageNavigation
         return {
           size: Number(size),
           name,
-          href: "#" + name?.toLowerCase()
-            .replace(/[\s+]+/g, "-")
-            .replace(/[\/.]+/g, ""),
+          href: "#" + pathToUrl(name?.toLowerCase() ?? ""),
         };
       },
     );
