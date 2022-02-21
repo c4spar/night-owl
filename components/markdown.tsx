@@ -47,6 +47,9 @@ export class Markdown extends Component<MarkdownOptions> {
       .replace(
         /<a href="(.+\.md)(#.+)?">/g,
         (_, path, hash) => {
+          if (path.startsWith("http:") || path.startsWith("https:")) {
+            return path + (hash ?? "");
+          }
           path = path.replace(/^\.\//, "");
           const filePath = join(this.props.file.dirName, path);
           const file = this.props.files.find((file) => file.path === filePath);
