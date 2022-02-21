@@ -9,6 +9,7 @@ import { CodeBlock } from "./code_block.tsx";
 
 export interface MarkdownOptions {
   file: SourceFile;
+  files: Array<SourceFile>;
   sanitize?: (file: SourceFile) => string;
 }
 
@@ -45,18 +46,31 @@ export class Markdown extends Component<MarkdownOptions> {
       //   ./01_getting_started.md -> ./getting-started
       .replace(
         /<a href="(.+\.md)(#.+)?">/g,
-        (_, path, hash) =>
-          `<a href="${hash ? pathToUrl(path, hash) : pathToUrl(path)}">`,
+        (_, path, hash) => {
+          path = path.replace(/^\.\//, "");
+          const filePath = join(this.props.file.dirName, path);
+          const file = this.props.files.find((file) => file.path === filePath);
+          if (!file) {
+            throw new Error(`File not found: ${filePath}`);
+          }
+          return `<a href="${file.route + (hash ?? "")}">`;
+        },
       )
       // Replace local image urls with data urls:
       .replace(
         /<img src="([^"]+)"/g,
         (src, path) => {
-          return `<img src="${
-            this.props.file.assets.find((asset) =>
-              join(this.props.file.dirName, "/", path) === asset.path
-            )?.content || src
-          }"`;
+          if (src.startsWith("http:") || src.startsWith("https:")) {
+            return src;
+          }
+          const filePath = join(this.props.file.dirName, "/", path);
+          const file = this.props.file.assets.find((asset) =>
+            filePath === asset.path
+          );
+          if (!file) {
+            throw new Error(`Image not found: ${filePath}`);
+          }
+          return `<img src="${file.content}"`;
         },
       )
       // Add anchor link:

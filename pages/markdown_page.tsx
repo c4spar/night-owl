@@ -47,7 +47,11 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
           >
             {/* content */}
             <main class={tw`${styles.transform.primary} relative`}>
-              <Markdown file={file} sanitize={this.props.config.sanitize} />
+              <Markdown
+                file={file}
+                files={this.props.config.sourceFiles}
+                sanitize={this.props.config.sanitize}
+              />
               <Footer file={file} config={this.props.config} />
             </main>
 
