@@ -45,18 +45,24 @@ export class Markdown extends Component<MarkdownOptions> {
       // Rewrite links to markdown files:
       //   ./01_getting_started.md -> ./getting-started
       .replace(
-        /<a href="(.+\.md)(#.+)?">/g,
-        (_, path, hash) => {
-          if (path.startsWith("http:") || path.startsWith("https:")) {
-            return path + (hash ?? "");
+        /<a href="([^"]+)/g,
+        (match, url) => {
+          if (url.startsWith("http:") || url.startsWith("https:")) {
+            return match;
           }
-          path = path.replace(/^\.\//, "");
+          const matched = url.match(/^(\.\/)?(.+\.md)(#.+)?$/);
+          if (!matched) {
+            return match;
+          }
+          const [__, ___, path, hash] = matched;
           const filePath = join(this.props.file.dirName, path);
           const file = this.props.files.find((file) => file.path === filePath);
+
           if (!file) {
             throw new Error(`File not found: ${filePath}`);
           }
-          return `<a href="${file.route + (hash ?? "")}">`;
+
+          return `<a href="${file.route + (hash ?? "")}`;
         },
       )
       // Replace local image urls with data urls:
