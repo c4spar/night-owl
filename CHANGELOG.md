@@ -1,3 +1,32 @@
+# [v0.1.1](https://github.com/c4spar/nano-deploy/compare/v0.1.0...v0.1.1) (Feb 24, 2022)
+
+### Features
+
+- **markdown:** add blockquote markdown styles
+  ([91f5be1](https://github.com/c4spar/nano-deploy/commit/91f5be1))
+- **markdown:** add support for hash links
+  ([cf7a660](https://github.com/c4spar/nano-deploy/commit/cf7a660))
+
+### Bug Fixes
+
+- **navigation:** fix nested nav items
+  ([d740764](https://github.com/c4spar/nano-deploy/commit/d740764))
+- **toc:** fix toc file regex
+  ([890f4b8](https://github.com/c4spar/nano-deploy/commit/890f4b8))
+- **markdown:** fix markdown link regex
+  ([1389086](https://github.com/c4spar/nano-deploy/commit/1389086))
+- **markdown:** fix links for remote markdown files
+  ([ca1c080](https://github.com/c4spar/nano-deploy/commit/ca1c080))
+- **markdown:** fix wrong markdown links
+  ([c5c36b0](https://github.com/c4spar/nano-deploy/commit/c5c36b0))
+
+### Code Refactoring
+
+- refactor caching
+  ([94a7574](https://github.com/c4spar/nano-deploy/commit/94a7574))
+- refactor pathToUrl
+  ([b2e1462](https://github.com/c4spar/nano-deploy/commit/b2e1462))
+
 # [v0.1.0](https://github.com/c4spar/nano-deploy/compare/v0.0.7...v0.1.0) (Jan 16, 2022)
 
 ### Features
