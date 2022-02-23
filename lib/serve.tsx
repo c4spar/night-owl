@@ -87,6 +87,7 @@ export async function serve<O>(
       html = ssr(
         <App url={req.url} config={config} scripts={scripts} />,
       );
+      cache.set(req.url, html);
     }
 
     return new Response(html, { headers: { "content-type": "text/html" } });

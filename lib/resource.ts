@@ -1,5 +1,4 @@
 import { join } from "../deps.ts";
-import { Cache } from "./cache.ts";
 import {
   getVersions,
   GithubDirEntry,
@@ -39,21 +38,12 @@ export interface SourceFilesOptions {
   rev?: string;
 }
 
-const getFilesCache = new Cache<Array<SourceFile<unknown>>>();
-
 const local = (await env("LOCAL"))?.toLowerCase() === "true";
 
 export async function getFiles<O>(
   path: string | SourceFilesOptions,
   opts: GetFilesOptions<O>,
 ): Promise<Array<SourceFile<O>>> {
-  const cacheKey = JSON.stringify({ path, opts, cacheKey: opts.req.url });
-
-  let files = getFilesCache.get(cacheKey);
-  if (files) {
-    return files;
-  }
-
   if (typeof path === "string") {
     const { repository, rev, path: filePath } = parseRemotePath(path);
     path = {
@@ -99,7 +89,7 @@ export async function getFiles<O>(
     path.repository = opts.repository;
   }
 
-  files = await readDir(path.src, {
+  const files = await readDir(path.src, {
     ...opts,
     addVersion: !!selectedVersion,
     versions,
@@ -108,13 +98,11 @@ export async function getFiles<O>(
     prefix: path.prefix,
   });
 
-  if (!path.repository) {
-    files = files.sort(sortByKey("path"));
+  if (path.repository) {
+    return files;
   }
 
-  getFilesCache.set(cacheKey, files);
-
-  return files;
+  return files.sort(sortByKey("path"));
 }
 
 async function readDir<O>(

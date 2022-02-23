@@ -12,7 +12,7 @@ import { env, joinUrl } from "./utils.ts";
 
 const apiUrl = "https://api.github.com";
 
-const gitCache = new Cache<GithubResponse>();
+const gitCache = new Cache<string>();
 
 interface GithubResponse {
   message: string;
@@ -174,11 +174,10 @@ export async function gitReadFile(
 
 async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
   const cacheKey = joinUrl(repository, endpoint);
+  const cachedData = gitCache.get(cacheKey);
 
-  let data = gitCache.get<GithubResponse & T>(cacheKey);
-
-  if (data) {
-    return data;
+  if (cachedData) {
+    return JSON.parse(cachedData);
   }
 
   const url = new URL(joinUrl("repos", repository, endpoint), apiUrl).href;
@@ -203,7 +202,11 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
     throw new Error("Failed to fetch versions from github.");
   }
 
-  data = await response.json();
+  const text = await response.text();
+
+  gitCache.set(cacheKey, text);
+
+  const data = JSON.parse(text);
 
   log.debug("Done %s", green(url));
 
@@ -214,8 +217,6 @@ async function gitFetch<T>(repository: string, endpoint: string): Promise<T> {
       data.message + " " + url.toString() + " --> " + data.documentation_url,
     );
   }
-
-  gitCache.set(cacheKey, data);
 
   return data;
 }
