@@ -114,8 +114,8 @@ export class Markdown extends Component<MarkdownOptions> {
         "p": apply`${styles.text.secondary} ${styles.transform.primary}`,
         "blockquote": apply
           `p-4 rounded-xl ${styles.bg.accent} ${styles.transform.primary}`,
-        "blockquote p:first-child": apply`mt-0`,
-        "blockquote p:last-child": apply`mb-0`,
+        "blockquote > *:first-child": apply`mt-0`,
+        "blockquote > *:last-child": apply`mb-0`,
         "strong": apply`${styles.text.primary}`,
       },
     );

@@ -82,12 +82,12 @@ const nav = css({
   "nav a": apply`hover:text(blue-600 dark:white)`,
   "nav a.selected": apply`font-bold text-blue(500 dark:400)`,
   "nav": apply`${styles.transform.primary} `,
-  "nav a.active": apply`${styles.transform.primary} ${styles.bg.secondary}`,
+  "nav .active": apply`${styles.transform.primary} ${styles.bg.secondary}`,
   "nav a.active.first": apply`rounded-t-xl`,
   "nav a.active.last": apply`rounded-b-xl`,
-  "nav a.active.file:not(.root) div": apply
+  "nav .active:not(.root,.first) div": apply
     `border-l-2 border-blue(400 dark:400)`,
-  "nav a.root.file, nav a.directory": apply`font-bold`,
+  "nav a.root.file, nav .directory": apply`font-bold`,
 });
 
 const paragraph = css({

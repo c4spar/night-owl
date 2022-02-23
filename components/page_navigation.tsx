@@ -97,7 +97,13 @@ export class PageNavigation extends Component<PageNavigationOptions> {
           </div>
         </a>
       )
-      : <div class={css}>{file.name}</div>;
+      : (
+        <div class={css}>
+          <div class={tw`${isLastActive ? "pt-3 mb-3" : "py-3"} pl-[1.25rem]`}>
+            {file.name}
+          </div>
+        </div>
+      );
   }
 
   #getNavFiles(): Array<SourceFile> {
@@ -117,12 +123,16 @@ export class PageNavigation extends Component<PageNavigationOptions> {
         } else {
           valid = file.route === this.#pagePrefix ||
             file.routePrefix === this.#pagePrefix ||
-            file.route.startsWith(this.#path);
+            (
+              file.route.startsWith(this.#path) &&
+              this.props.file.route.startsWith(file.routePrefix)
+            );
         }
       } else if (this.props.config.pages) {
         valid = file.route === this.#pagePrefix ||
           file.routePrefix.startsWith(this.#pagePrefix);
       }
+
       return valid;
     });
   }
