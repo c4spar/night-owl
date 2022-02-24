@@ -21,7 +21,8 @@ export class SecondaryPageNavigation
         return {
           size: Number(size),
           name,
-          href: "#" + pathToUrl(name?.toLowerCase() ?? ""),
+          href: "#" +
+            pathToUrl(name?.toLowerCase().replace(/[.?)(\/]+/g, "") ?? ""),
         };
       },
     );
