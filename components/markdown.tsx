@@ -113,7 +113,7 @@ export class Markdown extends Component<MarkdownOptions> {
         "ul": apply`list-disc ml-5 my-5`,
         "p": apply`${styles.text.secondary} ${styles.transform.primary}`,
         "blockquote": apply
-          `p-4 rounded-xl ${styles.bg.accent} ${styles.transform.primary}`,
+          `p-4 my-5 rounded-xl ${styles.bg.accent} ${styles.transform.primary}`,
         "blockquote > *:first-child": apply`mt-0`,
         "blockquote > *:last-child": apply`mb-0`,
         "strong": apply`${styles.text.primary}`,
