@@ -34,6 +34,7 @@ export interface ReadDirOptions<O> {
 export interface SourceFilesOptions {
   src: string;
   prefix?: string;
+  label?: string;
   repository?: string;
   rev?: string;
 }

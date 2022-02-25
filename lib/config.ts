@@ -114,6 +114,12 @@ export async function createConfig<O>(
         }
         tocToc = tocTmp;
       }
+
+      if (sourceOpts.label) {
+        const key = Object.keys(tocToc)[0] as keyof typeof tocToc;
+        tocToc[key] = sourceOpts.label;
+      }
+
       toc = deepMerge(toc ?? {}, tocToc ?? {});
     }
     if (source.length) {
