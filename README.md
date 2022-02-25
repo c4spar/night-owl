@@ -2,17 +2,18 @@
 
 A simple in-memory site generator.
 
+> ⚠️ This project is in very early development. There will likely be many
+> breaking changes.
+
 ### Features
 
 - No build-process.
 - No static files.
-- Supports markdown files and custom jsx components.
-- Versioning support (based on git tags & protected branches).
-- Serve files from any repository, even multiple repositories are supported.
+- Supports for markdown files and custom jsx components.
+- Versions dropdown.
+- Serve files from any repository.
 - Dark & Light mode.
-- Build in caching.
-- Show "Edit this page on Github" links.
-- Works with Deno Deploy.
+- "Edit this page on Github" links.
 
 ### Examples
 
@@ -22,7 +23,7 @@ This example serves the official deno manual directly from the Github
 repository.
 
 ```ts
-import { serve } from "https://deno.land/x/nano_deploy/mod.ts";
+import { serve } from "https://deno.land/x/nano_page/mod.ts";
 
 await serve({
   src: "denoland/manual@main:/",
