@@ -1,3 +1,22 @@
+# [v0.1.2](https://github.com/c4spar/nano-deploy/compare/v0.1.1...v0.1.2) (Feb 25, 2022)
+
+### Bug Fixes
+
+- **markdown:** fix special chars in url hash
+  ([cadee28](https://github.com/c4spar/nano-deploy/commit/cadee28))
+- **markdown:** add margin to blockquote
+  ([890faf6](https://github.com/c4spar/nano-deploy/commit/890faf6))
+
+### Chore
+
+- **upgrade:** upgrade deps & deno/std to v0.127.0
+  ([fc82842](https://github.com/c4spar/nano-deploy/commit/fc82842))
+
+### Documentation Updates
+
+- update readme
+  ([2e5ff15](https://github.com/c4spar/nano-deploy/commit/2e5ff15))
+
 # [v0.1.1](https://github.com/c4spar/nano-deploy/compare/v0.1.0...v0.1.1) (Feb 24, 2022)
 
 ### Features
