@@ -5,6 +5,7 @@ import {
   bold,
   deepMerge,
   dirname,
+  join,
   log,
   parseYaml,
   Theme,
@@ -79,11 +80,12 @@ export async function createConfig<O>(
   const src = typeof opts.src === "string" ? [opts.src] : opts.src;
   let toc: Toc | undefined = undefined;
 
-  const files: Array<[Toc | undefined, Array<SourceFile<O>>]> = await Promise
+  const files: Array<
+    [Array<SourceFile<O>>, SourceFilesOptions, Toc | undefined]
+  > = await Promise
     .all(
       src.map((path: string | SourceFilesOptions) =>
         Promise.all([
-          getToc(path, opts, req),
           getFiles(path, {
             recursive: true,
             includeDirs: true,
@@ -96,13 +98,22 @@ export async function createConfig<O>(
             providers: opts.providers,
             versions: opts.versions ?? true,
           }),
+          typeof path === "string" ? { src: path } : path,
+          getToc(path, opts, req),
         ])
       ),
     );
 
   let sourceFiles: Array<SourceFile<O>> = [];
-  for (const [tocToc, source] of files) {
+  for (let [source, sourceOpts, tocToc] of files) {
     if (tocToc) {
+      if (sourceOpts.prefix) {
+        const tocTmp: Toc = {};
+        for (const [path, entry] of Object.entries(tocToc)) {
+          tocTmp[join("/", sourceOpts.prefix, path).replace(/\/$/, "")] = entry;
+        }
+        tocToc = tocTmp;
+      }
       toc = deepMerge(toc ?? {}, tocToc ?? {});
     }
     if (source.length) {
