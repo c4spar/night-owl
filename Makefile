@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := example-deno-manual
+.DEFAULT_GOAL := serve
 
 include .env
 export
@@ -7,7 +7,11 @@ lint:
 	deno lint
 fmt:
 	deno fmt
-example-deno-manual:
-	deno run --watch --allow-all examples/deno_manual.ts
-example-provider:
-	deno run --watch --allow-all examples/provider/main.ts
+serve:
+	deno run --watch=. --allow-env --allow-net examples/cliffy_manual.ts
+serve-deno:
+	deno run --watch=. --allow-env --allow-net examples/deno_manual.ts
+serve-provider:
+	deno run --watch=. --allow-env --allow-net --allow-read examples/provider/main.ts
+serve-multi:
+	deno run --watch=. --allow-env --allow-net examples/multiple_sources.ts
