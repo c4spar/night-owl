@@ -1,3 +1,10 @@
+# [v0.1.3](https://github.com/c4spar/nano-deploy/compare/v0.1.2...v0.1.3) (Feb 25, 2022)
+
+### Bug Fixes
+
+- fix version mismatch
+  ([60740e5](https://github.com/c4spar/nano-deploy/commit/60740e5))
+
 # [v0.1.2](https://github.com/c4spar/nano-deploy/compare/v0.1.1...v0.1.2) (Feb 25, 2022)
 
 ### Bug Fixes
