@@ -1,4 +1,4 @@
-import { Component } from "https://deno.land/x/nano_jsx@v0.0.26/component.ts";
+import { Component } from "../deps.ts";
 import { ProviderFunction, ProviderType } from "./provider.ts";
 
 export interface ComponentType<T, S> {
