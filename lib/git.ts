@@ -158,7 +158,7 @@ export async function gitReadFile(
 
   const file = await gitFetch<{ content: string }>(
     repository,
-    `contents/${path}${rev ? `?rev=${rev}` : ""}`,
+    `contents/${path}${rev ? `?ref=${rev}` : ""}`,
   );
 
   try {
