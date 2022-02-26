@@ -11,7 +11,7 @@ import {
   Theme,
 } from "../deps.ts";
 import { ProviderOptions } from "./provider.ts";
-import { getFiles, SourceFilesOptions } from "./resource.ts";
+import { FileOptions, getFiles } from "./resource.ts";
 import { SourceFile } from "./source_file.ts";
 import { pathToUrl } from "./utils.ts";
 
@@ -23,6 +23,11 @@ export interface NavOptions {
 export interface Script {
   url: string;
   contentType: string;
+}
+
+export interface SourceFilesOptions extends FileOptions {
+  label?: string;
+  main?: string;
 }
 
 export interface CreateConfigOptions<O> {
@@ -130,7 +135,9 @@ export async function createConfig<O>(
   if (toc) {
     const filesTmp: Array<SourceFile<O>> = [];
     for (const [route, name] of Object.entries(toc)) {
-      const matchedFiles = sourceFiles.filter((file) => file.route === route);
+      const matchedFiles = sourceFiles.filter((file) =>
+        file.mainRoute === route
+      );
       if (!matchedFiles.length) {
         throw new Error(`Table of content file not found: ${route} -> ${name}`);
       }

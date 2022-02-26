@@ -9,6 +9,7 @@ import {
   joinUrl,
   parseRemotePath,
   pathToUrl,
+  removeVersion,
 } from "./utils.ts";
 import { Asset, AssetOptions, readTextFile } from "./asset.ts";
 
@@ -36,6 +37,7 @@ export class SourceFile<O = unknown> extends Asset {
   #isDirectory: boolean;
   #name: string;
   #route: string;
+  #mainRoute: string;
   #routeName: string;
   #routePrefix: string;
   #versions?: GithubVersions;
@@ -74,6 +76,7 @@ export class SourceFile<O = unknown> extends Asset {
     this.#component = component;
     this.#isDirectory = opts.isDirectory;
     this.#route = route;
+    this.#mainRoute = removeVersion(route, opts.versions?.all, opts.pages);
     this.#routeName = routeName;
     this.#routePrefix = routePrefix;
     this.#versions = opts.versions;
@@ -118,6 +121,10 @@ export class SourceFile<O = unknown> extends Asset {
     return this.#route;
   }
 
+  get mainRoute() {
+    return this.#mainRoute;
+  }
+
   get routeName() {
     return this.#routeName;
   }
@@ -137,6 +144,7 @@ export class SourceFile<O = unknown> extends Asset {
         isDirectory: this.#isDirectory,
         name: this.#name,
         route: this.#route,
+        mainRoute: this.#mainRoute,
         routeName: this.#routeName,
         routePrefix: this.#routePrefix,
       },

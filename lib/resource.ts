@@ -31,10 +31,9 @@ export interface ReadDirOptions<O> {
   prefix?: string;
 }
 
-export interface SourceFilesOptions {
+export interface FileOptions {
   src: string;
   prefix?: string;
-  label?: string;
   repository?: string;
   rev?: string;
 }
@@ -42,7 +41,7 @@ export interface SourceFilesOptions {
 const local = (await env("LOCAL"))?.toLowerCase() === "true";
 
 export async function getFiles<O>(
-  path: string | SourceFilesOptions,
+  path: string | FileOptions,
   opts: GetFilesOptions<O>,
 ): Promise<Array<SourceFile<O>>> {
   if (typeof path === "string") {

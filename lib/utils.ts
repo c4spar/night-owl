@@ -148,6 +148,23 @@ export function getRouteRegex(
   );
 }
 
+export function removeVersion(
+  route: string,
+  versions?: Array<string>,
+  pages?: boolean,
+): string {
+  return versions?.length
+    ? route.replace(
+      new RegExp(
+        pages
+          ? `@${getVersionsPattern(versions)}`
+          : `/${getVersionsPattern(versions)}`,
+      ),
+      "",
+    )
+    : route;
+}
+
 export function parseRoute(
   route: string,
   versions?: Array<string>,
