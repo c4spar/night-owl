@@ -1,3 +1,34 @@
+# [v0.1.4](https://github.com/c4spar/nano-page/compare/v0.1.3...v0.1.4) (Feb 27, 2022)
+
+### Features
+
+- add label option to source file options
+  ([766b00d](https://github.com/c4spar/nano-page/commit/766b00d))
+
+### Bug Fixes
+
+- versioned routes not working with toc file
+  ([06d774f](https://github.com/c4spar/nano-page/commit/06d774f))
+- git always fetches the latest version
+  ([28d4847](https://github.com/c4spar/nano-page/commit/28d4847))
+- apply prefix to all paths from toc file
+  ([6bd8479](https://github.com/c4spar/nano-page/commit/6bd8479))
+
+### Chore
+
+- update Makefile
+  ([84dba04](https://github.com/c4spar/nano-page/commit/84dba04))
+
+### Documentation Updates
+
+- update readme ([ba643eb](https://github.com/c4spar/nano-page/commit/ba643eb),
+  [bec6e52](https://github.com/c4spar/nano-page/commit/bec6e52))
+- update example ([58e3284](https://github.com/c4spar/nano-page/commit/58e3284))
+- fix type in readme
+  ([80aabc7](https://github.com/c4spar/nano-page/commit/80aabc7))
+- update examples
+  ([f985c16](https://github.com/c4spar/nano-page/commit/f985c16))
+
 # [v0.1.3](https://github.com/c4spar/nano-deploy/compare/v0.1.2...v0.1.3) (Feb 25, 2022)
 
 ### Bug Fixes
