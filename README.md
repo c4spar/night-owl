@@ -9,6 +9,7 @@ A simple in-memory site generator.
 
 - No build-process.
 - No static files.
+- No extra CLI required.
 - Support for markdown files and custom jsx components.
 - Versions dropdown.
 - Serve files from any repository.
