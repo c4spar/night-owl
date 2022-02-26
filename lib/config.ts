@@ -75,7 +75,7 @@ export async function createConfig<O>(
   const opts = {
     src: "./",
     rev: "main",
-    name: "Nano Deploy",
+    name: "Night Owl",
     ...options,
   };
 
