@@ -24,7 +24,7 @@ This example serves the official deno manual directly from the Github
 repository.
 
 ```ts
-import { serve } from "https://deno.land/x/nano_page/mod.ts";
+import { serve } from "https://raw.githubusercontent.com/c4spar/night-owl/v0.1.4/mod.ts";
 
 await serve({
   src: "denoland/manual@main:/",
@@ -35,6 +35,6 @@ await serve({
 ```
 
 ```console
-$ deno run --allow-env --allow-net -r https://raw.githubusercontent.com/c4spar/nano-deploy/main/examples/deno_manual.ts
+$ deno run --allow-env --allow-net https://raw.githubusercontent.com/c4spar/night-owl/v0.1.4/examples/deno_manual.ts
 Listening on http://localhost:8000
 ```
