@@ -1,3 +1,15 @@
+# [v0.1.7](https://github.com/c4spar/nano-page/compare/v0.1.6...v0.1.7) (Feb 28, 2022)
+
+### Features
+
+- add support for static component imports
+  ([db35707](https://github.com/c4spar/nano-page/commit/db35707))
+
+### Bug Fixes
+
+- filter duplicate header links
+  ([7643e93](https://github.com/c4spar/nano-page/commit/7643e93))
+
 # [v0.1.6](https://github.com/c4spar/nano-page/compare/v0.1.5...v0.1.6) (Feb 27, 2022)
 
 ### Bug Fixes
