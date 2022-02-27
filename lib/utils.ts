@@ -6,9 +6,11 @@ export async function env(
 ): Promise<string | undefined> {
   const desc: Deno.PermissionDescriptor = { name: "env", variable: name };
 
-  const { state } = required
-    ? await Deno.permissions.request(desc)
-    : await Deno.permissions.query(desc);
+  const { state } = "permissions" in Deno
+    ? (required
+      ? await Deno.permissions.request(desc)
+      : await Deno.permissions.query(desc))
+    : { state: "granted" };
 
   if (state === "granted") {
     return Deno.env.get(name);
