@@ -111,6 +111,13 @@ export async function createConfig<O>(
 
   let sourceFiles: Array<SourceFile<O>> = [];
   for (let [source, sourceOpts, tocToc] of files) {
+    // Exclude readme if index file exists.
+    const readmeIndex = source.findIndex((file) => file.path === "README.md");
+    const indexIndex = source.findIndex((file) => file.path === "index.md");
+    if (readmeIndex !== -1 && indexIndex !== -1) {
+      source.splice(readmeIndex, 1);
+    }
+
     if (tocToc) {
       if (sourceOpts.prefix) {
         const tocTmp: Toc = {};
@@ -127,6 +134,7 @@ export async function createConfig<O>(
 
       toc = deepMerge(toc ?? {}, tocToc ?? {});
     }
+
     if (source.length) {
       sourceFiles = [...sourceFiles, ...source];
     }
