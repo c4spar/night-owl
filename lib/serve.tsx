@@ -81,6 +81,10 @@ export async function serve<O>(
         );
     }
 
+    if (pathname === "/favicon.ico") {
+      return new Response("Not found", { status: 404 });
+    }
+
     let html: string | undefined = cache.get(req.url);
     if (!html) {
       const config = await createConfig(options, req);
