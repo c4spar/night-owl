@@ -29,10 +29,14 @@ export interface ReadDirOptions<O> {
   pages?: boolean;
   providers?: Array<ProviderOptions<O>>;
   prefix?: string;
+  component?: unknown;
+  file?: string;
 }
 
 export interface FileOptions {
   src: string;
+  component?: unknown;
+  file?: string;
   prefix?: string;
   repository?: string;
   rev?: string;
@@ -96,6 +100,8 @@ export async function getFiles<O>(
     repository: path.repository,
     rev: path.rev,
     prefix: path.prefix,
+    component: path.component,
+    file: path.file,
   });
 
   if (path.repository) {
@@ -110,6 +116,20 @@ async function readDir<O>(
   opts: ReadDirOptions<O>,
   basePath: string = path,
 ): Promise<Array<SourceFile<O>>> {
+  if (opts.component || opts.file) {
+    if (!opts.component || !opts.file) {
+      throw new Error("Component and file option missing.");
+    }
+    const file = await SourceFile.create(join(path, opts.file), {
+      ...opts,
+      basePath,
+      isDirectory: false,
+      prefix: opts.prefix,
+      read: false,
+    });
+    return [file];
+  }
+
   const resultPromises: Array<Promise<SourceFile<O> | Array<SourceFile<O>>>> =
     [];
 

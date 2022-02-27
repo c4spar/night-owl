@@ -27,7 +27,6 @@ export interface Script {
 
 export interface SourceFilesOptions extends FileOptions {
   label?: string;
-  main?: string;
 }
 
 export interface CreateConfigOptions<O> {
@@ -112,8 +111,10 @@ export async function createConfig<O>(
   let sourceFiles: Array<SourceFile<O>> = [];
   for (let [source, sourceOpts, tocToc] of files) {
     // Exclude readme if index file exists.
-    const readmeIndex = source.findIndex((file) => file.path === "README.md");
-    const indexIndex = source.findIndex((file) => file.path === "index.md");
+    const readmeIndex = source.findIndex((file) => file.path === "/README.md");
+    const indexIndex = source.findIndex((file) =>
+      file.path.match(/^\/index\.(md|js|jsx|ts|tsx)$/)
+    );
     if (readmeIndex !== -1 && indexIndex !== -1) {
       source.splice(readmeIndex, 1);
     }
@@ -139,6 +140,8 @@ export async function createConfig<O>(
       sourceFiles = [...sourceFiles, ...source];
     }
   }
+
+  log.debug("toc: %O", toc);
 
   if (toc) {
     const filesTmp: Array<SourceFile<O>> = [];
@@ -188,12 +191,17 @@ async function getToc<T>(
       pattern = /^toc\.(yml|yaml|json)$/;
     }
 
-    const [file] = await getFiles(path, {
-      read: true,
-      repository: opts.repository,
-      pattern,
-      req,
-    });
+    const [file] = await getFiles(
+      typeof path === "string"
+        ? path
+        : { ...path, component: undefined, file: undefined },
+      {
+        read: true,
+        repository: opts.repository,
+        pattern,
+        req,
+      },
+    );
 
     if (file) {
       toc = file.path.endsWith(".json")

@@ -18,6 +18,7 @@ interface InitComponentOptions<O> {
   repository?: string;
   req: Request;
   rev?: string;
+  component?: unknown;
 }
 
 export interface SourceFileOptions<O> extends AssetOptions {
@@ -29,6 +30,7 @@ export interface SourceFileOptions<O> extends AssetOptions {
   providers?: Array<ProviderOptions<O>>;
   req: Request;
   versions?: GithubVersions;
+  component?: unknown;
 }
 
 export class SourceFile<O = unknown> extends Asset {
@@ -54,9 +56,10 @@ export class SourceFile<O = unknown> extends Asset {
       ? await getAssets(path, content, opts)
       : [];
 
-    const component = !opts.isDirectory && path.endsWith(".tsx")
-      ? await initComponent(path, opts)
-      : undefined;
+    const component =
+      opts.component || (!opts.isDirectory && path.endsWith(".tsx"))
+        ? await initComponent(path, opts)
+        : undefined;
 
     return new this(path, content, assets, component, opts);
   }
@@ -245,7 +248,10 @@ async function initComponent<O>(
     ? `https://raw.githubusercontent.com/${options.repository}/${options.rev}/${path}`
     : addProtocol(path);
 
-  const { default: component } = await import(importPath);
+  const { default: component } = options.component
+    ? { default: options.component }
+    : await import(importPath);
+
   const { providers } = getMetaData(component) ?? { providers: [] };
 
   const props = Object.assign(
