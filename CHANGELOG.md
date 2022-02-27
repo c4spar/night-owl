@@ -1,3 +1,23 @@
+# [v0.1.5](https://github.com/c4spar/nano-page/compare/v0.1.4...v0.1.5) (Feb 27, 2022)
+
+### Bug Fixes
+
+- exclude README.md if index.md exists
+  ([58b2ab0](https://github.com/c4spar/nano-page/commit/58b2ab0))
+- fix default site name
+  ([8f7d619](https://github.com/c4spar/nano-page/commit/8f7d619))
+
+### Code Refactoring
+
+- return 404 on favicon temporarily
+  ([2d944d6](https://github.com/c4spar/nano-page/commit/2d944d6))
+
+### Documentation Updates
+
+- add GITHUB_TOKEN to example
+  ([abde19e](https://github.com/c4spar/nano-page/commit/abde19e))
+- update readme ([6a59876](https://github.com/c4spar/nano-page/commit/6a59876))
+
 # [v0.1.4](https://github.com/c4spar/nano-page/compare/v0.1.3...v0.1.4) (Feb 27, 2022)
 
 ### Features
