@@ -35,6 +35,6 @@ await serve({
 ```
 
 ```console
-$ deno run --allow-env --allow-net https://raw.githubusercontent.com/c4spar/night-owl/v0.1.4/examples/deno_manual.ts
+$ GITHUB_TOKEN=****** deno run --allow-env --allow-net https://raw.githubusercontent.com/c4spar/night-owl/v0.1.4/examples/deno_manual.ts
 Listening on http://localhost:8000
 ```
