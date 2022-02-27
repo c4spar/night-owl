@@ -1,3 +1,10 @@
+# [v0.1.6](https://github.com/c4spar/nano-page/compare/v0.1.5...v0.1.6) (Feb 27, 2022)
+
+### Bug Fixes
+
+- Deno.permissions is undefined in deploy
+  ([71a54f0](https://github.com/c4spar/nano-page/commit/71a54f0))
+
 # [v0.1.5](https://github.com/c4spar/nano-page/compare/v0.1.4...v0.1.5) (Feb 27, 2022)
 
 ### Bug Fixes
