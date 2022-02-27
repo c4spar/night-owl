@@ -24,6 +24,7 @@ export {
 export { assert } from "https://deno.land/std@0.127.0/testing/asserts.ts";
 export { debounce } from "https://deno.land/std@0.127.0/async/debounce.ts";
 export { deepMerge } from "https://deno.land/std@0.127.0/collections/deep_merge.ts";
+export { distinctBy } from "https://deno.land/std@0.127.0/collections/mod.ts";
 export { parse as parseYaml } from "https://deno.land/std@0.127.0/encoding/yaml.ts";
 
 /** media_types */

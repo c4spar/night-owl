@@ -4,7 +4,7 @@ import { AppConfig } from "../lib/config.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { DarkModeSwitch } from "./dark_mode_switch.tsx";
 import { Link, LinkOptions } from "./link.tsx";
-import { Component, h, tw } from "../deps.ts";
+import { Component, distinctBy, h, tw } from "../deps.ts";
 import { styles } from "../lib/styles.ts";
 
 export interface NavItemOptions extends Omit<LinkOptions, "children"> {
@@ -74,14 +74,17 @@ export class Header extends Component<HeaderOptions> {
     if (!this.props.config.pages) {
       return null;
     }
-    return this.props.config.sourceFiles
-      .filter((file) => file.routePrefix === "/" && file.route !== "/")
-      .map((file) =>
-        this.#renderLink({
-          href: file.route,
-          label: file.name,
-        })
-      );
+    return distinctBy(
+      this.props.config.sourceFiles
+        .filter((file) => file.routePrefix === "/" && file.route !== "/")
+        .map((file) =>
+          this.#renderLink({
+            href: file.route,
+            label: file.name,
+          })
+        ),
+      (file: SourceFile) => file.route,
+    );
   }
 
   #renderNavLinks() {
