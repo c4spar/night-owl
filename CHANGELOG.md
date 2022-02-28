@@ -1,3 +1,10 @@
+# [v0.1.10](https://github.com/c4spar/nano-page/compare/v0.1.9...v0.1.10) (Feb 28, 2022)
+
+### Bug Fixes
+
+- toc file not working with static components
+  ([2f37000](https://github.com/c4spar/nano-page/commit/2f37000))
+
 # [v0.1.9](https://github.com/c4spar/nano-page/compare/v0.1.8...v0.1.9) (Feb 28, 2022)
 
 ### Bug Fixes
