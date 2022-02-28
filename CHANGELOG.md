@@ -1,3 +1,10 @@
+# [v0.1.11](https://github.com/c4spar/nano-page/compare/v0.1.10...v0.1.11) (Mar 1, 2022)
+
+### Bug Fixes
+
+- index files mismatch
+  ([1b6259c](https://github.com/c4spar/nano-page/commit/1b6259c))
+
 # [v0.1.10](https://github.com/c4spar/nano-page/compare/v0.1.9...v0.1.10) (Feb 28, 2022)
 
 ### Bug Fixes
