@@ -1,3 +1,14 @@
+# [v0.1.8](https://github.com/c4spar/nano-page/compare/v0.1.7...v0.1.8) (Feb 28, 2022)
+
+### Bug Fixes
+
+- toc file is always fetched from main
+  ([fdb30cc](https://github.com/c4spar/nano-page/commit/fdb30cc))
+
+### Documentation Updates
+
+- fix example ([bc7f5ee](https://github.com/c4spar/nano-page/commit/bc7f5ee))
+
 # [v0.1.7](https://github.com/c4spar/nano-page/compare/v0.1.6...v0.1.7) (Feb 28, 2022)
 
 ### Features
