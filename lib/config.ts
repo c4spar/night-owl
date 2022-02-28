@@ -97,7 +97,6 @@ export async function createConfig<O>(
             pattern: /\.(md|js|jsx|ts|tsx)$/,
             read: true,
             req,
-            repository: opts.repository,
             pages: opts.pages,
             providers: opts.providers,
             versions: opts.versions ?? true,
@@ -192,7 +191,7 @@ async function getToc<T>(
       path = dirname(opts.toc);
       pattern = new RegExp(`${basename(opts.toc).replace(".", "\.")}$`);
     } else {
-      pattern = /^toc\.(yml|yaml|json)$/;
+      pattern = /toc\.(yml|yaml|json)$/;
     }
 
     const [file] = await getFiles(
