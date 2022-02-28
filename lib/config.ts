@@ -85,7 +85,7 @@ export async function createConfig<O>(
   let toc: Toc | undefined = undefined;
 
   const files: Array<
-    [Array<SourceFile<O>>, SourceFilesOptions, Toc | undefined]
+    [Array<SourceFile<O>>, SourceFilesOptions]
   > = await Promise
     .all(
       src.map((path: string | SourceFilesOptions) =>
@@ -94,7 +94,7 @@ export async function createConfig<O>(
             recursive: true,
             includeDirs: true,
             loadAssets: true,
-            pattern: /\.(md|js|jsx|ts|tsx)$/,
+            pattern: /^((toc\.(yml|yaml|json))|(.+\.(md|js|jsx|ts|tsx)))$/,
             read: true,
             req,
             repository: opts.repository,
@@ -103,14 +103,16 @@ export async function createConfig<O>(
             versions: opts.versions ?? true,
           }),
           typeof path === "string" ? { src: path } : path,
-          getToc(path, opts, req),
         ])
       ),
     );
 
   let sourceFiles: Array<SourceFile<O>> = [];
-  for (let [source, sourceOpts, tocToc] of files) {
+  for (const [source, sourceOpts] of files) {
     // Exclude readme if index file exists.
+    const tocIndex = source.findIndex((file) =>
+      file.path.match(/^\/toc\.(yml|yaml|json)$/)
+    );
     const readmeIndex = source.findIndex((file) => file.path === "/README.md");
     const indexIndex = source.findIndex((file) =>
       file.path.match(/^\/index\.(md|js|jsx|ts|tsx)$/)
@@ -119,7 +121,14 @@ export async function createConfig<O>(
       source.splice(readmeIndex, 1);
     }
 
-    if (tocToc) {
+    if (tocIndex !== -1) {
+      const tocFile = source.splice(tocIndex, 1)[0];
+      let tocToc: Toc = flatToc(
+        tocFile.path.endsWith(".json")
+          ? JSON.parse(tocFile.content)
+          : parseYaml(tocFile.content),
+      );
+
       if (sourceOpts.prefix) {
         const tocTmp: Toc = {};
         for (const [path, entry] of Object.entries(tocToc)) {
@@ -171,46 +180,6 @@ export async function createConfig<O>(
     sourceFiles,
     toc,
   };
-}
-
-async function getToc<T>(
-  path: string | SourceFilesOptions,
-  opts: CreateConfigOptions<T>,
-  req: Request,
-) {
-  let toc: TocTree | undefined;
-
-  if (opts.toc && typeof opts.toc !== "string") {
-    toc = opts.toc;
-  } else {
-    let pattern: RegExp;
-    if (typeof opts.toc === "string") {
-      path = dirname(opts.toc);
-      pattern = new RegExp(`${basename(opts.toc).replace(".", "\.")}$`);
-    } else {
-      pattern = /^toc\.(yml|yaml|json)$/;
-    }
-
-    const [file] = await getFiles(
-      typeof path === "string"
-        ? path
-        : { ...path, component: undefined, file: undefined },
-      {
-        read: true,
-        repository: opts.repository,
-        pattern,
-        req,
-      },
-    );
-
-    if (file) {
-      toc = file.path.endsWith(".json")
-        ? JSON.parse(file.content)
-        : parseYaml(file.content);
-    }
-  }
-
-  return toc && flatToc(toc);
 }
 
 function flatToc(
