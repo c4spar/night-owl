@@ -1,3 +1,10 @@
+# [v0.1.9](https://github.com/c4spar/nano-page/compare/v0.1.8...v0.1.9) (Feb 28, 2022)
+
+### Bug Fixes
+
+- fix toc file index
+  ([61d288c](https://github.com/c4spar/nano-page/commit/61d288c))
+
 # [v0.1.8](https://github.com/c4spar/nano-page/compare/v0.1.7...v0.1.8) (Feb 28, 2022)
 
 ### Bug Fixes
