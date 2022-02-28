@@ -113,11 +113,11 @@ export async function createConfig<O>(
     // Exclude readme if index file exists.
     const readmeIndex = source.findIndex((file) =>
       file.path === "/README.md" &&
-      (!sourceOpts.prefix || sourceOpts.prefix === file.routePrefix)
+      (!sourceOpts.prefix || sourceOpts.prefix === file.route)
     );
     const indexIndex = source.findIndex((file) =>
       file.path.match(/^\/index\.(md|js|jsx|ts|tsx)$/) &&
-      (!sourceOpts.prefix || sourceOpts.prefix === file.routePrefix)
+      (!sourceOpts.prefix || sourceOpts.prefix === file.route)
     );
     if (readmeIndex !== -1 && indexIndex !== -1) {
       source.splice(readmeIndex, 1);
