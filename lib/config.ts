@@ -110,9 +110,6 @@ export async function createConfig<O>(
   let sourceFiles: Array<SourceFile<O>> = [];
   for (const [source, sourceOpts] of files) {
     // Exclude readme if index file exists.
-    const tocIndex = source.findIndex((file) =>
-      file.path.match(/^\/toc\.(yml|yaml|json)$/)
-    );
     const readmeIndex = source.findIndex((file) => file.path === "/README.md");
     const indexIndex = source.findIndex((file) =>
       file.path.match(/^\/index\.(md|js|jsx|ts|tsx)$/)
@@ -121,6 +118,9 @@ export async function createConfig<O>(
       source.splice(readmeIndex, 1);
     }
 
+    const tocIndex = source.findIndex((file) =>
+      file.path.match(/^\/toc\.(yml|yaml|json)$/)
+    );
     if (tocIndex !== -1) {
       const tocFile = source.splice(tocIndex, 1)[0];
       let tocToc: Toc = flatToc(
