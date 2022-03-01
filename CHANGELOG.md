@@ -1,3 +1,17 @@
+# [v0.1.12](https://github.com/c4spar/nano-page/compare/v0.1.11...v0.1.12) (Mar 1, 2022)
+
+### Features
+
+- use github icon
+  ([dac3fef](https://github.com/c4spar/nano-page/commit/dac3fef))
+
+### Bug Fixes
+
+- remove fix header height
+  ([e8d1141](https://github.com/c4spar/nano-page/commit/e8d1141))
+- don't default to main repository for source files
+  ([c0e7f51](https://github.com/c4spar/nano-page/commit/c0e7f51))
+
 # [v0.1.11](https://github.com/c4spar/nano-page/compare/v0.1.10...v0.1.11) (Mar 1, 2022)
 
 ### Bug Fixes
