@@ -45,11 +45,16 @@ export class Header extends Component<HeaderOptions> {
               this.props.file?.repository ?? this.props.config.repository
             }`}
           >
-            Github
+            <span
+              class={`iconify ${tw
+                `text-2xl inline text-gray(600 dark:400 hover:(500 dark:300))`}`}
+              data-icon="akar-icons:github-fill"
+            >
+            </span>
           </Link>
-        </nav>
 
         <DarkModeSwitch class={tw`flex ml-3`} />
+        </nav>
       </header>
     );
   }
@@ -101,7 +106,8 @@ export class Header extends Component<HeaderOptions> {
     return (
       <Link
         {...props}
-        class={tw`py-1 border-b-2 border-transparent hover:border-indigo-500`}
+        class={tw
+          `pb-1 pt-2 border-b-2 border-transparent hover:border-indigo-500`}
         href={href}
       >
         {label}
