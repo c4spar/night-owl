@@ -64,7 +64,7 @@ const headlines = css({
 const links = css({
   "a:not(nav a,header a), a:not(nav a,header a) code": apply
     `text-blue(500 dark:400 hover:(600 dark:500))`,
-  'a[href*="//"]': {
+  'a[href*="//"]:not(nav a)': {
     "&::after": {
       fontFamily: theme("fontFamily.awesome"),
       color: theme("colors.blue.500"),
