@@ -22,7 +22,7 @@ export class Header extends Component<HeaderOptions> {
       <header
         class={tw`
           ${styles.transform.primary} ${styles.bg.secondary}
-          w-full h-[5.2rem]
+          w-full
           flex flex-wrap p-5 flex-col md:flex-row items-center 
           backdrop-blur
           lg:z-50 lg:border-b lg:border-gray-200
@@ -53,7 +53,7 @@ export class Header extends Component<HeaderOptions> {
             </span>
           </Link>
 
-        <DarkModeSwitch class={tw`flex ml-3`} />
+          <DarkModeSwitch class={tw`flex ml-3`} />
         </nav>
       </header>
     );
