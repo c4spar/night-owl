@@ -4,12 +4,13 @@ import { Footer } from "../components/footer.tsx";
 import { Markdown } from "../components/markdown.tsx";
 import { Sidebar } from "../components/sidebar.tsx";
 import { VersionSelection } from "../components/version_selection.tsx";
-import { Component, Fragment, h, tw } from "../deps.ts";
+import { Component, Fragment, h, Helmet, tw } from "../deps.ts";
 import { AppConfig } from "../lib/config.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { styles } from "../lib/styles.ts";
 import { PageNavigation } from "../components/page_navigation.tsx";
 import { SecondaryPageNavigation } from "../components/secondary_page_navigation.tsx";
+import { RoundedIconButton } from "../components/buttons.tsx";
 
 export interface MarkdownPageOptions {
   config: AppConfig;
@@ -17,7 +18,6 @@ export interface MarkdownPageOptions {
 }
 
 export class MarkdownPage extends Component<MarkdownPageOptions> {
-  #headerHeight = 5.2;
   #sideBarWidth = 21;
   #contentWidth = 90;
 
@@ -29,15 +29,26 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
 
     return (
       <Fragment>
-        {/* sidebar left */}
-        <Sidebar
-          position="left"
-          width={this.#sideBarWidth}
-          top={this.#headerHeight}
-          contentWidth={this.#contentWidth}
-        >
-          <PageNavigation config={this.props.config} file={file} />
-        </Sidebar>
+        <Helmet>
+          <style>
+            {`
+            .fixed-sidebar {
+              transform: translate(0, 0);
+              position: fixed;
+              left: 0;
+              --owl-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+              box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+              box-shadow: var(--tw-ring-offset-shadow,0 0 transparent),var(--tw-ring-shadow,0 0 transparent),var(--owl-shadow);
+            }
+        `}
+          </style>
+        </Helmet>
+
+        <Helmet footer>
+          <script type="application/javascript">
+            {this.#getScript()}
+          </script>
+        </Helmet>
 
         {/* main */}
         <div class={tw`lg:pl-[${this.#sideBarWidth}rem]`}>
@@ -59,8 +70,8 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
             <Sidebar
               position="right"
               width={this.#sideBarWidth}
-              top={this.#headerHeight}
               contentWidth={this.#contentWidth}
+              class={tw`hidden xl:block`}
             >
               <VersionSelection
                 file={file}
@@ -70,7 +81,50 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
             </Sidebar>
           </div>
         </div>
+
+        <div
+          class={`overlay ${tw
+            `hidden left-0 top-0 right-0 bottom-0 fixed cursor-pointer ${styles.bg.primary} opacity-30`}`}
+          onclick="toggleSideBar()"
+        >
+        </div>
+
+        {/* sidebar left */}
+        <Sidebar
+          position="left"
+          width={this.#sideBarWidth}
+          contentWidth={this.#contentWidth}
+          class={`sidebar ${tw`
+            -translate-x-full lg:translate-x-0
+            ${styles.transform.primary}`}`}
+        >
+          <PageNavigation config={this.props.config} file={file} />
+        </Sidebar>
+
+        <RoundedIconButton
+          icon="ant-design:menu-outlined"
+          class={tw`lg:hidden fixed right-5 bottom-5`}
+          onclick="toggleSideBar()"
+        />
       </Fragment>
     );
+  }
+
+  #getScript(): string {
+    return `
+      function toggleSideBar() {
+        console.log("toggleSideBar");
+        var sidebar = document.querySelector(".sidebar");
+        var overlay = document.querySelector(".overlay");
+        if (sidebar && overlay) {
+          if (sidebar.classList.contains("fixed-sidebar")) {
+            sidebar.classList.remove("fixed-sidebar");
+            overlay.classList.add("hidden");
+          } else {
+            sidebar.classList.add("fixed-sidebar");
+            overlay.classList.remove("hidden");
+          }
+        }
+      }`;
   }
 }

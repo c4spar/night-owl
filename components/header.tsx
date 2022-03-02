@@ -6,6 +6,7 @@ import { DarkModeSwitch } from "./dark_mode_switch.tsx";
 import { Link, LinkOptions } from "./link.tsx";
 import { Component, distinctBy, h, tw } from "../deps.ts";
 import { styles } from "../lib/styles.ts";
+import { Iconify } from "./iconify.tsx";
 
 export interface NavItemOptions extends Omit<LinkOptions, "children"> {
   label: string;
@@ -22,13 +23,10 @@ export class Header extends Component<HeaderOptions> {
       <header
         class={tw`
           ${styles.transform.primary} ${styles.bg.secondary}
-          w-full
-          flex flex-wrap p-5 flex-col md:flex-row items-center 
-          backdrop-blur
-          lg:z-50 lg:border-b lg:border-gray-200
-          dark:lg:border-gray-700
+          flex flex-wrap flex-col md:flex-row items-center 
+          border-b border-gray-200 dark:border-gray-700
           bg-opacity-95 dark:bg-opacity-95
-          supports-backdrop-blur:bg-white supports-backdrop-blur:bg-opacity-60
+          p-5
         `}
       >
         {this.#renderLabel()}
@@ -45,12 +43,11 @@ export class Header extends Component<HeaderOptions> {
               this.props.file?.repository ?? this.props.config.repository
             }`}
           >
-            <span
-              class={`iconify ${tw
-                `text-2xl inline text-gray(600 dark:400 hover:(500 dark:300))`}`}
-              data-icon="akar-icons:github-fill"
-            >
-            </span>
+            <Iconify
+              icon="akar-icons:github-fill"
+              class={tw
+                `text-2xl inline ${styles.text.secondary} hover:(${styles.text.primary})`}
+            />
           </Link>
 
           <DarkModeSwitch class={tw`flex ml-3`} />

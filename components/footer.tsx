@@ -22,7 +22,7 @@ export class Footer extends Component<FooterOptions> {
     const repo = this.props.file.repository ?? this.props.config.repository;
 
     return (
-      <div class={tw`space-y-6 my-12`}>
+      <div class={tw`space-y-6 mt-12 mb-24`}>
         <div
           class={tw`flex ${styles.transform.primary}`}
         >
