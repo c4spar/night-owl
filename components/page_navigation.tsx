@@ -5,7 +5,8 @@ import { SourceFile } from "../lib/source_file.ts";
 import { parseRoute, sortByKey } from "../lib/utils.ts";
 import { ModuleSelection } from "./module_selection.tsx";
 import { Navigation } from "./navigation.tsx";
-import { Component, Fragment, h, log, tw } from "../deps.ts";
+import { apply, Component, css, Fragment, h, log, tw } from "../deps.ts";
+import { styles } from "../lib/styles.ts";
 
 export interface PageNavigationOptions {
   config: AppConfig;
@@ -50,11 +51,25 @@ export class PageNavigation extends Component<PageNavigationOptions> {
           files={dropDownFiles}
           selected={this.#path}
         />
-        <Navigation class="primary-nav">
+        <Navigation class={`primary-nav ${tw`${this.#css()}`}`}>
           {navFiles.map((file, i) => this.#renderNavLink(file, i, navFiles))}
         </Navigation>
       </Fragment>
     );
+  }
+
+  #css() {
+    return css({
+      ".active": apply`${styles.transform.primary} ${styles.bg.secondary}`,
+      "a.active.first": apply`rounded-t-xl`,
+      "a.active.last": apply`rounded-b-xl`,
+      ".active:not(.root,.first) div": apply
+        `border-l-2 border-blue(400 dark:400)`,
+      "a.file:not(a.selected, a.root, a:hover)": apply
+        `${styles.text.secondary}`,
+      "a.root, .directory": apply`font-bold ${styles.text.primary}`,
+      "a.selected": apply`font-bold ${styles.text.accentPrimary}`,
+    });
   }
 
   #renderNavLink(file: SourceFile, i: number, files: Array<SourceFile>) {

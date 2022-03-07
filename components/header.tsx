@@ -33,7 +33,7 @@ export class Header extends Component<HeaderOptions> {
 
         <nav
           class={tw`flex flex-wrap items-center md:ml-auto
-            text-base justify-center space-x-3`}
+            text-base justify-center space-x-5`}
         >
           {this.#renderPageLinks()}
           {this.#renderNavLinks()}
@@ -62,10 +62,10 @@ export class Header extends Component<HeaderOptions> {
     }
     return (
       <a
-        class={tw`flex font-medium items-center mb-4 md:mb-0`}
+        class={tw`flex font-bold items-center mb-4 md:mb-0`}
         href="/"
       >
-        <span class={tw`ml-3 text-xl`}>
+        <span class={tw`ml-3 text-3xl`}>
           {this.props.config.name}
         </span>
       </a>
@@ -104,7 +104,7 @@ export class Header extends Component<HeaderOptions> {
       <Link
         {...props}
         class={tw
-          `pb-1 pt-2 border-b-2 border-transparent hover:border-indigo-500`}
+          `pb-1 pt-2 border-b-2 border-transparent hover:border-indigo-500 text-lg`}
         href={href}
       >
         {label}

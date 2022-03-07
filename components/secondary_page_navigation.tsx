@@ -45,10 +45,12 @@ export class SecondaryPageNavigation
       >
         {render(headlines?.map((headline) => {
           const marginLeft = `pl-[${headline.size}rem]`;
-          const bold = headline.size === 1 ? "font-bold" : "";
+          const headlineStyle = headline.size === 1
+            ? `font-bold`
+            : styles.text.secondary;
           return (
             <a
-              class={`${tw`p-3 w-full ${bold} ${marginLeft}`}`}
+              class={`${tw`p-3 w-full ${headlineStyle} ${marginLeft}`}`}
               href={headline.href}
             >
               {headline.name}

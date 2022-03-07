@@ -30,6 +30,7 @@ export class Footer extends Component<FooterOptions> {
             ? (
               <Link
                 href={prevFile.route}
+                class={tw`font-bold`}
               >
                 ← {prevFile.name}
               </Link>
@@ -40,7 +41,7 @@ export class Footer extends Component<FooterOptions> {
             ? (
               <Link
                 href={nextFile.route}
-                class={tw`ml-auto ${styles.text.primary}`}
+                class={tw`ml-auto font-bold`}
               >
                 {nextFile.name} →
               </Link>
@@ -57,7 +58,7 @@ export class Footer extends Component<FooterOptions> {
                 path={this.props.file.path}
                 repository={repo}
                 rev={this.props.config.rev}
-                class={tw`ml-auto`}
+                class={tw`ml-auto font-bold`}
               />
             </div>
           )

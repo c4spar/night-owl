@@ -3,6 +3,7 @@ import { apply, css, theme } from "../deps.ts";
 export const styles = {
   transform: {
     primary: apply`transform-colors duration-500 ease-out transform-gpu`,
+    secondary: apply`transform-colors duration-300 ease-out transform-gpu`,
   },
   bg: {
     primary: apply`bg-gray(50 dark:900)`,
@@ -11,9 +12,10 @@ export const styles = {
     accent: apply`bg(indigo-100 opacity-30 dark:(indigo-800 opacity-30))`,
   },
   text: {
-    primary: apply`text-gray(700 dark:200)`,
-    secondary: apply`text-gray(600 dark:300)`,
-    accent: apply`text-purple(500 dark:400)`,
+    primary: apply`text-gray(700 dark:100)`,
+    secondary: apply`text-gray(600 dark:400)`,
+    accentPrimary: apply`text-blue(500 dark:400)`,
+    accentSecondary: apply`text-purple(500 dark:400)`,
   },
 };
 
@@ -65,79 +67,16 @@ const headlines = css({
 const links = css({
   "a:not(nav a,header a), a:not(nav a,header a) code": apply
     `text-blue(500 dark:400 hover:(600 dark:500))`,
-  'a[href*="//"]:not(nav a)': {
-    "&::after": {
-      fontFamily: theme("fontFamily.awesome"),
-      color: theme("colors.blue.500"),
-      fontSize: "0.7rem",
-      content: '"\\f35d"',
-      fontWeight: 900,
-      position: "relative",
-      marginLeft: "0.4rem",
-      top: "-2px",
-    },
-  },
 });
 
 const nav = css({
-  "nav a": apply`hover:text(blue-600 dark:white)`,
-  "nav a.selected": apply`font-bold text-blue(500 dark:400)`,
-  "nav": apply`${styles.transform.primary} `,
-  "nav .active": apply`${styles.transform.primary} ${styles.bg.secondary}`,
-  "nav a.active.first": apply`rounded-t-xl`,
-  "nav a.active.last": apply`rounded-b-xl`,
-  "nav .active:not(.root,.first) div": apply
-    `border-l-2 border-blue(400 dark:400)`,
-  "nav a.root.file, nav .directory": apply`font-bold`,
-});
-
-const paragraph = css({
-  "p": apply`my-5`,
-});
-
-const list = css({
-  "ul": apply`pl-4`,
-  "ul:not(ul ul)": apply`my-5`,
-  "ul, li > p": apply`m-0`,
-});
-
-const table = css({
-  "table, th, td": apply
-    `border-collapse border border-gray(300 dark:700) ${styles.transform.primary}`,
-  "th, td": apply`py-2 px-3`,
-  "tr": apply`even:bg-gray(100 dark:800) ${styles.transform.primary}`,
-});
-
-const images = css({
-  "p img": apply`my-5`,
+  "nav": apply`font-bold`,
+  "nav a:not(.selected)": apply`hover:text(blue-600 dark:gray-100)`,
 });
 
 export const mainStyles = css(
   globalStyles,
   headlines,
-  links,
   nav,
-  paragraph,
-  list,
-  table,
-  images,
+  links,
 );
-
-export const syntaxHighlighting = css({
-  ".language-console": apply`text-blue(500 dark:400)`,
-  ".language-console .bash": styles.text.primary,
-  ".code-comment": apply`text-gray(500 dark:400)`,
-  ".code-property": apply`text-green(700 dark:300)`,
-  ".code-function": apply`text-green(700 dark:300)`,
-  ".code-literal": apply`text-cyan(600 dark:400) font-bold`,
-  ".code-keyword": apply`text-purple(700 dark:400) font-italic`,
-  ".code-operator": apply`text-purple(700 dark:400)`,
-  ".code-variable.code-language": apply`text-purple(700 dark:400)`,
-  ".code-number": apply`text-indigo(600 dark:400)`,
-  ".code-doctag": apply`text-indigo(600 dark:400)`,
-  ".code-regexp": apply`text-red(700 dark:300)`,
-  ".code-meta, .code-string": apply`text-yellow(500 dark:200)`,
-  ".code-meta": apply`font-bold`,
-  ".code-type": apply`text-cyan(600 dark:400) font-italic`,
-  ".code-built_in": apply`text-cyan(600 dark:400) font-italic`,
-});

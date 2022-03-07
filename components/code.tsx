@@ -13,10 +13,9 @@ export class Code extends Component<CodeOptions> {
       <code
         class={tw`py-[0.1rem] px-2 rounded-lg
            ${styles.bg.secondary}
-           ${styles.text.accent}
+           ${styles.text.accentSecondary}
            ${styles.transform.primary}
-           font-mono overflow-visible
-           shadow(code dark:code-dark)`}
+           font-mono overflow-visible`}
         dangerouslySetInnerHTML={{ __html: this.props.code }}
       />
     );
