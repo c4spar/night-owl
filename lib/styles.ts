@@ -17,6 +17,9 @@ export const styles = {
     accentPrimary: apply`text-blue(500 dark:400)`,
     accentSecondary: apply`text-purple(500 dark:400)`,
   },
+  font: {
+    primary: apply`font-primary`,
+  },
 };
 
 const globalStyles = css({
@@ -70,7 +73,7 @@ const links = css({
 });
 
 const nav = css({
-  "nav": apply`font-bold`,
+  "nav": apply`${styles.font.primary} font-bold`,
   "nav a:not(.selected)": apply`hover:text(blue-600 dark:gray-100)`,
 });
 

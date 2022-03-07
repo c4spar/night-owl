@@ -4,7 +4,7 @@ import { NotFound } from "./components/not_found.tsx";
 import { PageBackground } from "./components/page_background.tsx";
 import { AppConfig, Script } from "./lib/config.ts";
 import { SourceFile } from "./lib/source_file.ts";
-import { mainStyles } from "./lib/styles.ts";
+import { mainStyles, styles } from "./lib/styles.ts";
 import { Header } from "./components/header.tsx";
 import { Component, Fragment, h, Helmet, render, tw } from "./deps.ts";
 import { MarkdownPage } from "./pages/markdown_page.tsx";
@@ -54,7 +54,7 @@ export class App extends Component<AppOptions> {
             ))}
         </Helmet>
 
-        <div class={tw`${mainStyles} mb-7`}>
+        <div class={tw`${mainStyles} mb-7 ${styles.font.primary}`}>
           <PageBackground>
             {render(this.props.config.background ?? null)}
           </PageBackground>

@@ -62,7 +62,8 @@ export class Header extends Component<HeaderOptions> {
     }
     return (
       <a
-        class={tw`flex font-bold items-center mb-4 md:mb-0`}
+        class={tw
+          `flex ${styles.font.primary} font-bold items-center mb-4 md:mb-0`}
         href="/"
       >
         <span class={tw`ml-3 text-3xl`}>
