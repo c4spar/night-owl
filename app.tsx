@@ -43,7 +43,9 @@ export class App extends Component<AppOptions> {
         <Helmet>
           {Object.entries(this.props.scripts)
             .filter(([route, script]) => script.contentType === "text/css")
-            .map(([route]) => <link rel="stylesheet" href={route} />)}
+            .map(([route]) => (
+              <link rel="stylesheet" type="text/css" href={route} />
+            ))}
 
           {Object.entries(this.props.scripts)
             .filter(([route, script]) =>
