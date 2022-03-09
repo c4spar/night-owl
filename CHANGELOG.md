@@ -1,3 +1,10 @@
+# [v0.1.14](https://github.com/c4spar/nano-page/compare/v0.1.13...v0.1.14) (Mar 9, 2022)
+
+### Bug Fixes
+
+- add missing icon and button components
+  ([285ffce](https://github.com/c4spar/nano-page/commit/285ffce))
+
 # [v0.1.13](https://github.com/c4spar/nano-page/compare/v0.1.12...v0.1.13) (Mar 9, 2022)
 
 ### Features
