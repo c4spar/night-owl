@@ -1,3 +1,31 @@
+# [v0.1.13](https://github.com/c4spar/nano-page/compare/v0.1.12...v0.1.13) (Mar 9, 2022)
+
+### Features
+
+- add support for static assets
+  ([ef0aba1](https://github.com/c4spar/nano-page/commit/ef0aba1))
+- add primary font
+  ([4754fee](https://github.com/c4spar/nano-page/commit/4754fee))
+- add navigation button for mobile view
+  ([50ab859](https://github.com/c4spar/nano-page/commit/50ab859))
+
+### Bug Fixes
+
+- type attribute missing in stylesheets
+  ([67a4d95](https://github.com/c4spar/nano-page/commit/67a4d95))
+- index file not correctly matched
+  ([58bd042](https://github.com/c4spar/nano-page/commit/58bd042))
+
+### Code Refactoring
+
+- add background color on hover to next and previous buttons
+  ([c59dc8e](https://github.com/c4spar/nano-page/commit/c59dc8e))
+- update NotFound component
+  ([e302612](https://github.com/c4spar/nano-page/commit/e302612))
+- update styles ([ff14f77](https://github.com/c4spar/nano-page/commit/ff14f77))
+- remove external link icon from nav links
+  ([258a086](https://github.com/c4spar/nano-page/commit/258a086))
+
 # [v0.1.12](https://github.com/c4spar/nano-page/compare/v0.1.11...v0.1.12) (Mar 1, 2022)
 
 ### Features
