@@ -5,7 +5,7 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { blue, h, log, serve as serveHttp } from "../deps.ts";
+import { blue, h, log, lookup, serve as serveHttp } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { createConfig, CreateConfigOptions, Script } from "./config.ts";
 import { App } from "../app.tsx";
@@ -16,6 +16,7 @@ import { ssr } from "./ssr.ts";
 export interface ServeOptions<O> extends CreateConfigOptions<O> {
   port?: number;
   hostname?: string;
+  assets?: Array<string>;
 }
 
 export async function serve<O>(
@@ -83,6 +84,20 @@ export async function serve<O>(
 
     if (pathname === "/favicon.ico") {
       return new Response("Not found", { status: 404 });
+    }
+
+    const isAssetRequest = options.assets?.find((path) =>
+      pathname.startsWith("/" + path)
+    );
+    if (isAssetRequest) {
+      try {
+        const file = await Deno.open(`.${pathname}`);
+        return new Response(file.readable, {
+          headers: { "content-type": lookup(pathname) ?? "text/plain" },
+        });
+      } catch (error: unknown) {
+        return new Response("Not found", { status: 404 });
+      }
     }
 
     let html: string | undefined = cache.get(req.url);
