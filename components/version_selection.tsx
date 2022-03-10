@@ -25,7 +25,7 @@ export class VersionSelection extends Component<VersionSelectionOptions> {
           class={this.props.class}
           options={this.props.file.versions.all}
           selected={this.props.file.rev}
-          onchange="switchVersion(this.value)"
+          onchange="switchVersion(this.getAttribute('data-value'))"
         />
       </Fragment>
     );

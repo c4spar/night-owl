@@ -7,8 +7,8 @@ export const styles = {
   },
   bg: {
     primary: apply`bg-gray(50 dark:900)`,
-    secondary: apply`bg(gray-100 dark:gray-800)`,
-    tertiary: apply`bg(gray-200 dark:gray-700)`,
+    secondary: apply`bg-gray(100 dark:800)`,
+    tertiary: apply`bg-gray(200 dark:700)`,
     accent: apply`bg(indigo-100 opacity-30 dark:(indigo-800 opacity-30))`,
   },
   text: {

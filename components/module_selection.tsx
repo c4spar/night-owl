@@ -21,7 +21,7 @@ export class ModuleSelection extends Component<ModuleSelectionOptions> {
             name: file.name,
           }))}
           selected={this.props.selected}
-          onchange="window.location.href = this.value"
+          onchange="window.location.href = this.getAttribute('data-value')"
         />
       )
     );
