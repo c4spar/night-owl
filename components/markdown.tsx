@@ -13,7 +13,6 @@ import {
 } from "../deps.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { styles } from "../lib/styles.ts";
-import { pathToUrl } from "../lib/utils.ts";
 import { Code } from "./code.tsx";
 import { CodeBlock } from "./code_block.tsx";
 
@@ -116,19 +115,22 @@ export class Markdown extends Component<MarkdownOptions> {
         (_, lang, code) => {
           return render(<CodeBlock rounded lang={lang} code={code} />);
         },
-      );
-
-    const markdownStyles = css(
-      {
-        "ul": apply`list-disc ml-5 my-5`,
-        "p": apply`${styles.text.secondary} ${styles.transform.primary}`,
-        "blockquote": apply
-          `p-4 my-5 rounded-xl ${styles.bg.accent} ${styles.transform.primary}`,
-        "blockquote > *:first-child": apply`mt-0`,
-        "blockquote > *:last-child": apply`mb-0`,
-        "strong": apply`${styles.text.primary}`,
-      },
-    );
+      )
+      .replace(
+        /<blockquote>/g,
+        `<blockquote>
+          <div class="${tw`flex`}">
+            <div class="${tw`
+              absolute -bottom-7 -right-10
+              self-center flex-none mr-4 font-primary font-bold
+              text-center text-blue-400
+              text-[4rem] w-20 h-20 leading-[4.6rem]
+              rounded-full border-8 border-blue-400 opacity(20 dark:10)
+              ${styles.transform.primary}
+            `}">i</div>
+          <div>`,
+      )
+      .replace(/<\/blockquote>/g, "</div></div></blockquote>");
 
     return (
       <div
@@ -162,10 +164,12 @@ export class Markdown extends Component<MarkdownOptions> {
     });
 
     const blockquote = css({
-      "blockquote": apply`${styles.bg.accent} ${styles.transform.primary}
-        p-4 my-5 rounded-xl relative overflow-hidden`,
-      "blockquote > *:first-child": apply`mt-0`,
-      "blockquote > *:last-child": apply`mb-0`,
+      "blockquote": apply`
+        ${styles.bg.accent} ${styles.transform.primary}
+        my-5 rounded-xl relative overflow-hidden`,
+      "blockquote > div": apply`p-4 border-l-8 border-blue-400`,
+      "blockquote > div > div > *:first-child": apply`mt-0`,
+      "blockquote > div > div > *:last-child": apply`mb-0`,
     });
 
     const links = css({

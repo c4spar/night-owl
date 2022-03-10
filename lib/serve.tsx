@@ -20,7 +20,7 @@ export interface ServeOptions<O> extends CreateConfigOptions<O> {
 }
 
 export async function serve<O>(
-  { port = 8000, hostname, ...options }: ServeOptions<O>,
+  { port = 8000, hostname, assets, ...options }: ServeOptions<O>,
 ) {
   console.log(`Listening on ${blue(`http://localhost:${port}`)}`);
 
@@ -86,7 +86,7 @@ export async function serve<O>(
       return new Response("Not found", { status: 404 });
     }
 
-    const isAssetRequest = options.assets?.find((path) =>
+    const isAssetRequest = assets?.find((path) =>
       pathname.startsWith("/" + path)
     );
     if (isAssetRequest) {
