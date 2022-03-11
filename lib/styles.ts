@@ -32,7 +32,12 @@ export const styles = {
 
 const globalStyles = css({
   ":global": {
-    "html": apply`min-h-full flex`,
+    "html": css(
+      apply`min-h-full flex`,
+      {
+        "scroll-behavior": "smooth",
+      },
+    ),
     "body": apply
       `${styles.text.primary} ${styles.bg.primary} flex-1 w-full antialiased`,
   },
