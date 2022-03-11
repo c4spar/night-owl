@@ -16,6 +16,14 @@ export const styles = {
     secondary: apply`text-gray(600 dark:400)`,
     accentPrimary: apply`text-blue(500 dark:400)`,
     accentSecondary: apply`text-purple(500 dark:400)`,
+    primaryGradientAccent: apply
+      `text-transparent bg-clip-text bg-gradient-to-br from(gray-700 dark:blue-400) to(gray-400 dark:purple-400)`,
+    secondaryGradientAccent: apply
+      `text-transparent bg-clip-text bg-gradient-to-br from(gray-700 dark:blue-400) to(gray-400 dark:blue-300)`,
+    primaryGradient: apply
+      `text-transparent bg-clip-text bg-gradient-to-br from(gray(700 dark:100)) to(gray(700 dark:100))`,
+    secondaryGradient: apply
+      `text-transparent bg-clip-text bg-gradient-to-br from(gray(600 dark:400)) to(gray(600 dark:400))`,
   },
   font: {
     primary: apply`font-primary`,
@@ -45,11 +53,16 @@ const headlines = css({
   ),
   "h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child":
     apply`mt-0`,
-  "h1": apply`text-2xl leading-7 sm:text-3xl mb-5 mr-8 left-[-2rem]`,
-  "h2": apply`text-xl leading-6 sm:text-2xl mb-4 mt-10 mr-7 left-[-1.75rem]`,
-  "h3": apply`text-lg leading-5 sm:text-xl mb-3 mt-10 mr-6 left-[-1.5rem]`,
-  "h4": apply`text-base leading-4 sm:text-lg mb-2 mt-10 mr-5 left-[-1.4rem]`,
-  "h5": apply`text-sm leading-3 sm:text-base mb-1 mt-10 mr-4 left-[-1.35rem]`,
+  "h1": apply
+    `text-2xl leading-7 sm:text-3xl mb-5 mr-8 left-[-2rem] ${styles.text.primaryGradientAccent}`,
+  "h2": apply
+    `text-xl leading-6 sm:text-2xl mb-4 mt-10 mr-7 left-[-1.75rem] ${styles.text.secondaryGradientAccent}`,
+  "h3": apply
+    `text-lg leading-5 sm:text-xl mb-3 mt-10 mr-6 left-[-1.5rem] ${styles.text.secondaryGradientAccent}`,
+  "h4": apply
+    `text-base leading-4 sm:text-lg mb-2 mt-10 mr-5 left-[-1.4rem] ${styles.text.secondaryGradientAccent}`,
+  "h5": apply
+    `text-sm leading-3 sm:text-base mb-1 mt-10 mr-4 left-[-1.35rem] ${styles.text.secondaryGradientAccent}`,
   ".anchor": apply`block relative -top-28 invisible`,
   "h1 .anchor-link::before": apply`text-xl sm:text-2xl`,
   "h2 .anchor-link::before": apply`text-lg sm:text-xl`,
