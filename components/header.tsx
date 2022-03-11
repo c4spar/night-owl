@@ -25,7 +25,7 @@ export class Header extends Component<HeaderOptions> {
           ${styles.transform.primary} ${styles.bg.secondary}
           flex flex-wrap flex-col md:flex-row items-center 
           border-b border-gray-200 dark:border-gray-700
-          bg-opacity-95 dark:bg-opacity-95
+          bg-opacity-95 dark:bg-opacity-95 font-bold
           p-5
         `}
       >

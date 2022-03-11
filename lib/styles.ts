@@ -85,14 +85,8 @@ const links = css({
     `text-blue(500 dark:400 hover:(600 dark:500))`,
 });
 
-const nav = css({
-  "nav": apply`${styles.font.primary} font-bold`,
-  "nav a:not(.selected)": apply`hover:text(blue-600 dark:gray-100)`,
-});
-
 export const mainStyles = css(
   globalStyles,
   headlines,
-  nav,
   links,
 );

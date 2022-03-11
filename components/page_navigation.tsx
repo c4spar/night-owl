@@ -60,15 +60,23 @@ export class PageNavigation extends Component<PageNavigationOptions> {
 
   #css() {
     return css({
-      ".active": apply`${styles.transform.primary} ${styles.bg.secondary}`,
-      "a.active.first": apply`rounded-t-xl`,
-      "a.active.last": apply`rounded-b-xl`,
-      ".active:not(.root,.first) div": apply
+      // item
+      ".nav-item": apply`${styles.transform.primary}`,
+      ".nav-item.active": apply`${styles.bg.secondary}`,
+      ".nav-item.active.first": apply`rounded-t-xl`,
+      ".nav-item.active.last": apply`rounded-b-xl`,
+      // label
+      ".nav-item .nav-item-label": apply
+        `py-3 pl-[1.25rem] ${styles.text.primaryGradient}`,
+      ".nav-item:hover .nav-item-label": apply
+        `${styles.text.secondaryGradientAccent}`,
+      ".nav-item.file:not(.nav-item.selected, .nav-item.root, .nav-item:hover) .nav-item-label":
+        apply`${styles.text.secondaryGradient}`,
+      ".nav-item.selected .nav-item-label": apply
+        `${styles.text.secondaryGradientAccent}`,
+      ".nav-item.active.last .nav-item-label": apply`pt-3 pb-0 mb-3`,
+      ".nav-item.active:not(.root,.first) .nav-item-label": apply
         `border-l-2 border-blue(400 dark:400)`,
-      "a.file:not(a.selected, a.root, a:hover)": apply
-        `${styles.text.secondary}`,
-      "a.root, .directory": apply`font-bold ${styles.text.primary}`,
-      "a.selected": apply`font-bold ${styles.text.accentPrimary}`,
     });
   }
 
@@ -96,7 +104,10 @@ export class PageNavigation extends Component<PageNavigationOptions> {
 
     const paddingLeft = file.route.split("/").length - 2;
 
-    const css = `${tw`w-full pr-3 pl-[${paddingLeft}rem]`}
+    const css = `${tw`
+      ${styles.transform.primary}
+      w-full pr-3
+      pl-[${paddingLeft}rem]`}
       ${isSelected ? "selected" : ""}
       ${isActive ? "active" : ""}
       ${isFirstActive ? "first" : ""}
@@ -104,21 +115,16 @@ export class PageNavigation extends Component<PageNavigationOptions> {
       ${isDirectory ? "directory" : "file"}
       ${isRootFile ? "root" : ""}`;
 
-    return file.content || duplicateRoute
-      ? (
-        <a class={css} href={file.route}>
-          <div class={tw`${isLastActive ? "pt-3 mb-3" : "py-3"} pl-[1.25rem]`}>
-            {file.name}
-          </div>
-        </a>
-      )
-      : (
-        <div class={css}>
-          <div class={tw`${isLastActive ? "pt-3 mb-3" : "py-3"} pl-[1.25rem]`}>
-            {file.name}
-          </div>
+    return (
+      <a
+        class={`nav-item ${css}`}
+        href={file.content || duplicateRoute ? file.route : null}
+      >
+        <div class="nav-item-label">
+          {file.name}
         </div>
-      );
+      </a>
+    );
   }
 
   #getNavFiles(): Array<SourceFile> {
