@@ -3,7 +3,7 @@
 import { Footer } from "../components/footer.tsx";
 import { Markdown } from "../components/markdown.tsx";
 import { Sidebar } from "../components/sidebar.tsx";
-import { VersionSelection } from "../components/version_selection.tsx";
+import { VersionDropdown } from "../components/version_dropdown.tsx";
 import { Component, Fragment, h, Helmet, tw } from "../deps.ts";
 import { AppConfig } from "../lib/config.ts";
 import { SourceFile } from "../lib/source_file.ts";
@@ -73,7 +73,7 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
               contentWidth={this.#contentWidth}
               class={tw`hidden xl:block`}
             >
-              <VersionSelection
+              <VersionDropdown
                 file={file}
                 config={this.props.config}
               />

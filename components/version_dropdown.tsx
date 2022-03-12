@@ -6,13 +6,13 @@ import { SourceFile } from "../lib/source_file.ts";
 import { getRouteRegex } from "../lib/utils.ts";
 import { Dropdown } from "./dropdown.tsx";
 
-export interface VersionSelectionOptions {
+export interface VersionDropdownOptions {
   file: SourceFile;
   config: AppConfig;
   class?: string;
 }
 
-export class VersionSelection extends Component<VersionSelectionOptions> {
+export class VersionDropdown extends Component<VersionDropdownOptions> {
   render() {
     return !this.props.file.versions ? <Fragment /> : (
       <Fragment>

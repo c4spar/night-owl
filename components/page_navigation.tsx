@@ -7,7 +7,7 @@ import { ModuleSelection } from "./module_selection.tsx";
 import { Navigation } from "./navigation.tsx";
 import { apply, Component, css, Fragment, h, log, tw } from "../deps.ts";
 import { styles } from "../lib/styles.ts";
-import { VersionSelection } from "./version_selection.tsx";
+import { VersionDropdown } from "./version_dropdown.tsx";
 
 export interface PageNavigationOptions {
   config: AppConfig;
@@ -52,7 +52,7 @@ export class PageNavigation extends Component<PageNavigationOptions> {
           files={dropDownFiles}
           selected={this.#path}
         />
-        <VersionSelection
+        <VersionDropdown
           file={this.props.file}
           config={this.props.config}
           class={tw`xl:hidden`}
