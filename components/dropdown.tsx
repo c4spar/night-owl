@@ -3,19 +3,19 @@
 import { Component, Fragment, h, Helmet, render, tw } from "../deps.ts";
 import { styles } from "../lib/styles.ts";
 
-export interface SelectionOption {
+export interface DropdownOption {
   value: string;
   name: string;
 }
 
-export interface SelectionOptions {
-  options: Array<string | SelectionOption>;
+export interface DropdownOptions {
+  options: Array<string | DropdownOption>;
   selected?: string;
   class?: string;
   onchange?: string;
 }
 
-export class Selection extends Component<SelectionOptions> {
+export class Dropdown extends Component<DropdownOptions> {
   #id = Math.round(Math.random() * 100) + Date.now();
 
   render2() {

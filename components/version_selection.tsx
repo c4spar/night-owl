@@ -4,7 +4,7 @@ import { Component, Fragment, h, Helmet } from "../deps.ts";
 import { AppConfig } from "../lib/config.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { getRouteRegex } from "../lib/utils.ts";
-import { Selection } from "./selection.tsx";
+import { Dropdown } from "./dropdown.tsx";
 
 export interface VersionSelectionOptions {
   file: SourceFile;
@@ -21,7 +21,7 @@ export class VersionSelection extends Component<VersionSelectionOptions> {
             {this.#getScript()}
           </script>
         </Helmet>
-        <Selection
+        <Dropdown
           class={this.props.class}
           options={this.props.file.versions.all}
           selected={this.props.file.rev}
