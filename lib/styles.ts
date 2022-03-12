@@ -1,4 +1,4 @@
-import { apply, css, theme } from "../deps.ts";
+import { apply, css } from "../deps.ts";
 
 export const styles = {
   transform: {
