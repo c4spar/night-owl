@@ -134,7 +134,7 @@ export class Selection extends Component<SelectionOptions> {
           </div>
 
           <div
-            class={tw`hidden max-h-80 overflow-auto
+            class={tw`hidden
               z-20 origin-top-right absolute right-0
               py-3 mt-3 w-full rounded-xl shadow-sm
               border border-gray(200 dark:700)
@@ -146,31 +146,35 @@ export class Selection extends Component<SelectionOptions> {
             tabindex="-1"
             id={`dropdown-${this.#id}`}
           >
-            {this.props.options
-              .map((value) =>
-                typeof value === "string" ? { value, name: value } : value
-              )
-              .map(({ value, name }, i) =>
-                render(
-                  <button
-                    href="#"
-                    class={`${tw`${
-                      this.props.selected === value
-                        ? styles.text.accentPrimary
-                        : styles.text.secondary
-                    } ${this.props.selected === value ? styles.bg.tertiary : ""}
+            <div class={tw`max-h-80 overflow-auto`}>
+              {this.props.options
+                .map((value) =>
+                  typeof value === "string" ? { value, name: value } : value
+                )
+                .map(({ value, name }, i) =>
+                  render(
+                    <button
+                      href="#"
+                      class={`${tw`${
+                        this.props.selected === value
+                          ? styles.text.accentPrimary
+                          : styles.text.secondary
+                      } ${
+                        this.props.selected === value ? styles.bg.tertiary : ""
+                      }
                     ${styles.transform.primary} hover:(${styles.bg.tertiary} ${styles.text.primary})
                     px-5 py-2 w-full block text-sm font-bold font-primary text-left`}`}
-                    role="menuitem"
-                    tabindex="-1"
-                    id={`menu-item-${i}`}
-                    data-value={value}
-                    onclick={this.props.onchange}
-                  >
-                    {name}
-                  </button>,
-                )
-              )}
+                      role="menuitem"
+                      tabindex="-1"
+                      id={`menu-item-${i}`}
+                      data-value={value}
+                      onclick={this.props.onchange}
+                    >
+                      {name}
+                    </button>,
+                  )
+                )}
+            </div>
           </div>
         </div>
       </Fragment>
