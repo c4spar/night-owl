@@ -64,7 +64,7 @@ export class Selection extends Component<SelectionOptions> {
   render() {
     return (
       <Fragment>
-        <Helmet>
+        <Helmet footer>
           <script>
             {`
             document.addEventListener("click", (event) => {

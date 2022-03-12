@@ -93,9 +93,13 @@ export class Markdown extends Component<MarkdownOptions> {
       )
       // Add anchor link:
       .replace(
-        /(<(h1|h2|h3|h4|h5)>)(<a href="(#[^"]+))/g,
-        (_, hTag, __, aTag, href) =>
-          `${hTag}<a href="${href}" class="anchor-link"></a>${aTag}`,
+        /(<(h1|h2|h3|h4|h5)>)(<a href="(#([^"]+))")/g,
+        (_, hTag, __, aTag, href, id) =>
+          `</section><section id="${id}-section">${hTag}<a href="${href}" class="anchor-link"></a><a `,
+      )
+      .replace(
+        /<\/section><section( [^>]+)?>/,
+        (_, attrs) => `<section${attrs}>`,
       )
       // Add target="_black" to external links:
       .replace(
@@ -130,7 +134,7 @@ export class Markdown extends Component<MarkdownOptions> {
             `}">i</div>
           <div>`,
       )
-      .replace(/<\/blockquote>/g, "</div></div></blockquote>");
+      .replace(/<\/blockquote>/g, "</div></div></blockquote>") + "</section>";
 
     return (
       <div

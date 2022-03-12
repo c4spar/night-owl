@@ -61,19 +61,17 @@ export class PageNavigation extends Component<PageNavigationOptions> {
   #css() {
     return css({
       // item
-      ".nav-item": apply`${styles.transform.primary}`,
-      ".nav-item.active": apply`${styles.bg.secondary}`,
+      ".nav-item": styles.transform.primary,
+      ".nav-item.active": styles.bg.secondary,
       ".nav-item.active.first": apply`rounded-t-xl`,
       ".nav-item.active.last": apply`rounded-b-xl`,
       // label
       ".nav-item .nav-item-label": apply
         `py-3 pl-[1.25rem] ${styles.text.primaryGradient}`,
-      ".nav-item:hover .nav-item-label": apply
-        `${styles.text.secondaryGradientAccent}`,
+      ".nav-item:hover .nav-item-label": styles.text.secondaryGradientAccent,
       ".nav-item.file:not(.nav-item.selected, .nav-item.root, .nav-item:hover) .nav-item-label":
-        apply`${styles.text.secondaryGradient}`,
-      ".nav-item.selected .nav-item-label": apply
-        `${styles.text.secondaryGradientAccent}`,
+        styles.text.secondaryGradient,
+      ".nav-item.selected .nav-item-label": styles.text.secondaryGradientAccent,
       ".nav-item.active.last .nav-item-label": apply`pt-3 pb-0 mb-3`,
       ".nav-item.active:not(.root,.first) .nav-item-label": apply
         `border-l-2 border-blue(400 dark:400)`,
