@@ -118,7 +118,7 @@ async function readDir<O>(
 ): Promise<Array<SourceFile<O>>> {
   if (opts.component || opts.file) {
     if (!opts.component || !opts.file) {
-      throw new Error("Component and file option missing.");
+      throw new Error("Component or file option missing.");
     }
     const file = await SourceFile.create(join(path, opts.file), {
       ...opts,
