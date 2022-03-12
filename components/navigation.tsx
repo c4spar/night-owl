@@ -14,7 +14,7 @@ export class Navigation extends Component<NavigationOptions> {
     return (
       <nav
         class={`${this.props.class ?? ""} ${tw
-          `w-full flex flex-col p-2 font-bold ${styles.font.primary}`}`}
+          `w-full flex flex-col font-bold ${styles.font.primary}`}`}
       >
         {render(this.props.children)}
       </nav>

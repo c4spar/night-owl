@@ -44,7 +44,7 @@ export class SecondaryPageNavigation
       ) ?? 0;
 
       for (const headline of headlines) {
-        headline.size = headline.size - minSize + 1;
+        headline.size = headline.size - minSize + 1.25;
       }
     }
 
@@ -55,17 +55,17 @@ export class SecondaryPageNavigation
         </Helmet>
         <Navigation
           class={tw
-            `${styles.transform.primary} ${styles.bg.secondary} rounded-xl ${this.#css()}`}
+            `p-2 rounded-xl ${styles.transform.primary} ${styles.bg.secondary} ${this.#css()}`}
         >
           {render(headlines?.map((headline) => {
-            const padding = tw`py-3 pl-[${headline.size}rem]`;
+            const padding = tw`py-3 pl-[${headline.size / 1.5 + 0.4}rem] pr-5`;
             const headlineStyle = headline.size === 1
               ? tw`${styles.text.primaryGradientAccent}`
               : tw`${styles.text.secondary}`;
             return (
               <a
-                class={"nav-item pl-[1rem] " + tw`
-                ${headlineStyle}`}
+                class={"nav-item " + tw`
+                pl-4 ${headlineStyle}`}
                 href={headline.href}
               >
                 <div class={`nav-item-label ${padding}`}>
@@ -90,8 +90,8 @@ export class SecondaryPageNavigation
         `border-blue(400 dark:400) ${styles.text.secondaryGradientAccent}`,
       ".nav-item:first-child .nav-item-label":
         styles.text.primaryGradientAccent,
-      ".nav-item.active:first-child .nav-item-label": apply`pb-3 pt-0 mt-3`,
-      ".nav-item.active:last-child .nav-item-label": apply`pt-3 pb-0 mb-3`,
+      ".nav-item.active:first-child .nav-item-label": apply`pt-0 mt-3`,
+      ".nav-item.active:last-child .nav-item-label": apply`pb-0 mb-3`,
     });
   }
 
