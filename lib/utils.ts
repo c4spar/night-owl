@@ -80,7 +80,7 @@ export function pathToUrl(...paths: Array<string>): string {
       .replace(/[_\s,?']+/g, "-")
       // remove file extension
       .replace(/\.[a-zA-Z0-9]+$/, "");
-  }));
+  })).toLowerCase();
 }
 
 export function getLabel(routeName: string): string {
