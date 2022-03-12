@@ -3,7 +3,7 @@
 import { AppConfig } from "../lib/config.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { parseRoute, sortByKey } from "../lib/utils.ts";
-import { ModuleSelection } from "./module_selection.tsx";
+import { ModuleDropdown } from "./module_dropdown.tsx";
 import { Navigation } from "./navigation.tsx";
 import { apply, Component, css, Fragment, h, log, tw } from "../deps.ts";
 import { styles } from "../lib/styles.ts";
@@ -48,7 +48,7 @@ export class PageNavigation extends Component<PageNavigationOptions> {
 
     return (
       <Fragment>
-        <ModuleSelection
+        <ModuleDropdown
           files={dropDownFiles}
           selected={this.#path}
         />
