@@ -141,6 +141,43 @@ export class Markdown extends Component<MarkdownOptions> {
   }
 
   #css() {
+    const headlines = css({
+      "h1, h2, h3, h4, h5": css(
+        apply`flex relative w-[fit-content]`,
+        {
+          "&:hover": {
+            ".anchor-link": {
+              "&::before": {
+                visibility: "visible",
+              },
+            },
+          },
+        },
+      ),
+      "h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child":
+        apply`mt-0`,
+      "h1": apply`left-[-2rem] mb-5 mr-8`,
+      "h2": apply`left-[-1.75rem] mt-10 mr-7`,
+      "h3": apply`left-[-1.5rem] mt-10 mr-6`,
+      "h4": apply`left-[-1.4rem] mb-2 mt-10 mr-5`,
+      "h5": apply`left-[-1.35rem] mb-1 mt-10 mr-4`,
+      ".anchor": apply`block relative -top-28 invisible`,
+      "h1 .anchor-link::before": apply`text-xl sm:text-2xl`,
+      "h2 .anchor-link::before": apply`text-lg sm:text-xl`,
+      "h3 .anchor-link::before": apply`text-base sm:text-lg`,
+      "h4 .anchor-link::before": apply`text-sm sm:text-base`,
+      "h5 .anchor-link::before": apply`text-xs sm:text-sm`,
+      ".anchor-link": {
+        "&::before": {
+          fontFamily: theme("fontFamily.awesome"),
+          content: '"\\f0c1"',
+          fontWeight: 900,
+          marginRight: ".5rem",
+          visibility: "hidden",
+        },
+      },
+    });
+
     const paragraph = css({
       "p": apply`my-5 ${styles.text.secondary} ${styles.transform.primary}`,
     });
@@ -190,6 +227,7 @@ export class Markdown extends Component<MarkdownOptions> {
     });
 
     return css(
+      headlines,
       paragraph,
       list,
       table,
