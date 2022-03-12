@@ -18,85 +18,11 @@ export interface DropdownOptions {
 export class Dropdown extends Component<DropdownOptions> {
   #id = Math.round(Math.random() * 100) + Date.now();
 
-  render2() {
-    return (
-      <Fragment>
-        <div
-          class={`${this.props.class} ${tw`mb-7 relative inline-block w-full`}`}
-        >
-          <select
-            onchange={this.props.onchange}
-            class={tw`w-full h-10 pl-3 pr-6
-              bg-gray-100 dark:bg-gray-700
-              border-1 border-gray-200 dark:border-gray-600 rounded-xl
-              appearance-none
-              ${styles.transform.primary}`}
-          >
-            {this.props.options
-              .map((value) =>
-                typeof value === "string" ? { value, name: value } : value
-              )
-              .map(({ value, name }) =>
-                render(
-                  this.props.selected === value
-                    ? <option value={value} selected>{name}</option>
-                    : <option value={value}>{name}</option>,
-                )
-              )}
-          </select>
-          <div
-            class={tw
-              `absolute inset-y-0 right-2 flex items-center px-2 pointer-events-none`}
-          >
-            <svg class={tw`w-4 h-4 fill-current`} viewBox="0 0 20 20">
-              <path
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-                fill-rule="evenodd"
-              />
-            </svg>
-          </div>
-        </div>
-      </Fragment>
-    );
-  }
-
   render() {
     return (
       <Fragment>
         <Helmet footer>
-          <script>
-            {`
-            document.addEventListener("click", (event) => {
-              var button = document.getElementById("dropdown-button-${this.#id}");
-              var dropdown = document.getElementById("dropdown-${this.#id}");
-              if (
-                event.target === button || button.contains(event.target) ||
-                event.target === dropdown || dropdown.contains(event.target)
-              ) {
-                return;
-              }
-
-              var element = document.getElementById("dropdown-${this.#id}");
-              if (element && !element.classList.contains("hidden")) {
-                element.classList.add("hidden");
-              }
-            });
-
-            function toggleDropwdown${this.#id}() {
-              var button = document.getElementById("dropdown-button-${this.#id}");
-              var dropdown = document.getElementById("dropdown-${this.#id}");
-              if (dropdown) {
-                if (dropdown.classList.contains("hidden")) {
-                  dropdown.classList.remove("hidden");
-                  button.blur();
-                } else {
-                  dropdown.classList.add("hidden");
-                }
-              }
-            }
-          `}
-          </script>
+          <script>{this.#getScript()}</script>
         </Helmet>
         <div
           class={`${this.props.class} ${tw`mb-7 relative inline-block w-full`}`}
@@ -114,7 +40,7 @@ export class Dropdown extends Component<DropdownOptions> {
               id={`dropdown-button-${this.#id}`}
               aria-expanded="true"
               aria-haspopup="true"
-              onclick={`toggleDropwdown${this.#id}()`}
+              onclick={`toggleDropdown${this.#id}()`}
             >
               {this.props.selected ?? "Select version"}
               <svg
@@ -146,7 +72,9 @@ export class Dropdown extends Component<DropdownOptions> {
             tabindex="-1"
             id={`dropdown-${this.#id}`}
           >
-            <div class={tw`max-h-80 overflow-auto`}>
+            <div
+              class={tw`max-h-80 overflow-auto ml-4 border-l-2 border-blue-400`}
+            >
               {this.props.options
                 .map((value) =>
                   typeof value === "string" ? { value, name: value } : value
@@ -179,5 +107,37 @@ export class Dropdown extends Component<DropdownOptions> {
         </div>
       </Fragment>
     );
+  }
+
+  #getScript() {
+    return `
+      document.addEventListener("click", (event) => {
+        var button = document.getElementById("dropdown-button-${this.#id}");
+        var dropdown = document.getElementById("dropdown-${this.#id}");
+        if (
+          event.target === button || button.contains(event.target) ||
+          event.target === dropdown || dropdown.contains(event.target)
+        ) {
+          return;
+        }
+
+        var element = document.getElementById("dropdown-${this.#id}");
+        if (element && !element.classList.contains("hidden")) {
+          element.classList.add("hidden");
+        }
+      });
+
+      function toggleDropdown${this.#id}() {
+        var button = document.getElementById("dropdown-button-${this.#id}");
+        var dropdown = document.getElementById("dropdown-${this.#id}");
+        if (dropdown) {
+          if (dropdown.classList.contains("hidden")) {
+            dropdown.classList.remove("hidden");
+            button.blur();
+          } else {
+            dropdown.classList.add("hidden");
+          }
+        }
+      }`;
   }
 }
