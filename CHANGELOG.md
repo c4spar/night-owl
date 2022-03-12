@@ -1,3 +1,44 @@
+# [v0.1.15](https://github.com/c4spar/nano-page/compare/v0.1.14...v0.1.15) (Mar 12, 2022)
+
+### Features
+
+- show version dropdown in main sidebar on mobile view
+  ([dad0531](https://github.com/c4spar/nano-page/commit/dad0531))
+- highlight visible sections in secondary navbar
+  ([5261d0c](https://github.com/c4spar/nano-page/commit/5261d0c))
+- add new infobox
+  ([26284e2](https://github.com/c4spar/nano-page/commit/26284e2))
+- add new dropdown component
+  ([b0f64a6](https://github.com/c4spar/nano-page/commit/b0f64a6))
+
+### Code Refactoring
+
+- add border to dropdown items and remove unused code
+  ([e9646a3](https://github.com/c4spar/nano-page/commit/e9646a3))
+- rename ModuleSelection component to ModuleDropdown
+  ([32310c5](https://github.com/c4spar/nano-page/commit/32310c5))
+- rename VersionSelection component to VersionDropdown
+  ([81c7014](https://github.com/c4spar/nano-page/commit/81c7014))
+- rename selection to dropdown
+  ([6a7b446](https://github.com/c4spar/nano-page/commit/6a7b446))
+- refactor padding in navigations
+  ([129948a](https://github.com/c4spar/nano-page/commit/129948a))
+- refactor dropdown styles
+  ([3c8e388](https://github.com/c4spar/nano-page/commit/3c8e388))
+- refactor markdown styles
+  ([69a804e](https://github.com/c4spar/nano-page/commit/69a804e))
+- enable smooth scroll behavior
+  ([0253905](https://github.com/c4spar/nano-page/commit/0253905))
+- refactor navigation styles
+  ([3f69d45](https://github.com/c4spar/nano-page/commit/3f69d45))
+- add gradient colors to headlines
+  ([df0edcf](https://github.com/c4spar/nano-page/commit/df0edcf))
+
+### Chore
+
+- **lint:** remove unused import
+  ([82e2414](https://github.com/c4spar/nano-page/commit/82e2414))
+
 # [v0.1.14](https://github.com/c4spar/nano-page/compare/v0.1.13...v0.1.14) (Mar 9, 2022)
 
 ### Bug Fixes
