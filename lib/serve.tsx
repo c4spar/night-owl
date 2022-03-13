@@ -9,7 +9,13 @@ import { blue, h, log, lookup, serve as serveHttp } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { createConfig, CreateConfigOptions, Script } from "./config.ts";
 import { App } from "../app.tsx";
-import { fromLocalCache, fromRemoteCache } from "./request.ts";
+import {
+  respondBadRequest,
+  respondInternalServerEror,
+  respondLocalFile,
+  respondNotFound,
+  respondRemoteFile,
+} from "./request.ts";
 import { setupTwind } from "./sheet.ts";
 import { ssr } from "./ssr.ts";
 
@@ -19,14 +25,101 @@ export interface ServeOptions<O> extends CreateConfigOptions<O> {
   assets?: Array<string>;
 }
 
-export async function serve<O>(
-  { port = 8000, hostname, assets, ...options }: ServeOptions<O>,
-) {
-  console.log(`Listening on ${blue(`http://localhost:${port}`)}`);
+export async function serve<O>({
+  port = 8000,
+  hostname,
+  assets,
+  ...options
+}: ServeOptions<O>) {
+  log.info("Listening on http://localhost:%s", port);
 
   const cache = new Cache<string>();
 
   const scripts: Record<string, Script> = {
+    ...getScripts(),
+    ...options.scripts ?? {},
+  };
+
+  setupTwind(options.theme);
+
+  await serveHttp(async (req) => {
+    log.info(blue(`[${req.method}]`), req.url);
+
+    if (req.method !== "GET") {
+      return respondBadRequest();
+    }
+    const { pathname } = new URL(req.url);
+
+    if (scripts[pathname]) {
+      return respondScript(scripts[pathname], req);
+    }
+
+    if (pathname === "/favicon.ico") {
+      return respondNotFound();
+    }
+
+    const isAssetRequest = assets?.find((path) =>
+      pathname.startsWith("/" + path)
+    );
+    if (isAssetRequest) {
+      return respondAsset(pathname);
+    }
+
+    return await respondPage<O>(options, scripts, req, cache);
+  }, {
+    port,
+    hostname,
+  });
+}
+
+async function respondPage<O>(
+  options: CreateConfigOptions<O>,
+  scripts: Record<string, Script>,
+  req: Request,
+  cache: Cache<string>,
+) {
+  let html: string | undefined = cache.get(req.url);
+  if (!html) {
+    const config = await createConfig(options, req);
+    html = ssr(
+      <App url={req.url} config={config} scripts={scripts} />,
+    );
+    cache.set(req.url, html);
+  }
+
+  return new Response(html, { headers: { "content-type": "text/html" } });
+}
+
+async function respondAsset(pathname: string) {
+  try {
+    return await respondLocalFile(
+      `.${pathname}`,
+      lookup(pathname) ?? "text/plain",
+    );
+  } catch (error: unknown) {
+    if (error instanceof Deno.errors.NotFound) {
+      return respondNotFound();
+    }
+    return respondInternalServerEror();
+  }
+}
+
+function respondScript(script: Script, req: Request) {
+  return script.url.startsWith("http://") ||
+      script.url.startsWith("https://")
+    ? respondRemoteFile(
+      script.url,
+      script.contentType,
+      req,
+    )
+    : respondLocalFile(
+      script.url,
+      script.contentType,
+    );
+}
+
+function getScripts(): Record<string, Script> {
+  return {
     "/font-awesome.css": {
       url: "https://use.fontawesome.com/releases/v5.0.1/css/all.css",
       contentType: "text/css",
@@ -55,63 +148,17 @@ export async function serve<O>(
       url: "https://code.iconify.design/2/2.1.0/iconify.min.js",
       contentType: "application/javascript",
     },
-    ...options.scripts ?? {},
+    "/algolia-dsn.js": {
+      url: "https://YOUR_APP_ID-dsn.algolia.net",
+      contentType: "application/javascript",
+    },
+    "/docsearch.js": {
+      url: "https://cdn.jsdelivr.net/npm/@docsearch/js@3",
+      contentType: "application/javascript",
+    },
+    "/docsearch.css": {
+      url: "https://cdn.jsdelivr.net/npm/@docsearch/css@3",
+      contentType: "text/css",
+    },
   };
-
-  setupTwind(options.theme);
-
-  await serveHttp(async (req) => {
-    log.info(blue(`[${req.method}]`), req.url);
-
-    if (req.method !== "GET") {
-      return new Response("Bad Request", { status: 400 });
-    }
-    const { pathname } = new URL(req.url);
-
-    if (scripts[pathname]) {
-      return scripts[pathname].url.startsWith("http://") ||
-          scripts[pathname].url.startsWith("https://")
-        ? fromRemoteCache(
-          scripts[pathname].url,
-          scripts[pathname].contentType,
-          req,
-        )
-        : fromLocalCache(
-          scripts[pathname].url,
-          scripts[pathname].contentType,
-        );
-    }
-
-    if (pathname === "/favicon.ico") {
-      return new Response("Not found", { status: 404 });
-    }
-
-    const isAssetRequest = assets?.find((path) =>
-      pathname.startsWith("/" + path)
-    );
-    if (isAssetRequest) {
-      try {
-        const file = await Deno.open(`.${pathname}`);
-        return new Response(file.readable, {
-          headers: { "content-type": lookup(pathname) ?? "text/plain" },
-        });
-      } catch (error: unknown) {
-        return new Response("Not found", { status: 404 });
-      }
-    }
-
-    let html: string | undefined = cache.get(req.url);
-    if (!html) {
-      const config = await createConfig(options, req);
-      html = ssr(
-        <App url={req.url} config={config} scripts={scripts} />,
-      );
-      cache.set(req.url, html);
-    }
-
-    return new Response(html, { headers: { "content-type": "text/html" } });
-  }, {
-    port,
-    hostname,
-  });
 }

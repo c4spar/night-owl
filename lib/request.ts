@@ -1,13 +1,13 @@
-export async function fromLocalCache(
+export async function respondLocalFile(
   path: string,
   contentType: string,
 ): Promise<Response> {
-  return new Response(await getLocalFile(path), {
+  return new Response((await Deno.open(path)).readable, {
     headers: { "content-type": contentType },
   });
 }
 
-export async function fromRemoteCache(
+export async function respondRemoteFile(
   url: string,
   contentType: string,
   req: Request,
@@ -17,14 +17,10 @@ export async function fromRemoteCache(
   });
 }
 
-export function getLocalFile(path: string): Promise<Uint8Array> {
-  return Deno.readFile(path);
-}
-
 export function getRemoteFile(
   url: string,
   req?: Request,
-): Promise<ArrayBuffer> {
+): Promise<ReadableStream<Uint8Array> | null> {
   return fetch(
     url,
     req
@@ -34,5 +30,21 @@ export function getRemoteFile(
         body: req.body,
       }
       : undefined,
-  ).then((response) => response.arrayBuffer());
+  ).then((response) => response.body);
+}
+
+export function respondNoContent(): Response {
+  return new Response(null, { status: 204 });
+}
+
+export function respondNotFound(): Response {
+  return new Response("Not found", { status: 404 });
+}
+
+export function respondBadRequest(): Response {
+  return new Response("Bad request", { status: 400 });
+}
+
+export function respondInternalServerEror(): Response {
+  return new Response("Internal server error", { status: 500 });
 }
