@@ -1,3 +1,28 @@
+# [v0.1.16](https://github.com/c4spar/nano-page/compare/v0.1.15...v0.1.16) (Mar 13, 2022)
+
+### Features
+
+- redirect to the latest version if no version is specified in url
+  ([60a7bd3](https://github.com/c4spar/nano-page/commit/60a7bd3))
+- show warning if a none released version is selected
+  ([53ef9fd](https://github.com/c4spar/nano-page/commit/53ef9fd))
+- add webhook endpoint to clear the cache
+  ([357442b](https://github.com/c4spar/nano-page/commit/357442b))
+- add copy button to CodeBlock component
+  ([5ad4ab1](https://github.com/c4spar/nano-page/commit/5ad4ab1))
+
+### Bug Fixes
+
+- typo in error message
+  ([ef5d1da](https://github.com/c4spar/nano-page/commit/ef5d1da))
+
+### Code Refactoring
+
+- refactor serve and request methods
+  ([ec70c63](https://github.com/c4spar/nano-page/commit/ec70c63))
+- lowercase routes
+  ([0a164b1](https://github.com/c4spar/nano-page/commit/0a164b1))
+
 # [v0.1.15](https://github.com/c4spar/nano-page/compare/v0.1.14...v0.1.15) (Mar 12, 2022)
 
 ### Features
