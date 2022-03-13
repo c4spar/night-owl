@@ -8,6 +8,7 @@ import { mainStyles, styles } from "./lib/styles.ts";
 import { Header } from "./components/header.tsx";
 import { Component, Fragment, h, Helmet, render, tw } from "./deps.ts";
 import { MarkdownPage } from "./pages/markdown_page.tsx";
+import { VersionWarning } from "./components/version_warning.tsx";
 
 interface AppOptions {
   url: string;
@@ -17,6 +18,7 @@ interface AppOptions {
 
 export class App extends Component<AppOptions> {
   #file?: SourceFile;
+  #isBranch = false;
 
   constructor(props: AppOptions) {
     super(props);
@@ -34,6 +36,13 @@ export class App extends Component<AppOptions> {
       this.#file = this.props.config.sourceFiles.find((file) =>
         !file.isDirectory
       );
+    }
+
+    if (
+      this.#file && this.#file.rev &&
+      this.#file.versions?.branches.includes(this.#file.rev)
+    ) {
+      this.#isBranch = true;
     }
   }
 
@@ -64,6 +73,9 @@ export class App extends Component<AppOptions> {
           {/* header */}
           <div class={tw`sticky top-0 z-10`}>
             <Header config={this.props.config} file={this.#file} />
+            {this.#isBranch
+              ? <VersionWarning config={this.props.config} file={this.#file} />
+              : null}
           </div>
 
           {/* content */}
@@ -112,6 +124,12 @@ export class App extends Component<AppOptions> {
     }
 
     // Render markdown page.
-    return <MarkdownPage file={this.#file} config={this.props.config} />;
+    return (
+      <MarkdownPage
+        file={this.#file}
+        config={this.props.config}
+        isBranch={this.#isBranch}
+      />
+    );
   }
 }

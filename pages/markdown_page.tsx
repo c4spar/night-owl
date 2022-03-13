@@ -15,6 +15,7 @@ import { RoundedIconButton } from "../components/buttons.tsx";
 export interface MarkdownPageOptions {
   config: AppConfig;
   file: SourceFile;
+  isBranch: boolean;
 }
 
 export class MarkdownPage extends Component<MarkdownPageOptions> {
@@ -71,6 +72,7 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
               position="right"
               width={this.#sideBarWidth}
               contentWidth={this.#contentWidth}
+              isBranch={this.props.isBranch}
               class={tw`hidden xl:block`}
             >
               <VersionDropdown
@@ -94,8 +96,10 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
           position="left"
           width={this.#sideBarWidth}
           contentWidth={this.#contentWidth}
+          isBranch={this.props.isBranch}
           class={`sidebar ${tw`
             -translate-x-full lg:translate-x-0
+            z-20 lg:z-0
             ${styles.transform.primary}`}`}
         >
           <PageNavigation config={this.props.config} file={file} />
