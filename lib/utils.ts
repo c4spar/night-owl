@@ -1,4 +1,6 @@
 import { fromFileUrl } from "../deps.ts";
+import { GithubVersions } from "./git.ts";
+import { SourceFile } from "./source_file.ts";
 
 export async function env(
   name: string,
@@ -194,4 +196,43 @@ export type Flat<T> = T extends Array<infer V> ? Flat<V> : T;
 
 export function flat<T>(arr: Array<T>): Array<Flat<T>> {
   return arr.map((item) => Array.isArray(item) ? flat(item) : item).flat();
+}
+
+export function matchFile(
+  sourceFiles: Array<SourceFile>,
+  url: string,
+): SourceFile | undefined {
+  const pathname = new URL(url).pathname.replace(/\/+$/, "") || "/";
+
+  const files = sourceFiles.filter((file) => file.route === pathname);
+
+  const file = files.find((file) => !file.isDirectory) ?? files[0];
+
+  if (!file && pathname === "/") {
+    return sourceFiles.find((file) => !file.isDirectory);
+  }
+
+  return file;
+}
+
+export function addLatestVersion(
+  route: string,
+  versions: GithubVersions,
+  pages?: boolean,
+) {
+  if (!versions) {
+    return "";
+  }
+  const regex = getRouteRegex(
+    versions.all,
+    pages,
+  );
+  const replace = pages
+    ? "$3@" + versions.latest + "$6$8"
+    : "/" + versions.latest + "$5$7";
+
+  return route.replace(
+    regex,
+    replace,
+  ).replace(/\/+$/, "");
 }

@@ -20,6 +20,7 @@ import {
 import { setupTwind } from "./sheet.ts";
 import { ssr } from "./ssr.ts";
 import { gitCache } from "./git.ts";
+import { matchFile } from "./utils.ts";
 
 export interface ServeOptions<O> extends CreateConfigOptions<O> {
   port?: number;
@@ -91,8 +92,15 @@ async function respondPage<O>(
   let html: string | undefined = cache.get(req.url);
   if (!html) {
     const config = await createConfig(options, req);
+    const file = matchFile(config.sourceFiles, req.url);
+
+    // Redirect to the latest version.
+    if (file?.rev && !file.route.includes(file.rev)) {
+      return Response.redirect(new URL(file.latestRoute, req.url));
+    }
+
     html = ssr(
-      <App url={req.url} config={config} scripts={scripts} />,
+      <App url={req.url} config={config} file={file} scripts={scripts} />,
     );
     cache.set(req.url, html);
   }

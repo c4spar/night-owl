@@ -4,6 +4,7 @@ import { getMetaData } from "./page.ts";
 import { ProviderFunction, ProviderOptions, ProviderType } from "./provider.ts";
 import { ChildComponent } from "./types.ts";
 import {
+  addLatestVersion,
   getLabel,
   getRouteRegex,
   joinUrl,
@@ -40,6 +41,7 @@ export class SourceFile<O = unknown> extends Asset {
   #name: string;
   #route: string;
   #mainRoute: string;
+  #latestRoute: string;
   #routeName: string;
   #routePrefix: string;
   #versions?: GithubVersions;
@@ -80,6 +82,9 @@ export class SourceFile<O = unknown> extends Asset {
     this.#isDirectory = opts.isDirectory;
     this.#route = route;
     this.#mainRoute = removeVersion(route, opts.versions?.all, opts.pages);
+    this.#latestRoute = opts.versions?.latest
+      ? addLatestVersion(route, opts.versions, opts.pages)
+      : this.#mainRoute;
     this.#routeName = routeName;
     this.#routePrefix = routePrefix;
     this.#versions = opts.versions;
@@ -128,6 +133,10 @@ export class SourceFile<O = unknown> extends Asset {
     return this.#mainRoute;
   }
 
+  get latestRoute() {
+    return this.#latestRoute;
+  }
+
   get routeName() {
     return this.#routeName;
   }
@@ -146,10 +155,11 @@ export class SourceFile<O = unknown> extends Asset {
         ...super.toJson(compact),
         isDirectory: this.#isDirectory,
         name: this.#name,
-        route: this.#route,
-        mainRoute: this.#mainRoute,
         routeName: this.#routeName,
         routePrefix: this.#routePrefix,
+        route: this.#route,
+        mainRoute: this.#mainRoute,
+        latestRoute: this.#latestRoute,
       },
       ...compact ? {} : {
         assets: this.#assets,

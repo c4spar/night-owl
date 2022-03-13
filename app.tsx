@@ -14,6 +14,7 @@ interface AppOptions {
   url: string;
   config: AppConfig;
   scripts: Record<string, Script>;
+  file?: SourceFile;
 }
 
 export class App extends Component<AppOptions> {
@@ -22,25 +23,9 @@ export class App extends Component<AppOptions> {
 
   constructor(props: AppOptions) {
     super(props);
-
-    const url = new URL(this.props.url);
-    const pathname = url.pathname.replace(/\/+$/, "") || "/";
-
-    const files = this.props.config.sourceFiles.filter((file) =>
-      file.route === pathname
-    );
-
-    this.#file = files.find((file) => !file.isDirectory) ?? files[0];
-
-    if (!this.#file && pathname === "/") {
-      this.#file = this.props.config.sourceFiles.find((file) =>
-        !file.isDirectory
-      );
-    }
-
     if (
-      this.#file && this.#file.rev &&
-      this.#file.versions?.branches.includes(this.#file.rev)
+      this.props.file?.rev &&
+      this.props.file.versions?.branches.includes(this.props.file.rev)
     ) {
       this.#isBranch = true;
     }
@@ -72,9 +57,14 @@ export class App extends Component<AppOptions> {
 
           {/* header */}
           <div class={tw`sticky top-0 z-10`}>
-            <Header config={this.props.config} file={this.#file} />
+            <Header config={this.props.config} file={this.props.file} />
             {this.#isBranch
-              ? <VersionWarning config={this.props.config} file={this.#file} />
+              ? (
+                <VersionWarning
+                  config={this.props.config}
+                  file={this.props.file}
+                />
+              )
               : null}
           </div>
 
@@ -112,21 +102,21 @@ export class App extends Component<AppOptions> {
 
   #renderPage() {
     // Render page not found.
-    if (!this.#file) {
+    if (!this.props.file) {
       return this.props.config.notFound
         ? this.props.config.notFound({ url: this.props.url })
         : <NotFound url={this.props.url} />;
     }
 
     // Render custom page component.
-    if (this.#file.component) {
-      return this.#file.component;
+    if (this.props.file.component) {
+      return this.props.file.component;
     }
 
     // Render markdown page.
     return (
       <MarkdownPage
-        file={this.#file}
+        file={this.props.file}
         config={this.props.config}
         isBranch={this.#isBranch}
       />
