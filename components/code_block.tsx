@@ -12,6 +12,7 @@ import {
   tw,
 } from "../deps.ts";
 import { styles } from "../lib/styles.ts";
+import { Button } from "./buttons.tsx";
 
 export interface CodeBlockOptions {
   code: string;
@@ -28,24 +29,27 @@ export class CodeBlock extends Component<CodeBlockOptions> {
     const lang = this.props.lang === "jsonc" ? "json" : this.props.lang;
     let html: string | undefined;
 
+    const id = this.props.id ??
+      "code-block-" + (Math.random() + Date.now()) * 99999;
+    const code = this.props.code.trim();
+
     try {
       html = lang
         ? toHtml(lowlight.highlight(
           lang,
-          htmlEntities.decode(this.props.code),
+          htmlEntities.decode(code),
           {
             prefix: "code-",
           },
         ))
-        : this.props.code;
+        : code;
     } catch (error: unknown) {
       log.error(error);
-      html = this.props.code;
+      html = code;
     }
-
     return (
       <div
-        id={this.props.id}
+        id={id}
         class={`${this.props.class ?? ""} ${tw`flex-grow text-sm p-4 ${
           this.props.margin === false ? "" : "my-5"
         } ${
@@ -57,6 +61,16 @@ export class CodeBlock extends Component<CodeBlockOptions> {
             class={`language-${lang}`}
             dangerouslySetInnerHTML={{ __html: html }}
           />
+          <Button
+            onclick={`navigator.clipboard.writeText(document.querySelector("#${id} code").textContent.trim()); this.textContent = "Copied!"; setTimeout(() => this.textContent = "Copy", 1500);`}
+            class={"copy-button " + tw` absolute ${
+              code.split("\n").length > 1
+                ? "bottom-2"
+                : "bottom-1"
+            } right-2 ${styles.bg.primary} hover:${styles.bg.tertiary}`}
+          >
+            Copy
+          </Button>
         </pre>
       </div>
     );
@@ -64,6 +78,8 @@ export class CodeBlock extends Component<CodeBlockOptions> {
 
   #css() {
     return css({
+      "pre > .copy-button": apply`hidden`,
+      "pre:hover > .copy-button": apply`block`,
       ".language-console": apply`${styles.text.accentPrimary}`,
       ".language-console .bash": styles.text.secondary,
       ".code-comment": apply`text-gray(500 dark:400)`,
