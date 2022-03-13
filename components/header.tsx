@@ -35,8 +35,7 @@ export class Header extends Component<HeaderOptions> {
           class={tw`flex flex-wrap items-center md:ml-auto
             text-base justify-center space-x-5`}
         >
-          {this.#renderPageLinks()}
-          {this.#renderNavLinks()}
+          {this.#renderLinks()}
 
           <Link
             href={`https://github.com/${
@@ -73,31 +72,36 @@ export class Header extends Component<HeaderOptions> {
     );
   }
 
-  #renderPageLinks() {
-    if (!this.props.config.pages) {
-      return null;
-    }
-    return distinctBy(
-      this.props.config.sourceFiles
-        .filter((file) => file.routePrefix === "/" && file.route !== "/")
-        .map((file) =>
-          this.#renderLink({
-            href: file.route,
-            label: file.name,
-          })
-        ),
-      (file: SourceFile) => file.route,
-    );
+  #renderLinks() {
+    return this.#getLinks().map((link) => this.#renderLink(link));
   }
 
-  #renderNavLinks() {
+  #getLinks(): Array<NavItemOptions> {
+    return distinctBy([
+      ...this.getPageLinks(),
+      ...this.#getNavLinks(),
+    ], (link) => link.href);
+  }
+
+  getPageLinks(): Array<NavItemOptions> {
+    if (!this.props.config.pages) {
+      return [];
+    }
+    return this.props.config.sourceFiles
+      .filter((file) => file.routePrefix === "/" && file.route !== "/")
+      .map((file) => ({
+        label: file.name,
+        href: file.route,
+      }));
+  }
+
+  #getNavLinks(): Array<NavItemOptions> {
     return this.props.config.nav?.items?.map(
-      ({ href, ...props }) =>
-        this.#renderLink({
-          ...props,
-          href: href?.replace(/{(version|rev)}/, this.props.config.rev),
-        }),
-    ) ?? null;
+      ({ href, ...props }) => ({
+        ...props,
+        href: href?.replace(/{(version|rev)}/, this.props.config.rev),
+      }),
+    ) ?? [];
   }
 
   #renderLink({ label, href, ...props }: NavItemOptions) {
