@@ -17,4 +17,8 @@ export class Cache<T> {
       this.#cache.set(key, value);
     }
   }
+
+  clear() {
+    this.#cache.clear();
+  }
 }

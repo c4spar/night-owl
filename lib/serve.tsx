@@ -13,22 +13,26 @@ import {
   respondBadRequest,
   respondInternalServerEror,
   respondLocalFile,
+  respondNoContent,
   respondNotFound,
   respondRemoteFile,
 } from "./request.ts";
 import { setupTwind } from "./sheet.ts";
 import { ssr } from "./ssr.ts";
+import { gitCache } from "./git.ts";
 
 export interface ServeOptions<O> extends CreateConfigOptions<O> {
   port?: number;
   hostname?: string;
   assets?: Array<string>;
+  webhooks?: boolean;
 }
 
 export async function serve<O>({
   port = 8000,
   hostname,
   assets,
+  webhooks = true,
   ...options
 }: ServeOptions<O>) {
   log.info("Listening on http://localhost:%s", port);
@@ -63,6 +67,12 @@ export async function serve<O>({
     );
     if (isAssetRequest) {
       return respondAsset(pathname);
+    }
+
+    if (webhooks && pathname === "/webhooks/cache/clear") {
+      cache.clear();
+      gitCache.clear();
+      return respondNoContent();
     }
 
     return await respondPage<O>(options, scripts, req, cache);

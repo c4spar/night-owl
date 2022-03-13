@@ -12,7 +12,7 @@ import { env, joinUrl } from "./utils.ts";
 
 const apiUrl = "https://api.github.com";
 
-const gitCache = new Cache<string>();
+export const gitCache = new Cache<string>();
 
 interface GithubResponse {
   message: string;
