@@ -1,3 +1,10 @@
+# [v0.1.17](https://github.com/c4spar/nano-page/compare/v0.1.16...v0.1.17) (Mar 13, 2022)
+
+### Bug Fixes
+
+- add missing VersionWarning component
+  ([baa337a](https://github.com/c4spar/nano-page/commit/baa337a))
+
 # [v0.1.16](https://github.com/c4spar/nano-page/compare/v0.1.15...v0.1.16) (Mar 13, 2022)
 
 ### Features
