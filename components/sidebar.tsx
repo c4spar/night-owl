@@ -20,8 +20,8 @@ export class Sidebar extends Component<SidebarOptions> {
         class={`${this.props.class ?? ""} ${tw`
           ${styles.bg.primary} ${styles.transform.primary}
           fixed overflow-y-auto
-          bottom-0 top-[7.7rem] ${
-          this.props.isBranch ? "md:top-[11.2rem]" : "md:top-[5rem]"
+          bottom-0 top-[8.5rem] ${
+          this.props.isBranch ? "md:top-[11.2rem]" : "md:top-[5.2rem]"
         }
           ${this.props.position}-[max(0px,calc(50%-(${this.props.contentWidth}rem/2)))]
           py-10 px-8
