@@ -107,7 +107,7 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
 
         <RoundedIconButton
           icon="ant-design:menu-outlined"
-          class={tw`lg:hidden fixed right-5 bottom-5`}
+          class={tw`lg:hidden fixed right-5 bottom-5 z-20`}
           onclick="toggleSideBar()"
         />
       </Fragment>
