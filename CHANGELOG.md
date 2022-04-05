@@ -1,3 +1,28 @@
+# [v0.1.18](https://github.com/c4spar/nano-page/compare/v0.1.17...v0.1.18) (Apr 5, 2022)
+
+### Features
+
+- **search:** implement docsearch
+  ([09adab2](https://github.com/c4spar/nano-page/commit/09adab2))
+
+### Bug Fixes
+
+- dark mode is applied to late
+  ([e465cdc](https://github.com/c4spar/nano-page/commit/e465cdc))
+- add workaround for animated text in chrome
+  ([9851c0a](https://github.com/c4spar/nano-page/commit/9851c0a))
+- nav button is behind navigation
+  ([125fdf2](https://github.com/c4spar/nano-page/commit/125fdf2))
+- navigation is not correctly positioned
+  ([003e842](https://github.com/c4spar/nano-page/commit/003e842))
+
+### Code Refactoring
+
+- move app component into component folder
+  ([ac73d09](https://github.com/c4spar/nano-page/commit/ac73d09))
+- refactor header nav links
+  ([24194f8](https://github.com/c4spar/nano-page/commit/24194f8))
+
 # [v0.1.17](https://github.com/c4spar/nano-page/compare/v0.1.16...v0.1.17) (Mar 13, 2022)
 
 ### Bug Fixes
