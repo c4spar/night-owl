@@ -35,12 +35,14 @@ export class App extends Component<AppOptions> {
     return (
       <Fragment>
         <Helmet>
+          <script type="application/javascript">
+            {this.#script()}
+          </script>
           {Object.entries(this.props.scripts)
             .filter(([route, script]) => script.contentType === "text/css")
             .map(([route]) => (
               <link rel="stylesheet" type="text/css" href={route} />
             ))}
-
           {Object.entries(this.props.scripts)
             .filter(([route, script]) =>
               script.contentType === "application/javascript"
@@ -73,31 +75,6 @@ export class App extends Component<AppOptions> {
             {this.#renderPage()}
           </div>
         </div>
-
-        <Helmet footer>
-          <script type="application/javascript">
-            {`
-              main();
-  
-              function main() {
-                if (isDarkModeEnabled()) {
-                  document.documentElement.classList.add("dark");
-                  document.documentElement.setAttribute("data-theme", "dark");
-                } else {
-                  document.documentElement.classList.remove("dark");
-                  document.documentElement.removeAttribute("data-theme");
-                }
-              }
-  
-              function isDarkModeEnabled() {
-                return localStorage.theme === "dark" || (
-                  !localStorage.theme &&
-                  window.matchMedia("(prefers-color-scheme: dark)").matches
-                );
-              }
-            `}
-          </script>
-        </Helmet>
       </Fragment>
     );
   }
@@ -123,5 +100,23 @@ export class App extends Component<AppOptions> {
         isBranch={this.#isBranch}
       />
     );
+  }
+
+  #script(): string {
+    return `
+      if (isDarkModeEnabled()) {
+        document.documentElement.classList.add("dark");
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        document.documentElement.removeAttribute("data-theme");
+      }
+      function isDarkModeEnabled() {
+        return localStorage.theme === "dark" || (
+          !localStorage.theme &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+        );
+      }
+    `;
   }
 }
