@@ -1,3 +1,23 @@
+# [v0.1.19](https://github.com/c4spar/nano-page/compare/v0.1.18...v0.1.19) (Apr 5, 2022)
+
+### Bug Fixes
+
+- fix env util method
+  ([df0c432](https://github.com/c4spar/nano-page/commit/df0c432))
+
+### Code Refactoring
+
+- remove unused script
+  ([0010b11](https://github.com/c4spar/nano-page/commit/0010b11))
+- load docsearch script directly
+  ([c383771](https://github.com/c4spar/nano-page/commit/c383771))
+- add overloads to env method
+  ([7aa106e](https://github.com/c4spar/nano-page/commit/7aa106e))
+
+### Documentation Updates
+
+- update readme ([6e955a7](https://github.com/c4spar/nano-page/commit/6e955a7))
+
 # [v0.1.18](https://github.com/c4spar/nano-page/compare/v0.1.17...v0.1.18) (Apr 5, 2022)
 
 ### Features
