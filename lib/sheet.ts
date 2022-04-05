@@ -67,6 +67,7 @@ export function setupTwind(theme: Partial<Theme> = {}) {
         animation: {
           "left-right-heading": "left-right-heading .4s forwards",
           "left-right": "left-right .4s forwards",
+          "rainbow": "rainbow .4s forwards",
           "top-bottom": "top-bottom .2s forwards",
           "slide-in": "slide-in .3s forwards",
           "fade-in": "fade-in .3s ease-out",
@@ -76,6 +77,14 @@ export function setupTwind(theme: Partial<Theme> = {}) {
         keyframes: {
           "left-right-heading": leftRight("18rem"),
           "left-right": leftRight("2rem"),
+          "rainbow": {
+            "50%": {
+              color: twColors.purple["700"],
+            },
+            "60%": {
+              color: twColors.indigo["700"],
+            },
+          },
           "slide-in": {
             "0%": {
               transform: "translate(0, 200rem) scale(.5)",

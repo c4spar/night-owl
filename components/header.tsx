@@ -42,7 +42,7 @@ export class Header extends Component<HeaderOptions> {
                 class={tw`${
                   css({
                     button: apply`md:w-56 h-10 dark:bg-gray-700!`,
-                    ".DocSearch-Button-Placeholder": apply`mt-[1px]`
+                    ".DocSearch-Button-Placeholder": apply`mt-[1px]`,
                   })
                 }`}
                 config={this.props.config.docSearch}

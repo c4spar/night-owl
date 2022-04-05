@@ -4,7 +4,7 @@ import { Component, Fragment, h, tw } from "../deps.ts";
 
 interface AnimatedTextOptions {
   children: string | Array<string>;
-  animation?: string;
+  webKitFix?: boolean;
   class?: string;
   speed?: number;
   delay?: number;
@@ -15,6 +15,7 @@ interface AnimatedTextOptions {
 
 export class AnimatedText extends Component<AnimatedTextOptions> {
   render() {
+    tw`animate-rainbow`;
     return (
       <Fragment>
         <div
@@ -38,10 +39,10 @@ export class AnimatedText extends Component<AnimatedTextOptions> {
                         (((i * 10) + ii) * (this.props.speed ?? 10)) +
                         (this.props.delay ?? 0)
                       }ms;`}
-                      class={tw
-                        `inline-block opacity-0 transform-gpu -translate-x-72 -scale-[0.3] ${
-                          this.props.animation ?? "animate-left-right"
-                        }`}
+                      class={tw`inline-block` + " " + (this.props.webKitFix
+                        ? "moz-animate-left-right"
+                        : tw
+                          `animate-left-right transform-gpu opacity-0 -translate-x-72 -scale-[0.3]`)}
                     >
                       {char}
                     </span>

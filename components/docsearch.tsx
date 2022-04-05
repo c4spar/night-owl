@@ -33,7 +33,7 @@ export class DocSearch extends Component<DocSearchOptions> {
             `flex font-primary ${styles.text.accentPrimary} ${
               css({
                 "*": styles.transform.primary,
-                ".DocSearch-Button-Keys": apply`mt-1`
+                ".DocSearch-Button-Keys": apply`mt-1`,
               })
             }`}`}
         >
