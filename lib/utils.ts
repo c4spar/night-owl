@@ -4,6 +4,14 @@ import { SourceFile } from "./source_file.ts";
 
 export async function env(
   name: string,
+  required: true,
+): Promise<string>;
+export async function env(
+  name: string,
+  required?: boolean,
+): Promise<string | undefined>;
+export async function env(
+  name: string,
   required?: boolean,
 ): Promise<string | undefined> {
   const desc: Deno.PermissionDescriptor = { name: "env", variable: name };
