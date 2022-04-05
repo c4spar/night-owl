@@ -82,8 +82,10 @@ export class App extends Component<AppOptions> {
               function main() {
                 if (isDarkModeEnabled()) {
                   document.documentElement.classList.add("dark");
+                  document.documentElement.setAttribute("data-theme", "dark");
                 } else {
                   document.documentElement.classList.remove("dark");
+                  document.documentElement.removeAttribute("data-theme");
                 }
               }
   

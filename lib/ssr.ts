@@ -11,7 +11,7 @@ interface DocumentOptions {
 function Document({ body, head, footer, styles }: DocumentOptions) {
   return (`
     <!DOCTYPE html>
-    <html lang="en" class="dark">
+    <html lang="en" class="dark" data-theme="dark">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />

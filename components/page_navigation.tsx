@@ -5,7 +5,7 @@ import { SourceFile } from "../lib/source_file.ts";
 import { parseRoute, sortByKey } from "../lib/utils.ts";
 import { ModuleDropdown } from "./module_dropdown.tsx";
 import { Navigation } from "./navigation.tsx";
-import { apply, Component, css, Fragment, h, log, tw } from "../deps.ts";
+import { apply, Component, css, Fragment, h, tw } from "../deps.ts";
 import { styles } from "../lib/styles.ts";
 import { VersionDropdown } from "./version_dropdown.tsx";
 
@@ -17,7 +17,6 @@ export interface PageNavigationOptions {
 export class PageNavigation extends Component<PageNavigationOptions> {
   #path: string;
   #pagePrefix: string;
-  #selectedPage: string;
   #isDirectory: boolean;
 
   constructor(props: PageNavigationOptions) {
@@ -26,7 +25,6 @@ export class PageNavigation extends Component<PageNavigationOptions> {
     const {
       path,
       pagePrefix,
-      selectedPage,
     } = parseRoute(
       this.props.file.route,
       this.props.file.versions?.all,
@@ -35,7 +33,6 @@ export class PageNavigation extends Component<PageNavigationOptions> {
 
     this.#path = path;
     this.#pagePrefix = pagePrefix;
-    this.#selectedPage = selectedPage;
     this.#isDirectory = this.props.file.isDirectory ||
       this.props.config.sourceFiles.some(
         (f) => f !== this.props.file && f.route === this.props.file.route,

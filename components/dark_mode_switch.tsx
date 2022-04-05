@@ -26,9 +26,11 @@ export function DarkModeSwitch({ class: className }: { class?: string }) {
           function toggleDarkMode() {
             if (document.documentElement.classList.contains("dark")) {
               document.documentElement.classList.remove("dark");
+              document.documentElement.removeAttribute("data-theme");
               localStorage.theme = "light";
             } else {
               document.documentElement.classList.add("dark");
+              document.documentElement.setAttribute("data-theme", "dark");
               localStorage.theme = "dark";
             }
           }

@@ -4,9 +4,10 @@ import { AppConfig } from "../lib/config.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { DarkModeSwitch } from "./dark_mode_switch.tsx";
 import { Link, LinkOptions } from "./link.tsx";
-import { Component, distinctBy, h, tw } from "../deps.ts";
+import { apply, Component, css, distinctBy, h, tw } from "../deps.ts";
 import { styles } from "../lib/styles.ts";
 import { Iconify } from "./iconify.tsx";
+import { DocSearch } from "./docsearch.tsx";
 
 export interface NavItemOptions extends Omit<LinkOptions, "children"> {
   label: string;
@@ -35,6 +36,20 @@ export class Header extends Component<HeaderOptions> {
           class={tw`flex flex-wrap items-center md:ml-auto
             text-base justify-center space-x-5`}
         >
+          {this.props.config.docSearch
+            ? (
+              <DocSearch
+                class={tw`${
+                  css({
+                    button: apply`md:w-56 h-10 dark:bg-gray-700!`,
+                    ".DocSearch-Button-Placeholder": apply`mt-[1px]`
+                  })
+                }`}
+                config={this.props.config.docSearch}
+              />
+            )
+            : null}
+
           {this.#renderLinks()}
 
           <Link

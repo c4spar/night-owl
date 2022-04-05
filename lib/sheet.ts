@@ -8,6 +8,19 @@ import {
 } from "../deps.ts";
 
 export const sheet = virtualSheet();
+export const colors = {
+  black: twColors.black,
+  white: twColors.white,
+  gray: twColors.coolGray,
+  red: twColors.red,
+  yellow: twColors.amber,
+  green: twColors.emerald,
+  cyan: twColors.cyan,
+  blue: twColors.lightBlue,
+  indigo: twColors.indigo,
+  purple: twColors.fuchsia,
+  pink: twColors.pink,
+};
 
 export function setupTwind(theme: Partial<Theme> = {}) {
   setup({
@@ -43,17 +56,7 @@ export function setupTwind(theme: Partial<Theme> = {}) {
         colors: {
           transparent: "transparent",
           current: "currentColor",
-          black: twColors.black,
-          white: twColors.white,
-          gray: twColors.coolGray,
-          red: twColors.red,
-          yellow: twColors.amber,
-          green: twColors.emerald,
-          cyan: twColors.cyan,
-          blue: twColors.lightBlue,
-          indigo: twColors.indigo,
-          purple: twColors.fuchsia,
-          pink: twColors.pink,
+          ...colors,
         },
         boxShadow: {
           "code-dark":

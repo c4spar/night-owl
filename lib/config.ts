@@ -1,3 +1,4 @@
+import { DocSearchConfig } from "../components/docsearch.tsx";
 import { NavItemOptions } from "../components/header.tsx";
 import { NotFoundOptions } from "../components/not_found.tsx";
 import {
@@ -45,6 +46,7 @@ export interface CreateConfigOptions<O> {
   theme?: Partial<Theme>;
   scripts?: Record<string, Script>;
   toc?: string | TocTree;
+  docSearch?: DocSearchConfig;
 }
 
 export interface AppConfig
@@ -54,6 +56,7 @@ export interface AppConfig
   name: string;
   sourceFiles: Array<SourceFile>;
   toc?: Toc;
+  docSearch?: DocSearchConfig;
 }
 
 export type Toc = Record<string, string>;
