@@ -1,14 +1,14 @@
 /** @jsx h */
 
-import { NotFound } from "./components/not_found.tsx";
-import { PageBackground } from "./components/page_background.tsx";
-import { AppConfig, Script } from "./lib/config.ts";
-import { SourceFile } from "./lib/source_file.ts";
-import { mainStyles, styles } from "./lib/styles.ts";
-import { Header } from "./components/header.tsx";
-import { Component, Fragment, h, Helmet, render, tw } from "./deps.ts";
-import { MarkdownPage } from "./pages/markdown_page.tsx";
-import { VersionWarning } from "./components/version_warning.tsx";
+import { NotFound } from "./not_found.tsx";
+import { PageBackground } from "./page_background.tsx";
+import { AppConfig, Script } from "../lib/config.ts";
+import { SourceFile } from "../lib/source_file.ts";
+import { mainStyles, styles } from "../lib/styles.ts";
+import { Header } from "./header.tsx";
+import { Component, Fragment, h, Helmet, render, tw } from "../deps.ts";
+import { MarkdownPage } from "../pages/markdown_page.tsx";
+import { VersionWarning } from "./version_warning.tsx";
 
 interface AppOptions {
   url: string;

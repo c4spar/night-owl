@@ -8,7 +8,7 @@
 import { blue, h, log, lookup, serve as serveHttp } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { createConfig, CreateConfigOptions, Script } from "./config.ts";
-import { App } from "../app.tsx";
+import { App } from "../components/app.tsx";
 import {
   respondBadRequest,
   respondInternalServerEror,
