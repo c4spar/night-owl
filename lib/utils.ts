@@ -23,7 +23,11 @@ export async function env(
     : { state: "granted" };
 
   if (state === "granted") {
-    return Deno.env.get(name);
+    const value = Deno.env.get(name);
+    if (required && !value) {
+      throw new Error(`missing env var: ${name}`);
+    }
+    return value;
   }
 
   if (required) {
