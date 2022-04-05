@@ -53,9 +53,7 @@ export class Header extends Component<HeaderOptions> {
           {this.#renderLinks()}
 
           <Link
-            href={`https://github.com/${
-              this.props.file?.repository ?? this.props.config.repository
-            }`}
+            href={`https://github.com/${this.props.config.repository}`}
           >
             <Iconify
               icon="akar-icons:github-fill"
