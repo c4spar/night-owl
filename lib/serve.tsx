@@ -166,10 +166,6 @@ function getScripts(): Record<string, Script> {
       url: "https://code.iconify.design/2/2.1.0/iconify.min.js",
       contentType: "application/javascript",
     },
-    "/algolia-dsn.js": {
-      url: "https://YOUR_APP_ID-dsn.algolia.net",
-      contentType: "application/javascript",
-    },
     "/docsearch.css": {
       url: "https://cdn.jsdelivr.net/npm/@docsearch/css@3",
       contentType: "text/css",
