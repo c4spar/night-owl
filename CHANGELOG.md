@@ -1,3 +1,10 @@
+# [v0.1.20](https://github.com/c4spar/nano-page/compare/v0.1.19...v0.1.20) (Apr 6, 2022)
+
+### Bug Fixes
+
+- use main repo for github link in header nav
+  ([4644f6c](https://github.com/c4spar/nano-page/commit/4644f6c))
+
 # [v0.1.19](https://github.com/c4spar/nano-page/compare/v0.1.18...v0.1.19) (Apr 5, 2022)
 
 ### Bug Fixes
