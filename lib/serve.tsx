@@ -170,10 +170,6 @@ function getScripts(): Record<string, Script> {
       url: "https://YOUR_APP_ID-dsn.algolia.net",
       contentType: "application/javascript",
     },
-    "/docsearch.js": {
-      url: "https://cdn.jsdelivr.net/npm/@docsearch/js@3",
-      contentType: "application/javascript",
-    },
     "/docsearch.css": {
       url: "https://cdn.jsdelivr.net/npm/@docsearch/css@3",
       contentType: "text/css",

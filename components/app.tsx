@@ -51,6 +51,12 @@ export class App extends Component<AppOptions> {
               <script type="application/javascript" src={route} defere />
             ))}
         </Helmet>
+        <Helmet footer>
+          <script
+            type="application/javascript"
+            src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"
+          />
+        </Helmet>
 
         <div class={tw`${mainStyles} mb-7 ${styles.font.primary}`}>
           <PageBackground>
