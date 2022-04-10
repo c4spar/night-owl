@@ -1,3 +1,17 @@
+# [v0.1.21](https://github.com/c4spar/nano-page/compare/v0.1.20...v0.1.21) (Apr 10, 2022)
+
+### Features
+
+- add `pattern` option to src options
+  ([b7d00cd](https://github.com/c4spar/nano-page/commit/b7d00cd))
+
+### Code Refactoring
+
+- redirect to home on webhooks/cache/clear
+  ([b7fba5f](https://github.com/c4spar/nano-page/commit/b7fba5f))
+- move search button in navbar to the right
+  ([18f6c6c](https://github.com/c4spar/nano-page/commit/18f6c6c))
+
 # [v0.1.20](https://github.com/c4spar/nano-page/compare/v0.1.19...v0.1.20) (Apr 6, 2022)
 
 ### Bug Fixes
