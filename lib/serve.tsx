@@ -73,7 +73,7 @@ export async function serve<O>({
     if (webhooks && pathname === "/webhooks/cache/clear") {
       cache.clear();
       gitCache.clear();
-      return respondNoContent();
+      return Response.redirect(new URL("/", req.url), 302);
     }
 
     return await respondPage<O>(options, scripts, req, cache);
