@@ -28,6 +28,7 @@ export interface Script {
 
 export interface SourceFilesOptions extends FileOptions {
   label?: string;
+  pattern?: RegExp;
 }
 
 export interface CreateConfigOptions<O> {
@@ -97,7 +98,8 @@ export async function createConfig<O>(
             recursive: true,
             includeDirs: true,
             loadAssets: true,
-            pattern: /\.(md|js|jsx|ts|tsx)$/,
+            pattern: typeof path !== "string" && path.pattern ||
+              /\.(md|js|jsx|ts|tsx)$/,
             read: true,
             req,
             pages: opts.pages,
