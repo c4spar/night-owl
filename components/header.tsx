@@ -36,6 +36,18 @@ export class Header extends Component<HeaderOptions> {
           class={tw`flex flex-wrap items-center md:ml-auto
             text-base justify-center space-x-5`}
         >
+          {this.#renderLinks()}
+
+          <Link
+            href={`https://github.com/${this.props.config.repository}`}
+          >
+            <Iconify
+              icon="akar-icons:github-fill"
+              class={tw
+                `text-2xl inline ${styles.text.secondary} hover:(${styles.text.primary})`}
+            />
+          </Link>
+
           {this.props.config.docSearch
             ? (
               <DocSearch
@@ -49,18 +61,6 @@ export class Header extends Component<HeaderOptions> {
               />
             )
             : null}
-
-          {this.#renderLinks()}
-
-          <Link
-            href={`https://github.com/${this.props.config.repository}`}
-          >
-            <Iconify
-              icon="akar-icons:github-fill"
-              class={tw
-                `text-2xl inline ${styles.text.secondary} hover:(${styles.text.primary})`}
-            />
-          </Link>
 
           <DarkModeSwitch class={tw`flex ml-3`} />
         </nav>
