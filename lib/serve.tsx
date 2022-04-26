@@ -55,6 +55,7 @@ export async function serve<O>({
     }
     const { pathname } = new URL(req.url);
 
+    console.log("script:", pathname, scripts[pathname]);
     if (scripts[pathname]) {
       return respondScript(scripts[pathname], req);
     }
