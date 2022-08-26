@@ -26,6 +26,7 @@ export { debounce } from "https://deno.land/std@0.153.0/async/debounce.ts";
 export { deepMerge } from "https://deno.land/std@0.153.0/collections/deep_merge.ts";
 export { distinctBy } from "https://deno.land/std@0.153.0/collections/mod.ts";
 export { parse as parseYaml } from "https://deno.land/std@0.153.0/encoding/yaml.ts";
+export { rcompare } from "https://deno.land/std@0.153.0/semver/mod.ts";
 
 /** media_types */
 export {

@@ -5,6 +5,7 @@ import {
   green,
   log,
   lookup,
+  rcompare,
   red,
 } from "../deps.ts";
 import { Cache } from "./cache.ts";
@@ -53,7 +54,7 @@ export function getVersions(repository: string): Promise<GithubVersions> {
 
     const tagNames = tags
       .map((tag) => tag.ref.replace(/^refs\/tags\//, ""))
-      .reverse();
+      .sort((a, b) => rcompare(a, b));
 
     const branchNames = branches
       .sort((a, b) =>
