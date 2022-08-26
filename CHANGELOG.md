@@ -1,3 +1,15 @@
+# [v0.1.22](https://github.com/c4spar/night-owl/compare/v0.1.21...v0.1.22) (Aug 26, 2022)
+
+### Bug Fixes
+
+* sort versions by semver ([a906d11](https://github.com/c4spar/night-owl/commit/a906d11))
+
+### Chore
+
+* **upgrade:** deno/std@v0.153.0 ([e10a1b2](https://github.com/c4spar/night-owl/commit/e10a1b2))
+
+
+
 # [v0.1.21](https://github.com/c4spar/nano-page/compare/v0.1.20...v0.1.21) (Apr 10, 2022)
 
 ### Features
