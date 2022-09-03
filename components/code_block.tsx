@@ -62,7 +62,7 @@ export class CodeBlock extends Component<CodeBlockOptions> {
             dangerouslySetInnerHTML={{ __html: html }}
           />
           <Button
-            onclick={`navigator.clipboard.writeText(document.querySelector("#${id} code").textContent.trim()); this.textContent = "Copied!"; setTimeout(() => this.textContent = "Copy", 1500);`}
+            onclick={`navigator.clipboard.writeText(document.querySelector("#${id} code").textContent.trim().replace(/^\\$\\s+/g, '')); this.textContent = "Copied!"; setTimeout(() => this.textContent = "Copy", 1500);`}
             class={"copy-button " + tw` absolute ${
               code.split("\n").length > 1
                 ? "bottom-2"
