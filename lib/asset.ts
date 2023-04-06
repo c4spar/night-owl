@@ -1,4 +1,4 @@
-import { basename, dirname, encodeBase64, lookup } from "../deps.ts";
+import { basename, dirname, encodeBase64, typeByExtension } from "../deps.ts";
 import { gitReadFile } from "./git.ts";
 
 export interface AssetOptions {
@@ -97,7 +97,9 @@ async function denoReadFile(path: string, base64?: boolean): Promise<string> {
   const file = await Deno.readFile(path);
   if (base64) {
     try {
-      return `data:${lookup(path)};charset=utf-8;base64,${encodeBase64(file)}`;
+      return `data:${typeByExtension(path)};charset=utf-8;base64,${
+        encodeBase64(file)
+      }`;
     } catch (error: unknown) {
       throw new Error("Failed to encode base64 string: " + path, {
         cause: error instanceof Error ? error : undefined,

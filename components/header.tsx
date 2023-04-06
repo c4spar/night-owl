@@ -43,8 +43,7 @@ export class Header extends Component<HeaderOptions> {
           >
             <Iconify
               icon="akar-icons:github-fill"
-              class={tw
-                `text-2xl inline ${styles.text.secondary} hover:(${styles.text.primary})`}
+              class={tw`text-2xl inline ${styles.text.secondary} hover:(${styles.text.primary})`}
             />
           </Link>
 
@@ -74,8 +73,7 @@ export class Header extends Component<HeaderOptions> {
     }
     return (
       <a
-        class={tw
-          `flex ${styles.font.primary} font-bold items-center mb-4 md:mb-0`}
+        class={tw`flex ${styles.font.primary} font-bold items-center mb-4 md:mb-0`}
         href="/"
       >
         <span class={tw`ml-3 text-3xl`}>
@@ -121,8 +119,7 @@ export class Header extends Component<HeaderOptions> {
     return (
       <Link
         {...props}
-        class={tw
-          `pb-1 pt-2 border-b-2 border-transparent hover:border-indigo-500 text-lg`}
+        class={tw`pb-1 pt-2 border-b-2 border-transparent hover:border-indigo-500 text-lg`}
         href={href}
       >
         {label}

@@ -85,8 +85,7 @@ export class MarkdownPage extends Component<MarkdownPageOptions> {
         </div>
 
         <div
-          class={`overlay ${tw
-            `hidden left-0 top-0 right-0 bottom-0 fixed cursor-pointer ${styles.bg.primary} opacity-30`}`}
+          class={`overlay ${tw`hidden left-0 top-0 right-0 bottom-0 fixed cursor-pointer ${styles.bg.primary} opacity-30`}`}
           onclick="toggleSideBar()"
         >
         </div>

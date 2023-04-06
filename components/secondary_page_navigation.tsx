@@ -54,8 +54,7 @@ export class SecondaryPageNavigation
           <script type="application/javascript">{this.#getScript()}</script>
         </Helmet>
         <Navigation
-          class={tw
-            `p-2 rounded-xl ${styles.transform.primary} ${styles.bg.secondary} ${this.#css()}`}
+          class={tw`p-2 rounded-xl ${styles.transform.primary} ${styles.bg.secondary} ${this.#css()}`}
         >
           {render(headlines?.map((headline) => {
             const padding = tw`py-3 pl-[${headline.size / 1.5 + 0.4}rem] pr-5`;
@@ -81,13 +80,13 @@ export class SecondaryPageNavigation
 
   #css() {
     return css({
-      ".nav-item .nav-item-label": apply
-        `border-l-2 border-transparent ${styles.text.primaryGradient}`,
+      ".nav-item .nav-item-label":
+        apply`border-l-2 border-transparent ${styles.text.primaryGradient}`,
       ".nav-item:hover .nav-item-label": styles.text.secondaryGradientAccent,
       ".nav-item:not(.nav-item:first-child, .nav-item.active, .nav-item:hover) .nav-item-label":
         styles.text.secondaryGradient,
-      ".nav-item.active .nav-item-label": apply
-        `border-blue(400 dark:400) ${styles.text.secondaryGradientAccent}`,
+      ".nav-item.active .nav-item-label":
+        apply`border-blue(400 dark:400) ${styles.text.secondaryGradientAccent}`,
       ".nav-item:first-child .nav-item-label":
         styles.text.primaryGradientAccent,
       ".nav-item.active:first-child .nav-item-label": apply`pt-0 mt-3`,

@@ -4,9 +4,9 @@ import {
   decodeBase64,
   green,
   log,
-  lookup,
   rcompare,
   red,
+  typeByExtension,
 } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { env, joinUrl } from "./utils.ts";
@@ -164,7 +164,7 @@ export async function gitReadFile(
 
   try {
     return base64
-      ? `data:${lookup(path)};charset=utf-8;base64,${file.content}`
+      ? `data:${typeByExtension(path)};charset=utf-8;base64,${file.content}`
       : decoder.decode(decodeBase64(file.content));
   } catch (error: unknown) {
     throw new Error("Failed to decode base64 string: " + file.content, {

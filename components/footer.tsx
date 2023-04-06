@@ -30,8 +30,7 @@ export class Footer extends Component<FooterOptions> {
             ? (
               <Link
                 href={prevFile.route}
-                class={tw
-                  `font-bold hover:${styles.bg.secondary} rounded px-5 py-3`}
+                class={tw`font-bold hover:${styles.bg.secondary} rounded px-5 py-3`}
               >
                 ← {prevFile.name}
               </Link>
@@ -42,8 +41,7 @@ export class Footer extends Component<FooterOptions> {
             ? (
               <Link
                 href={nextFile.route}
-                class={tw
-                  `ml-auto font-bold hover:${styles.bg.secondary} rounded px-5 py-3`}
+                class={tw`ml-auto font-bold hover:${styles.bg.secondary} rounded px-5 py-3`}
               >
                 {nextFile.name} →
               </Link>
