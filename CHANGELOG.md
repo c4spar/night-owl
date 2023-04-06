@@ -1,3 +1,10 @@
+# [v0.1.24](https://github.com/c4spar/night-owl/compare/v0.1.23...v0.1.24) (Apr 6, 2023)
+
+### Chore
+
+- **upgrade:** deno/std@v0.182.0
+  ([b29d282](https://github.com/c4spar/night-owl/commit/b29d282))
+
 # [v0.1.23](https://github.com/c4spar/night-owl/compare/v0.1.22...v0.1.23) (Sep 3, 2022)
 
 ### Bug Fixes
