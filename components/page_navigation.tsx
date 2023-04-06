@@ -69,8 +69,8 @@ export class PageNavigation extends Component<PageNavigationOptions> {
       ".nav-item.active.first": apply`rounded-t-xl`,
       ".nav-item.active.last": apply`rounded-b-xl`,
       // label
-      ".nav-item .nav-item-label": apply
-        `py-3 pl-5 pr-5 ${styles.text.primaryGradient}`,
+      ".nav-item .nav-item-label":
+        apply`py-3 pl-5 pr-5 ${styles.text.primaryGradient}`,
       ".nav-item:first-child .nav-item-label": apply`pt-5`,
       ".nav-item:last-child .nav-item-label": apply`pb-5`,
       ".nav-item:hover .nav-item-label": styles.text.secondaryGradientAccent,
@@ -79,8 +79,8 @@ export class PageNavigation extends Component<PageNavigationOptions> {
       ".nav-item.selected .nav-item-label": styles.text.secondaryGradientAccent,
       ".nav-item.active.last .nav-item-label": apply`pt-3 pb-0 mb-3`,
       ".nav-item.active.last:last-child .nav-item-label": apply`pb-0 mb-5`,
-      ".nav-item.active:not(.root,.first) .nav-item-label": apply
-        `border-l-2 border-blue(400 dark:400)`,
+      ".nav-item.active:not(.root,.first) .nav-item-label":
+        apply`border-l-2 border-blue(400 dark:400)`,
     });
   }
 

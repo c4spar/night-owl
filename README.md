@@ -24,7 +24,7 @@ This example serves the official deno manual directly from the Github
 repository.
 
 ```ts
-import { serve } from "https://deno.land/x/night_owl@v0.1.21/mod.ts";
+import { serve } from "https://deno.land/x/night_owl@v0.1.23/mod.ts";
 
 await serve({
   src: "denoland/manual@main:/",
@@ -35,6 +35,6 @@ await serve({
 ```
 
 ```console
-$ GITHUB_TOKEN=****** deno run --allow-env --allow-net https://deno.land/x/night_owl@v0.1.21/examples/deno_manual.ts
+$ GITHUB_TOKEN=****** deno run --allow-env --allow-net https://deno.land/x/night_owl@v0.1.23/examples/deno_manual.ts
 Listening on http://localhost:8000
 ```

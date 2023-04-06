@@ -5,7 +5,7 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { blue, h, log, lookup, serve as serveHttp } from "../deps.ts";
+import { blue, h, log, serve as serveHttp, typeByExtension } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { createConfig, CreateConfigOptions, Script } from "./config.ts";
 import { App } from "../components/app.tsx";
@@ -112,7 +112,7 @@ async function respondAsset(pathname: string) {
   try {
     return await respondLocalFile(
       `.${pathname}`,
-      lookup(pathname) ?? "text/plain",
+      typeByExtension(pathname) ?? "text/plain",
     );
   } catch (error: unknown) {
     if (error instanceof Deno.errors.NotFound) {

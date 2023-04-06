@@ -29,14 +29,13 @@ export class DocSearch extends Component<DocSearchOptions> {
         </Helmet>
         <div
           id="docsearch"
-          class={`${this.props.class} ${tw
-            `flex font-primary ${styles.text.accentPrimary} ${
-              css({
-                "*": styles.transform.primary,
-                ".DocSearch-Button": apply`m-0`,
-                ".DocSearch-Button-Keys": apply`mt-1`,
-              })
-            }`}`}
+          class={`${this.props.class} ${tw`flex font-primary ${styles.text.accentPrimary} ${
+            css({
+              "*": styles.transform.primary,
+              ".DocSearch-Button": apply`m-0`,
+              ".DocSearch-Button-Keys": apply`mt-1`,
+            })
+          }`}`}
         >
         </div>
       </Fragment>

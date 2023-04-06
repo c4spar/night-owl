@@ -41,8 +41,7 @@ export class AnimatedText extends Component<AnimatedTextOptions> {
                       }ms;`}
                       class={tw`inline-block` + " " + (this.props.webKitFix
                         ? "moz-animate-left-right"
-                        : tw
-                          `animate-left-right transform-gpu opacity-0 -translate-x-72 -scale-[0.3]`)}
+                        : tw`animate-left-right transform-gpu opacity-0 -translate-x-72 -scale-[0.3]`)}
                     >
                       {char}
                     </span>

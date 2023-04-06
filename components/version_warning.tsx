@@ -17,8 +17,7 @@ export class VersionWarning extends Component<VersionWarningOptions> {
     log.debug("file: %O", this.props.file);
     return (
       <div
-        class={tw
-          `flex bg-yellow(300 dark:600) relative ${styles.transform.primary}`}
+        class={tw`flex bg-yellow(300 dark:600) relative ${styles.transform.primary}`}
       >
         <div
           class={tw`
@@ -26,13 +25,12 @@ export class VersionWarning extends Component<VersionWarningOptions> {
                 text-red-800 text-lg font-primary font-bold justify-center text-center
               `}
         >
-          ⚠️ You are viewing the documentation generated from a user
-          contribution or an upcoming or past release.
+          ⚠️ You are viewing the documentation generated from a user contribution
+          or an upcoming or past release.
           <br></br>
           <Link
             href={this.#getLatestVersionRoute()}
-            class={tw
-              `!text-blue-900 !hover:text-indigo-900 text-underline flex font-bold justify-center text-center ${styles.transform.primary}`}
+            class={tw`!text-blue-900 !hover:text-indigo-900 text-underline flex font-bold justify-center text-center ${styles.transform.primary}`}
           >
             Click here to view the documentation for the latest release.
           </Link>
