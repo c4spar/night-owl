@@ -2,7 +2,7 @@ import { log } from "../deps.ts";
 import { env } from "./utils.ts";
 
 export async function setupLog(): Promise<void> {
-  await log.setup({
+  log.setup({
     handlers: {
       console: new log.handlers.ConsoleHandler("DEBUG", {
         formatter: (logRecord) => {
@@ -61,5 +61,8 @@ function format(arg: unknown, compact?: boolean): string {
     colors: true,
     depth: 5,
     compact,
+    getters: true,
+    showHidden: true,
+    showProxy: true,
   });
 }
