@@ -1,7 +1,7 @@
 /** @jsx h */
 
 import { Component, h, log, tw } from "../deps.ts";
-import { AppConfig } from "../lib/config.ts";
+import { AppConfig } from "../lib/config/config.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { styles } from "../lib/styles.ts";
 import { getRouteRegex } from "../lib/utils.ts";

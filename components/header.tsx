@@ -1,6 +1,6 @@
 /** @jsx h */
 
-import { AppConfig } from "../lib/config.ts";
+import { AppConfig } from "../lib/config/config.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { DarkModeSwitch } from "./dark_mode_switch.tsx";
 import { Link, LinkOptions } from "./link.tsx";
@@ -88,22 +88,24 @@ export class Header extends Component<HeaderOptions> {
   }
 
   #getLinks(): Array<NavItemOptions> {
-    return distinctBy([
+    return [
       ...this.getPageLinks(),
       ...this.#getNavLinks(),
-    ], (link) => link.href);
+    ];
   }
 
   getPageLinks(): Array<NavItemOptions> {
     if (!this.props.config.pages) {
       return [];
     }
-    return this.props.config.sourceFiles
-      .filter((file) => file.routePrefix === "/" && file.route !== "/")
-      .map((file) => ({
-        label: file.name,
-        href: file.route,
-      }));
+    const files = this.props.config.sourceFiles.filter(
+      (file) => file.routePrefix === "/" && file.route !== "/",
+    );
+
+    return distinctBy(files, (link) => link.latestRoute).map((file) => ({
+      label: file.name,
+      href: file.route,
+    }));
   }
 
   #getNavLinks(): Array<NavItemOptions> {

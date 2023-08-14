@@ -1,16 +1,11 @@
-import { basename, dirname, encodeBase64, typeByExtension } from "../deps.ts";
-import { gitReadFile } from "./git.ts";
+import { basename, dirname } from "../deps.ts";
+import { readTextFile, ReadTextFileOptions } from "./fs/read_text_file.ts";
 
-export interface AssetOptions {
+export type AssetOptions = ReadTextFileOptions & {
   addVersion?: boolean;
-  base64?: true;
   basePath: string;
   read?: boolean;
-  repository?: string;
-  rev?: string;
-}
-
-const decoder = new TextDecoder("utf8");
+};
 
 export class Asset {
   #basePath: string;
@@ -32,10 +27,13 @@ export class Asset {
     this.#content = content;
     this.#fileName = basename(path);
     this.#dirName = dirname(path);
-
     this.#basePath = opts.basePath;
-    this.#rev = opts.rev;
-    this.#repository = opts.repository;
+    if ("rev" in opts) {
+      this.#rev = opts.rev;
+    }
+    if ("repository" in opts) {
+      this.#repository = opts.repository;
+    }
   }
 
   get basePath() {
@@ -79,33 +77,4 @@ export class Asset {
       ...compact ? {} : { content: this.#content },
     };
   }
-}
-
-export async function readTextFile(path: string, opts: AssetOptions) {
-  try {
-    return opts.repository
-      ? await gitReadFile(opts.repository, opts.rev!, path, opts.base64)
-      : await denoReadFile(path, opts.base64);
-  } catch (error: unknown) {
-    throw new Error("Failed to read file: " + path, {
-      cause: error instanceof Error ? error : undefined,
-    });
-  }
-}
-
-async function denoReadFile(path: string, base64?: boolean): Promise<string> {
-  const file = await Deno.readFile(path);
-  if (base64) {
-    try {
-      return `data:${typeByExtension(path)};charset=utf-8;base64,${
-        encodeBase64(file)
-      }`;
-    } catch (error: unknown) {
-      throw new Error("Failed to encode base64 string: " + path, {
-        cause: error instanceof Error ? error : undefined,
-      });
-    }
-  }
-
-  return decoder.decode(file);
 }

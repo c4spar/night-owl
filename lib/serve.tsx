@@ -7,7 +7,7 @@
 
 import { blue, h, log, serve as serveHttp, typeByExtension } from "../deps.ts";
 import { Cache } from "./cache.ts";
-import { createConfig, CreateConfigOptions, Script } from "./config.ts";
+import { createConfig, CreateConfigOptions, Script } from "./config/config.ts";
 import { App } from "../components/app.tsx";
 import {
   respondBadRequest,
@@ -19,7 +19,7 @@ import {
 } from "./request.ts";
 import { setupTwind } from "./sheet.ts";
 import { ssr } from "./ssr.ts";
-import { gitCache } from "./git.ts";
+import { gitCache } from "./fs/git/git_fetch.ts";
 import { matchFile } from "./utils.ts";
 
 export interface ServeOptions<O> extends CreateConfigOptions<O> {
@@ -96,7 +96,10 @@ async function respondPage<O>(
 
     // Redirect to the latest version.
     if (file?.rev && !file.route.includes(file.rev)) {
-      return Response.redirect(new URL(file.latestRoute, req.url));
+      log.debug("Redirect to latest version:", file.latestRoute);
+      if (file.latestRoute !== "/") {
+        return Response.redirect(new URL(file.latestRoute, req.url));
+      }
     }
 
     html = ssr(

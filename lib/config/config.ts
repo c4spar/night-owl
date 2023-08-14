@@ -1,20 +1,11 @@
-import { DocSearchConfig } from "../components/docsearch.tsx";
-import { NavItemOptions } from "../components/header.tsx";
-import { NotFoundOptions } from "../components/not_found.tsx";
-import {
-  basename,
-  bold,
-  deepMerge,
-  dirname,
-  join,
-  log,
-  parseYaml,
-  Theme,
-} from "../deps.ts";
-import { ProviderOptions } from "./provider.ts";
-import { FileOptions, getFiles } from "./resource.ts";
-import { SourceFile } from "./source_file.ts";
-import { pathToUrl } from "./utils.ts";
+import { DocSearchConfig } from "../../components/docsearch.tsx";
+import { NavItemOptions } from "../../components/header.tsx";
+import { NotFoundOptions } from "../../components/not_found.tsx";
+import { bold, deepMerge, join, log, Theme } from "../../deps.ts";
+import { FileOptions, readSourceFiles } from "../fs/read_source_files.ts";
+import { readTocFile } from "../fs/read_toc_file.ts";
+import { ProviderOptions } from "../provider.ts";
+import { SourceFile } from "../source_file.ts";
 
 export interface NavOptions {
   collapse?: boolean;
@@ -82,8 +73,8 @@ export async function createConfig<O>(
     ...options,
   };
   const src = typeof opts.src === "string" ? [opts.src] : opts.src;
-  const {sourceFiles, toc} = await fetchSourceFiles(src, req, opts);
-  
+  const { sourceFiles, toc } = await fetchSourceFiles(src, req, opts);
+
   return {
     ...opts,
     sourceFiles,
@@ -95,30 +86,39 @@ async function fetchSourceFiles<O>(
   src: Array<string | SourceFilesOptions>,
   req: Request,
   opts: CreateConfigOptions<O>,
-): Promise<{ sourceFiles: Array<SourceFile<O>>, toc?: Toc}> {
-  log.info(bold("Fetching resources:"), src);
+): Promise<{ sourceFiles: Array<SourceFile<O>>; toc?: Toc }> {
+  const srcFilesOptions = src.map((path) =>
+    typeof path === "string" ? { src: path } : path
+  );
+  log.info(
+    bold("Fetching resources:"),
+    srcFilesOptions.map((srcOpts) => srcOpts.src),
+  );
 
   const now = Date.now();
-  const files: Array<[Array<SourceFile<O>>, SourceFilesOptions, Toc?]> = await Promise.all(
-    src.map((path: string | SourceFilesOptions) =>
-      Promise.all([
-        getFiles(path, {
-          recursive: true,
-          includeDirs: true,
-          loadAssets: true,
-          pattern: typeof path !== "string" && path.pattern ||
-            /\.(md|js|jsx|ts|tsx)$/,
-          read: true,
-          req,
-          pages: opts.pages,
-          providers: opts.providers,
-          versions: opts.versions ?? true,
-        }),
-        typeof path === "string" ? { src: path } : path,
-        getToc(path, opts, req),
-      ])
-    ),
-  );
+  const files: Array<[Array<SourceFile<O>>, SourceFilesOptions, Toc?]> =
+    await Promise.all(
+      srcFilesOptions.map((srcFileOptions: SourceFilesOptions) =>
+        Promise.all([
+          readSourceFiles(srcFileOptions, {
+            recursive: true,
+            includeDirs: true,
+            loadAssets: true,
+            pattern: srcFileOptions.pattern || /\.(md|js|jsx|ts|tsx)$/,
+            read: true,
+            req,
+            pages: opts.pages,
+            providers: opts.providers,
+            versions: opts.versions ?? true,
+          }),
+          srcFileOptions,
+          readTocFile(srcFileOptions, {
+            ...opts,
+            versions: opts.versions ?? true,
+          }, req),
+        ])
+      ),
+    );
 
   let toc: Toc | undefined = undefined;
   let sourceFiles: Array<SourceFile<O>> = [];
@@ -135,7 +135,7 @@ async function fetchSourceFiles<O>(
   log.debug("toc: %O", toc);
 
   if (toc) {
-    sourceFiles = extractTocFiles(toc, sourceFiles);
+    sourceFiles = getTocSourceFiles(toc, sourceFiles);
   }
 
   log.info(
@@ -143,50 +143,8 @@ async function fetchSourceFiles<O>(
     sourceFiles.length,
     (Date.now() - now).toString() + "ms",
   );
-  
-  return {sourceFiles, toc};
-}
 
-async function getToc<T>(
-  path: string | SourceFilesOptions,
-  opts: CreateConfigOptions<T>,
-  req: Request,
-) {
-  log.debug("Get toc:", path);
-  let toc: TocTree | undefined;
-
-  if (opts.toc && typeof opts.toc !== "string") {
-    toc = opts.toc;
-  } else {
-    let pattern: RegExp;
-    if (typeof opts.toc === "string") {
-      path = dirname(opts.toc);
-      pattern = new RegExp(`${basename(opts.toc).replace(".", "\.")}$`);
-    } else {
-      pattern = /toc\.(yml|yaml|json)$/;
-    }
-
-    const [file] = await getFiles(
-      typeof path === "string"
-        ? path
-        : { ...path, component: undefined, file: undefined },
-      {
-        read: true,
-        repository: opts.repository,
-        pattern,
-        req,
-        versions: true,
-      },
-    );
-
-    if (file) {
-      toc = file.path.endsWith(".json")
-        ? JSON.parse(file.content)
-        : parseYaml(file.content);
-    }
-  }
-
-  return toc && flatToc(toc);
+  return { sourceFiles, toc };
 }
 
 /** Exclude readme if index file exists. */
@@ -194,16 +152,20 @@ function prepareIndexPage<O>(
   source: Array<SourceFile<O>>,
   sourceOpts: SourceFilesOptions,
 ): void {
-  const readmeIndex = source.findIndex((file) =>
+  const readmeIndex: number = source.findIndex((file) =>
+    !file.isDirectory &&
     file.fileName === "README.md" &&
-    file.routePrefix === "/" &&
+    file.dirName === "/" &&
     (!sourceOpts.prefix || sourceOpts.prefix === file.route)
   );
-  const indexIndex = source.findIndex((file) =>
+
+  const indexIndex: number = source.findIndex((file) =>
+    !file.isDirectory &&
     file.fileName.match(/^index\.(md|js|jsx|ts|tsx)$/) &&
-    file.routePrefix === "/" &&
+    file.dirName === "/" &&
     (!sourceOpts.prefix || sourceOpts.prefix === file.route)
   );
+
   if (readmeIndex !== -1 && indexIndex !== -1) {
     source.splice(readmeIndex, 1);
   }
@@ -226,38 +188,30 @@ function mergeToc(sourceOpts: SourceFilesOptions, tocToc: Toc, toc?: Toc): Toc {
   return deepMerge(toc ?? {}, tocToc ?? {});
 }
 
-function extractTocFiles<O>(toc: Toc, sourceFiles: Array<SourceFile<O>>): Array<SourceFile<O>> {
+/** Exclude all source files which are not included in the toc. */
+function getTocSourceFiles<O>(
+  toc: Toc,
+  sourceFiles: Array<SourceFile<O>>,
+): Array<SourceFile<O>> {
   const filesTmp: Array<SourceFile<O>> = [];
+
   for (const [route, name] of Object.entries(toc)) {
-    const matchedFiles = sourceFiles.filter((file) =>
-      file.mainRoute === route,
-    );
+    const matchedFiles = sourceFiles.filter((file) => file.mainRoute === route);
+
     if (!matchedFiles.length) {
-      log.error(`Table of content file not found: ${route} -> ${name}`, matchedFiles, sourceFiles);
+      log.error(
+        `Table of content file not found: ${route} -> ${name}`,
+        matchedFiles,
+        sourceFiles,
+      );
       throw new Error(`Table of content file not found: ${route} -> ${name}`);
     }
+
     for (const file of matchedFiles) {
       file.name = name;
       filesTmp.push(file);
     }
   }
-  return filesTmp;
-}
 
-function flatToc(
-  toc: TocTree,
-  prefix = "",
-  routes: Record<string, string> = {},
-) {
-  for (const [path, nameOrItem] of Object.entries(toc)) {
-    const route = pathToUrl("/", prefix, path);
-    const item = typeof nameOrItem === "string"
-      ? { name: nameOrItem }
-      : nameOrItem;
-    routes[route] = item.name;
-    if (item.children) {
-      flatToc(item.children, route, routes);
-    }
-  }
-  return routes;
+  return filesTmp;
 }
