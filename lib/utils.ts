@@ -1,5 +1,5 @@
 import { fromFileUrl } from "../deps.ts";
-import { GithubVersions } from "./git.ts";
+import { GithubVersions } from "./fs/git/get_versions.ts";
 import { SourceFile } from "./source_file.ts";
 
 export async function env(
@@ -177,7 +177,7 @@ export function removeVersion(
           : `/${getVersionsPattern(versions)}`,
       ),
       "",
-    )
+    ) || "/"
     : route;
 }
 
@@ -232,9 +232,6 @@ export function addLatestVersion(
   versions: GithubVersions,
   pages?: boolean,
 ) {
-  if (!versions) {
-    return "";
-  }
   const regex = getRouteRegex(
     versions.all,
     pages,
@@ -246,5 +243,5 @@ export function addLatestVersion(
   return route.replace(
     regex,
     replace,
-  ).replace(/\/+$/, "");
+  ).replace(/\/+$/, "") || "/";
 }

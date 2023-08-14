@@ -15,7 +15,7 @@ export {
   type CreateConfigOptions,
   type NavOptions,
   type Script,
-} from "./lib/config.ts";
+} from "./lib/config/config.ts";
 export {
   type Provider,
   type ProviderFunction,
@@ -23,11 +23,9 @@ export {
   type ProviderType,
 } from "./lib/provider.ts";
 export {
-  getFiles,
-  type GetFilesOptions,
-  type ReadDirOptions,
-} from "./lib/resource.ts";
-export { type GithubVersions } from "./lib/git.ts";
+  readSourceFiles,
+  type ReadSourceFilesOptions,
+} from "./lib/fs/read_source_files.ts";
 export { SourceFile, type SourceFileOptions } from "./lib/source_file.ts";
 export { Asset, type AssetOptions } from "./lib/asset.ts";
 export { styles } from "./lib/styles.ts";
@@ -48,3 +46,5 @@ export {
   tw,
   twColors,
 } from "./deps.ts";
+export { type ReadDirOptions } from "./lib/fs/read_dir.ts";
+export { type GithubVersions } from "./lib/fs/git/get_versions.ts";

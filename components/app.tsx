@@ -2,7 +2,7 @@
 
 import { NotFound } from "./not_found.tsx";
 import { PageBackground } from "./page_background.tsx";
-import { AppConfig, Script } from "../lib/config.ts";
+import { AppConfig, Script } from "../lib/config/config.ts";
 import { SourceFile } from "../lib/source_file.ts";
 import { mainStyles, styles } from "../lib/styles.ts";
 import { Header } from "./header.tsx";
