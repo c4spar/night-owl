@@ -1,3 +1,12 @@
+# [v0.1.25](https://github.com/c4spar/night-owl/compare/v0.1.24...v0.1.25) (Aug 14, 2023)
+
+### Code Refactoring
+
+- group fs methods and fix some bugs (#3)
+  ([8b6d556](https://github.com/c4spar/night-owl/commit/8b6d556))
+- refactor createConfig method
+  ([03f6f62](https://github.com/c4spar/night-owl/commit/03f6f62))
+
 # [v0.1.24](https://github.com/c4spar/night-owl/compare/v0.1.23...v0.1.24) (Apr 6, 2023)
 
 ### Chore
