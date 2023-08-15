@@ -1,12 +1,12 @@
 /** std */
-export { serve } from "https://deno.land/std@0.182.0/http/server.ts";
+export { serve } from "https://deno.land/std@0.198.0/http/server.ts";
 export {
   blue,
   bold,
   green,
   red,
   yellow,
-} from "https://deno.land/std@0.182.0/fmt/colors.ts";
+} from "https://deno.land/std@0.198.0/fmt/colors.ts";
 export {
   basename,
   dirname,
@@ -15,22 +15,22 @@ export {
   isAbsolute,
   join,
   resolve,
-} from "https://deno.land/std@0.182.0/path/mod.ts";
-export * as log from "https://deno.land/std@0.182.0/log/mod.ts";
+} from "https://deno.land/std@0.198.0/path/mod.ts";
+export * as log from "https://deno.land/std@0.198.0/log/mod.ts";
 export {
   decode as decodeBase64,
   encode as encodeBase64,
-} from "https://deno.land/std@0.182.0/encoding/base64.ts";
-export { assert } from "https://deno.land/std@0.182.0/testing/asserts.ts";
-export { debounce } from "https://deno.land/std@0.182.0/async/debounce.ts";
-export { deepMerge } from "https://deno.land/std@0.182.0/collections/deep_merge.ts";
-export { distinctBy } from "https://deno.land/std@0.182.0/collections/distinct_by.ts";
-export { parse as parseYaml } from "https://deno.land/std@0.182.0/encoding/yaml.ts";
-export { rcompare } from "https://deno.land/std@0.182.0/semver/mod.ts";
+} from "https://deno.land/std@0.198.0/encoding/base64.ts";
+export { assert } from "https://deno.land/std@0.198.0/testing/asserts.ts";
+export { debounce } from "https://deno.land/std@0.198.0/async/debounce.ts";
+export { deepMerge } from "https://deno.land/std@0.198.0/collections/deep_merge.ts";
+export { distinctBy } from "https://deno.land/std@0.198.0/collections/distinct_by.ts";
+export { parse as parseYaml } from "https://deno.land/std@0.198.0/yaml/mod.ts";
+export { rcompare } from "https://deno.land/std@0.198.0/semver/mod.ts";
 export {
   contentType,
   typeByExtension,
-} from "https://deno.land/std@0.182.0/media_types/mod.ts";
+} from "https://deno.land/std@0.198.0/media_types/mod.ts";
 
 /** nano_jsx */
 export { Helmet } from "https://deno.land/x/nano_jsx@v0.0.29/components/helmet.ts";
