@@ -108,10 +108,10 @@ export function getLabel(routeName: string): string {
   return label.length > 0 ? capitalize(label) : label;
 }
 
-interface ParseRemotePathResult {
+export interface ParseRemotePathResult {
   repository?: string;
   rev?: string;
-  path: string;
+  src: string;
 }
 
 export function parseRemotePath(path: string): ParseRemotePathResult {
@@ -141,7 +141,7 @@ export function parseRemotePath(path: string): ParseRemotePathResult {
   return {
     repository: repository || undefined,
     rev: rev || undefined,
-    path: filePath || "/",
+    src: filePath || "/",
   };
 }
 
@@ -181,11 +181,18 @@ export function removeVersion(
     : route;
 }
 
+export interface ParseRouteResult {
+  path: string;
+  pagePrefix: string;
+  selectedPage: string;
+  version?: string;
+}
+
 export function parseRoute(
   route: string,
   versions?: Array<string>,
   pages?: boolean,
-) {
+): ParseRouteResult {
   const match = route.match(getRouteRegex(versions, pages)) ?? [];
   let [_, path, pagePrefix, version, selectedPage]: Array<string | undefined> =
     [];
@@ -199,8 +206,8 @@ export function parseRoute(
   return {
     path: path || "/",
     pagePrefix: pagePrefix || "/",
-    version: version || undefined,
     selectedPage: selectedPage || "/",
+    version: version || undefined,
   };
 }
 

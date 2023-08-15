@@ -1,4 +1,4 @@
-import { join } from "../../deps.ts";
+import { join, log } from "../../deps.ts";
 import { SourceFile, SourceFileOptions } from "../resource/source_file.ts";
 import { DistributiveOmit } from "../types.ts";
 import { env, parseRemotePath, parseRoute, sortByKey } from "../utils.ts";
@@ -27,67 +27,46 @@ export async function readSourceFiles<O>(
   fileOptions: FileOptions,
   opts: ReadSourceFilesOptions<O>,
 ): Promise<Array<SourceFile<O>>> {
-  const { src, readDirOpts } = await sanitizeFileOptions(fileOptions, opts);
+  log.debug("Read source files:", fileOptions.src);
+  const path = parseRemotePath(fileOptions.src);
+  fileOptions = {
+    ...path,
+    ...fileOptions,
+    src: path.src,
+  };
 
-  const files = await readSourceFilesDir(src, readDirOpts);
+  const versions = await getSourceFileVersions(opts, fileOptions.repository);
 
-  if ("repository" in readDirOpts && readDirOpts.repository) {
+  const repository = !fileOptions.repository && !local && versions?.selected &&
+      "repository" in opts
+    ? opts.repository
+    : fileOptions.repository;
+
+  const files = await readSourceFilesDir(fileOptions.src, {
+    ...opts,
+    ...fileOptions,
+    versions,
+    repository,
+    addVersion: !!versions?.selected,
+    rev: versions?.selected ?? versions?.latest ?? fileOptions.rev,
+  });
+
+  if ("repository" in fileOptions && fileOptions.repository) {
     return files;
   }
 
   return files.sort(sortByKey("path"));
 }
 
-interface SanitizeFileOptionsResult<O> {
-  src: string;
-  readDirOpts: ReadSourceFilesDirOptions<O>;
-}
+export type SourceFileVersions = GithubVersions & {
+  selected?: string;
+};
 
-async function sanitizeFileOptions<O>(
-  fileOptions: FileOptions,
-  opts: ReadSourceFilesOptions<O>,
-): Promise<SanitizeFileOptionsResult<O>> {
-  const path = parseRemotePath(fileOptions.src);
-  const src = path.path;
-  let repository = fileOptions.repository ??= path.repository;
-
-  const versions = await sanitizeVersions(opts, repository);
-
-  const { version: selectedVersion } = parseRoute(
-    new URL(opts.req.url).pathname,
-    versions?.all ?? [],
-    opts.pages,
-  );
-
-  const rev = selectedVersion ?? versions?.latest ?? fileOptions.rev ??
-    path.rev;
-
-  // Fetch only from local (latest deployed version) if no version is selected
-  // and local is not enforced.
-  repository = !repository && !local && selectedVersion && "repository" in opts
-    ? opts.repository
-    : repository;
-
-  return {
-    src,
-    readDirOpts: {
-      ...opts,
-      addVersion: !!selectedVersion,
-      versions,
-      repository,
-      rev,
-      prefix: fileOptions.prefix,
-      component: fileOptions.component,
-      file: fileOptions.file,
-    },
-  };
-}
-
-async function sanitizeVersions<O, U>(
+async function getSourceFileVersions<O, U>(
   opts: ReadSourceFilesOptions<O>,
   repository?: string,
-): Promise<GithubVersions | undefined> {
-  let versions: GithubVersions | undefined;
+): Promise<SourceFileVersions | undefined> {
+  let versions: SourceFileVersions | undefined;
 
   if (opts.versions) {
     if (Array.isArray(opts.versions)) {
@@ -104,13 +83,23 @@ async function sanitizeVersions<O, U>(
         versions = await getVersions(repo);
       }
     }
+
+    if (versions) {
+      const { version: selectedVersion } = parseRoute(
+        new URL(opts.req.url).pathname,
+        versions.all ?? [],
+        opts.pages,
+      );
+
+      versions = { ...versions, selected: selectedVersion };
+    }
   }
 
   return versions;
 }
 
 export type ReadSourceFilesDirOptions<O> =
-  & DistributiveOmit<SourceFileOptions<O>, "isDirectory">
+  & DistributiveOmit<SourceFileOptions<O>, "isDirectory" | "basePath">
   & {
     recursive?: boolean;
     includeDirs?: boolean;
