@@ -1,40 +1,36 @@
 import { basename, dirname, log, parseYaml } from "../../deps.ts";
-import {
-  CreateConfigOptions,
-  SourceFilesOptions,
-  Toc,
-  TocTree,
-} from "../config/config.ts";
+import { CreateConfigOptions, Toc, TocTree } from "../config/config.ts";
 import { pathToUrl } from "../utils.ts";
-import { readSourceFiles } from "./read_source_files.ts";
+import { FileOptions, readSourceFiles } from "./read_source_files.ts";
 
 export async function readTocFile<T>(
-  sourceFileOptions: SourceFilesOptions,
+  fileOptions: FileOptions,
   opts: CreateConfigOptions<T>,
   req: Request,
 ): Promise<Toc | undefined> {
-  log.debug("Get toc:", sourceFileOptions.src);
+  log.debug("Read toc file:", fileOptions.src);
   let toc: TocTree | undefined;
 
   if (opts.toc && typeof opts.toc !== "string") {
     toc = opts.toc;
   } else {
     let pattern: RegExp;
+    let src: string;
     if (typeof opts.toc === "string") {
-      sourceFileOptions.src = dirname(opts.toc);
+      src = dirname(opts.toc);
       pattern = new RegExp(`${basename(opts.toc).replace(".", "\.")}$`);
     } else {
+      src = fileOptions.src;
       pattern = /toc\.(yml|yaml|json)$/;
     }
 
     const [file] = await readSourceFiles(
-      { ...sourceFileOptions, component: undefined, file: undefined },
+      { ...fileOptions, src, component: undefined, file: undefined },
       {
+        ...opts,
         read: true,
-        repository: opts.repository,
         pattern,
         req,
-        versions: true,
       },
     );
 

@@ -72,8 +72,7 @@ export async function createConfig<O>(
     name: "Night Owl",
     ...options,
   };
-  const src = typeof opts.src === "string" ? [opts.src] : opts.src;
-  const { sourceFiles, toc } = await fetchSourceFiles(src, req, opts);
+  const { sourceFiles, toc } = await fetchSourceFiles(req, opts);
 
   return {
     ...opts,
@@ -83,13 +82,12 @@ export async function createConfig<O>(
 }
 
 async function fetchSourceFiles<O>(
-  src: Array<string | SourceFilesOptions>,
   req: Request,
-  opts: CreateConfigOptions<O>,
+  opts: CreateConfigOptions<O> & Required<Pick<CreateConfigOptions<O>, "src">>,
 ): Promise<{ sourceFiles: Array<SourceFile<O>>; toc?: Toc }> {
-  const srcFilesOptions = src.map((path) =>
-    typeof path === "string" ? { src: path } : path
-  );
+  const srcFilesOptions = (typeof opts.src === "string" ? [opts.src] : opts.src)
+    .map((path) => typeof path === "string" ? { src: path } : path);
+
   log.info(
     bold("Fetching resources:"),
     srcFilesOptions.map((srcOpts) => srcOpts.src),
@@ -101,20 +99,19 @@ async function fetchSourceFiles<O>(
       srcFilesOptions.map((srcFileOptions: SourceFilesOptions) =>
         Promise.all([
           readSourceFiles(srcFileOptions, {
+            versions: true,
+            ...opts,
             recursive: true,
             includeDirs: true,
             loadAssets: true,
             pattern: srcFileOptions.pattern || /\.(md|js|jsx|ts|tsx)$/,
             read: true,
             req,
-            pages: opts.pages,
-            providers: opts.providers,
-            versions: opts.versions ?? true,
           }),
           srcFileOptions,
           readTocFile(srcFileOptions, {
+            versions: true,
             ...opts,
-            versions: opts.versions ?? true,
           }, req),
         ])
       ),
@@ -201,8 +198,7 @@ function getTocSourceFiles<O>(
     if (!matchedFiles.length) {
       log.error(
         `Table of content file not found: ${route} -> ${name}`,
-        matchedFiles,
-        sourceFiles,
+        sourceFiles.map((file) => file.toJson()),
       );
       throw new Error(`Table of content file not found: ${route} -> ${name}`);
     }

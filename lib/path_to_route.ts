@@ -28,7 +28,7 @@ export function pathToRoute<O>(
 
   // Trim base path.
   if (opts?.basePath) {
-    const { path: basePath } = parseRemotePath(opts.basePath);
+    const { src: basePath } = parseRemotePath(opts.basePath);
     const basePathRegex = new RegExp(`^${pathToUrl("/", basePath)}`);
     routePrefix = joinUrl(
       "/",
