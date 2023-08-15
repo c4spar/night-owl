@@ -1,3 +1,20 @@
+# [v0.1.26](https://github.com/c4spar/night-owl/compare/v0.1.25...v0.1.26) (Aug 15, 2023)
+
+### Bug Fixes
+
+- **fs:** fix toc file loading and some refactorings (#6)
+  ([31331a5](https://github.com/c4spar/night-owl/commit/31331a5))
+
+### Code Refactoring
+
+- **fs:** refactor readDir & readSourceFiles methods (#5)
+  ([1f428bd](https://github.com/c4spar/night-owl/commit/1f428bd))
+
+### Chore
+
+- **upgrade:** deno/std@v0.198.0 (#4)
+  ([85f84c0](https://github.com/c4spar/night-owl/commit/85f84c0))
+
 # [v0.1.25](https://github.com/c4spar/night-owl/compare/v0.1.24...v0.1.25) (Aug 14, 2023)
 
 ### Code Refactoring
