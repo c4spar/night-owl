@@ -1,7 +1,7 @@
 /** @jsx h */
 
 import { Component, h } from "../deps.ts";
-import { SourceFile } from "../lib/source_file.ts";
+import { SourceFile } from "../lib/resource/source_file.ts";
 import { Dropdown } from "./dropdown.tsx";
 
 export interface ModuleDropdownOptions {

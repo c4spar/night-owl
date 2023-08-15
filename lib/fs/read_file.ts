@@ -2,11 +2,11 @@ import { denoReadFile, DenoReadFileOptions } from "./deno/read_file.ts";
 
 import { gitReadFile, GitReadFileOptions } from "./git/read_file.ts";
 
-export type ReadTextFileOptions = GitReadFileOptions | DenoReadFileOptions;
+export type ReadFileOptions = GitReadFileOptions | DenoReadFileOptions;
 
-export async function readTextFile(
+export async function readFile(
   path: string,
-  opts: ReadTextFileOptions,
+  opts: ReadFileOptions,
 ): Promise<string> {
   try {
     return "repository" in opts && opts.repository

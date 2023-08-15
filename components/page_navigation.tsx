@@ -1,7 +1,7 @@
 /** @jsx h */
 
 import { AppConfig } from "../lib/config/config.ts";
-import { SourceFile } from "../lib/source_file.ts";
+import { SourceFile } from "../lib/resource/source_file.ts";
 import { parseRoute, sortByKey } from "../lib/utils.ts";
 import { ModuleDropdown } from "./module_dropdown.tsx";
 import { Navigation } from "./navigation.tsx";

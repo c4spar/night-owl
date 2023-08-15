@@ -6,7 +6,7 @@ import { Sidebar } from "../components/sidebar.tsx";
 import { VersionDropdown } from "../components/version_dropdown.tsx";
 import { Component, Fragment, h, Helmet, tw } from "../deps.ts";
 import { AppConfig } from "../lib/config/config.ts";
-import { SourceFile } from "../lib/source_file.ts";
+import { SourceFile } from "../lib/resource/source_file.ts";
 import { styles } from "../lib/styles.ts";
 import { PageNavigation } from "../components/page_navigation.tsx";
 import { SecondaryPageNavigation } from "../components/secondary_page_navigation.tsx";

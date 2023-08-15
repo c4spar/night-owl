@@ -1,6 +1,6 @@
 import { fromFileUrl } from "../deps.ts";
 import { GithubVersions } from "./fs/git/get_versions.ts";
-import { SourceFile } from "./source_file.ts";
+import { SourceFile } from "./resource/source_file.ts";
 
 export async function env(
   name: string,

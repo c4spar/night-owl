@@ -1,6 +1,6 @@
 import { serve } from "../mod.ts";
 
-await serve({
+serve({
   src: [
     {
       src: "denoland/manual@main:/",

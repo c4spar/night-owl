@@ -1,6 +1,6 @@
 import { serve } from "../mod.ts";
 
-await serve({
+serve({
   src: "denoland/manual@main:/",
   nav: { collapse: true },
 });

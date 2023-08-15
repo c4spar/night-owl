@@ -1,21 +1,21 @@
 import { Asset, AssetOptions } from "./asset.ts";
-import { GithubVersions } from "./fs/git/get_versions.ts";
-import { readAssets } from "./fs/read_assets.ts";
-import { readTextFile } from "./fs/read_text_file.ts";
-import { initComponent } from "./init_component.ts";
-import { pathToRoute } from "./path_to_route.ts";
-import { ProviderOptions } from "./provider.ts";
-import { ChildComponent } from "./types.ts";
+import { GithubVersions } from "../fs/git/get_versions.ts";
+import { readAssets } from "../fs/read_assets.ts";
+import { readFile } from "../fs/read_file.ts";
+import { initComponent } from "../init_component.ts";
+import { pathToRoute } from "../path_to_route.ts";
+import { ProviderOptions } from "../provider.ts";
+import { ChildComponent } from "../types.ts";
 import {
   addLatestVersion,
   getLabel,
   pathToUrl,
   removeVersion,
-} from "./utils.ts";
+} from "../utils.ts";
 
 export type SourceFileOptions<O> = AssetOptions & {
   addVersion?: boolean;
-  isDirectory: boolean;
+  isDirectory?: boolean;
   loadAssets?: boolean;
   pages?: boolean;
   prefix?: string;
@@ -42,7 +42,7 @@ export class SourceFile<O = unknown> extends Asset {
     opts: SourceFileOptions<O>,
   ): Promise<SourceFile<O>> {
     const content = opts.read && !opts.isDirectory
-      ? await readTextFile(path, opts)
+      ? await readFile(path, opts)
       : "";
 
     const assets = opts.loadAssets && !opts.isDirectory && path.endsWith(".md")
@@ -70,7 +70,7 @@ export class SourceFile<O = unknown> extends Asset {
 
     this.#assets = assets;
     this.#component = component;
-    this.#isDirectory = opts.isDirectory;
+    this.#isDirectory = opts.isDirectory === true;
     this.#route = route;
     this.#mainRoute = removeVersion(route, opts.versions?.all, opts.pages);
     this.#latestRoute = opts.versions?.latest

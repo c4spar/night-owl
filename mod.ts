@@ -26,8 +26,11 @@ export {
   readSourceFiles,
   type ReadSourceFilesOptions,
 } from "./lib/fs/read_source_files.ts";
-export { SourceFile, type SourceFileOptions } from "./lib/source_file.ts";
-export { Asset, type AssetOptions } from "./lib/asset.ts";
+export {
+  SourceFile,
+  type SourceFileOptions,
+} from "./lib/resource/source_file.ts";
+export { Asset, type AssetOptions } from "./lib/resource/asset.ts";
 export { styles } from "./lib/styles.ts";
 export { capitalize, sortByKey } from "./lib/utils.ts";
 export { type ChildComponent, type Children } from "./lib/types.ts";
@@ -46,5 +49,4 @@ export {
   tw,
   twColors,
 } from "./deps.ts";
-export { type ReadDirOptions } from "./lib/fs/read_dir.ts";
 export { type GithubVersions } from "./lib/fs/git/get_versions.ts";

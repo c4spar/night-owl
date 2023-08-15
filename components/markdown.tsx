@@ -11,7 +11,7 @@ import {
   theme,
   tw,
 } from "../deps.ts";
-import { SourceFile } from "../lib/source_file.ts";
+import { SourceFile } from "../lib/resource/source_file.ts";
 import { styles } from "../lib/styles.ts";
 import { Code } from "./code.tsx";
 import { CodeBlock } from "./code_block.tsx";
