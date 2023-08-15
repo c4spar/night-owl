@@ -1,7 +1,7 @@
-import { basename, dirname } from "../deps.ts";
-import { readTextFile, ReadTextFileOptions } from "./fs/read_text_file.ts";
+import { basename, dirname } from "../../deps.ts";
+import { readFile, ReadFileOptions } from "../fs/read_file.ts";
 
-export type AssetOptions = ReadTextFileOptions & {
+export type AssetOptions = ReadFileOptions & {
   addVersion?: boolean;
   basePath: string;
   read?: boolean;
@@ -17,7 +17,7 @@ export class Asset {
   #rev?: string;
 
   static async create(path: string, opts: AssetOptions): Promise<Asset> {
-    const content = opts.read ? await readTextFile(path, opts) : "";
+    const content = opts.read ? await readFile(path, opts) : "";
 
     return new this(path, content, opts);
   }

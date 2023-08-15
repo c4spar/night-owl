@@ -2,11 +2,11 @@ import { decodeBase64, typeByExtension } from "../../../deps.ts";
 import { decoder } from "../../encode.ts";
 import { gitFetch } from "./git_fetch.ts";
 
-export interface GitReadFileOptions {
+export type GitReadFileOptions = {
   repository: string;
   rev: string;
   base64?: boolean;
-}
+};
 
 export async function gitReadFile(
   path: string,

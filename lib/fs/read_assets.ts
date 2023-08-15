@@ -1,5 +1,5 @@
 import { dirname, join } from "../../deps.ts";
-import { Asset, AssetOptions } from "../asset.ts";
+import { Asset, AssetOptions } from "../resource/asset.ts";
 
 export function readAssets(
   filePath: string,

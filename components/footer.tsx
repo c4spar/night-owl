@@ -2,7 +2,7 @@
 
 import { Component, Fragment, h, tw } from "../deps.ts";
 import { AppConfig } from "../lib/config/config.ts";
-import { SourceFile } from "../lib/source_file.ts";
+import { SourceFile } from "../lib/resource/source_file.ts";
 import { styles } from "../lib/styles.ts";
 import { EditPageOnGithub } from "./edit_page_on_github.tsx";
 import { Link } from "./link.tsx";

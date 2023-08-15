@@ -1,7 +1,7 @@
 /** @jsx h */
 
 import { AppConfig } from "../lib/config/config.ts";
-import { SourceFile } from "../lib/source_file.ts";
+import { SourceFile } from "../lib/resource/source_file.ts";
 import { DarkModeSwitch } from "./dark_mode_switch.tsx";
 import { Link, LinkOptions } from "./link.tsx";
 import { apply, Component, css, distinctBy, h, tw } from "../deps.ts";

@@ -1,6 +1,6 @@
 /** @jsx h */
 
-import { SourceFile } from "../lib/source_file.ts";
+import { SourceFile } from "../lib/resource/source_file.ts";
 import { styles } from "../mod.ts";
 import { Navigation } from "./navigation.tsx";
 import {

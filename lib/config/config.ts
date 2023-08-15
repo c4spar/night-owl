@@ -5,7 +5,7 @@ import { bold, deepMerge, join, log, Theme } from "../../deps.ts";
 import { FileOptions, readSourceFiles } from "../fs/read_source_files.ts";
 import { readTocFile } from "../fs/read_toc_file.ts";
 import { ProviderOptions } from "../provider.ts";
-import { SourceFile } from "../source_file.ts";
+import { SourceFile } from "../resource/source_file.ts";
 
 export interface NavOptions {
   collapse?: boolean;

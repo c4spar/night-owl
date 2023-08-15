@@ -5,7 +5,7 @@
 /// <reference lib="dom.asynciterable" />
 /// <reference lib="deno.ns" />
 
-import { blue, h, log, serve as serveHttp, typeByExtension } from "../deps.ts";
+import { blue, h, log, typeByExtension } from "../deps.ts";
 import { Cache } from "./cache.ts";
 import { createConfig, CreateConfigOptions, Script } from "./config/config.ts";
 import { App } from "../components/app.tsx";
@@ -13,7 +13,6 @@ import {
   respondBadRequest,
   respondInternalServerEror,
   respondLocalFile,
-  respondNoContent,
   respondNotFound,
   respondRemoteFile,
 } from "./request.ts";
@@ -29,7 +28,7 @@ export interface ServeOptions<O> extends CreateConfigOptions<O> {
   webhooks?: boolean;
 }
 
-export async function serve<O>({
+export function serve<O>({
   port = 8000,
   hostname,
   assets,
@@ -47,7 +46,7 @@ export async function serve<O>({
 
   setupTwind(options.theme);
 
-  await serveHttp(async (req) => {
+  Deno.serve({ port, hostname }, async (req) => {
     log.info(blue(`[${req.method}]`), req.url);
 
     if (req.method !== "GET") {
@@ -77,9 +76,6 @@ export async function serve<O>({
     }
 
     return await respondPage<O>(options, scripts, req, cache);
-  }, {
-    port,
-    hostname,
   });
 }
 

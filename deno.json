@@ -1,0 +1,10 @@
+{
+  "lock": false,
+  "tasks": {
+    "serve": "deno run --watch=pages,lib,components --allow-env --allow-net examples/cliffy_manual.ts",
+    "serve-deno": "deno run --watch=. --allow-env --allow-net examples/deno_manual.ts",
+    "serve-provider": "deno run --watch=. --allow-env --allow-net --allow-read examples/provider/main.ts",
+    "serve-multi": "deno run --watch=. --allow-env --allow-net examples/multiple_sources.ts",
+    "update": "deno run --allow-read=./ --allow-net --allow-write=./ https://deno.land/x/deno_outdated@0.2.4/cli.ts --ignore README.md CHANGELOG.md"
+  }
+}
