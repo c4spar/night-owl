@@ -1,7 +1,7 @@
 import { join, log } from "../../deps.ts";
 import { SourceFile, SourceFileOptions } from "../resource/source_file.ts";
 import { DistributiveOmit } from "../types.ts";
-import { env, parseRemotePath, parseRoute, sortByKey } from "../utils.ts";
+import { parseRemotePath, parseRoute, sortByKey } from "../utils.ts";
 import { getVersions, GithubVersions } from "./git/get_versions.ts";
 import { readDir } from "./read_dir.ts";
 import { readSourceFile } from "./read_source_file.ts";
@@ -21,8 +21,6 @@ export interface FileOptions {
   rev?: string;
 }
 
-const local = (await env("LOCAL"))?.toLowerCase() === "true";
-
 export async function readSourceFiles<O>(
   fileOptions: FileOptions,
   opts: ReadSourceFilesOptions<O>,
@@ -37,18 +35,13 @@ export async function readSourceFiles<O>(
 
   const versions = await getSourceFileVersions(opts, fileOptions.repository);
 
-  const repository = !fileOptions.repository && !local && versions?.selected &&
-      "repository" in opts
-    ? opts.repository
-    : fileOptions.repository;
+  fileOptions.rev = versions?.selected ?? versions?.latest ?? fileOptions.rev;
 
   const files = await readSourceFilesDir(fileOptions.src, {
     ...opts,
     ...fileOptions,
-    versions,
-    repository,
     addVersion: !!versions?.selected,
-    rev: versions?.selected ?? versions?.latest ?? fileOptions.rev,
+    versions,
   });
 
   if ("repository" in fileOptions && fileOptions.repository) {
