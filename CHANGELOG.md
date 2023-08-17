@@ -1,3 +1,15 @@
+# [v0.1.27](https://github.com/c4spar/night-owl/compare/v0.1.26...v0.1.27) (Aug 17, 2023)
+
+### Features
+
+- add onRequest option to serve method
+  ([86f567c](https://github.com/c4spar/night-owl/commit/86f567c))
+
+### Bug Fixes
+
+- **fs:** wrong repository used to fetch source files
+  ([448ec54](https://github.com/c4spar/night-owl/commit/448ec54))
+
 # [v0.1.26](https://github.com/c4spar/night-owl/compare/v0.1.25...v0.1.26) (Aug 15, 2023)
 
 ### Bug Fixes
