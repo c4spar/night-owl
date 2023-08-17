@@ -21,11 +21,14 @@ import { ssr } from "./ssr.ts";
 import { gitCache } from "./fs/git/git_fetch.ts";
 import { matchFile } from "./utils.ts";
 
+export type OnRequestEventListener = (req: Request) => Response | void;
+
 export interface ServeOptions<O> extends CreateConfigOptions<O> {
   port?: number;
   hostname?: string;
   assets?: Array<string>;
   webhooks?: boolean;
+  onRequest?: OnRequestEventListener;
 }
 
 export function serve<O>({
@@ -48,6 +51,11 @@ export function serve<O>({
 
   Deno.serve({ port, hostname }, async (req) => {
     log.info(blue(`[${req.method}]`), req.url);
+    const resp = await options.onRequest?.(req);
+
+    if (resp) {
+      return resp;
+    }
 
     if (req.method !== "GET") {
       return respondBadRequest();
